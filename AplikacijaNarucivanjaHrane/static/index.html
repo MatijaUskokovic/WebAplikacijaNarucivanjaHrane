@@ -1,11 +1,43 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Naručivanje hrane</title>
 <script src="jquery.min.js"></script>
+<link rel="stylesheet" href="css/foundation.css">
 </head>
 <body>
-	<p>Radii</p>
+	<!-- Navigation -->
+<div class="title-bar" data-responsive-toggle="realEstateMenu" data-hide-for="small">
+	<button class="menu-icon" type="button" data-toggle></button>
+	<div class="title-bar-title">Menu</div>
+  </div>
+  
+  <div class="top-bar" id="realEstateMenu">
+	<div class="top-bar-left">
+	  <ul class="menu" data-responsive-menu="accordion">
+		<li><a href="#/">Početna stranica</a></li>
+		<li><a href="#">Two</a></li>
+		<li><a href="#">Three</a></li>
+	  </ul>
+	</div>
+	<div class="top-bar-right">
+	  <ul class="menu">
+		<li><a href="#">Moj nalog</a></li>
+		<li><a class="button" href="#/login">Prijava/Registracija</a></li>
+	  </ul>
+	</div>
+  </div>
+  <!-- /Navigation -->
+  <div id="mainView">
+  	<router-view></router-view>
+  </div>
+
+  	<script src="js/vue.js"></script>
+	<script src="js/vue-router.js"></script>
+	<script src="js/axios.js"></script>
+	<script src="components/restaurants.js"></script>
+	<script src="components/loginAndRegistration.js"></script>
+	<script src="js/app.js"></script>
 </body>
 </html>
