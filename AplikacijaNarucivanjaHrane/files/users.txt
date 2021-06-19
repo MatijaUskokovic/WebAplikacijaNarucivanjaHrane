@@ -1,0 +1,2 @@
+123123123,false,pera,123,Pera,Perić,muski,1624108320467,Kupac,1000
+111222333,false,ivo,123,Ivo,Ivić,muski,1624108320467,Menadzer,111

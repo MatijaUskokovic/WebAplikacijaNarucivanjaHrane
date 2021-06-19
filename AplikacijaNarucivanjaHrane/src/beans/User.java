@@ -1,23 +1,28 @@
 package beans;
 
-import java.time.LocalDate;
+import java.util.Date;
+import java.util.UUID;
 
 public class User {
+	private String id;
+	private boolean deleted;
 	private String username;
 	private String password;
 	private String name;
 	private String surname;
 	private Gender gender;
-	private LocalDate dateOfBirth;
+	private Date dateOfBirth;
 	private Role role;
 	
 	public User() {
 		
 	}
 	
-	public User(String username, String password, String name, String surname, Gender gender, LocalDate dateOfBirth,
+	public User(String username, String password, String name, String surname, Gender gender, Date dateOfBirth,
 			Role role) {
 		super();
+		this.id = UUID.randomUUID().toString();
+		this.deleted = false;
 		this.username = username;
 		this.password = password;
 		this.name = name;
@@ -25,6 +30,49 @@ public class User {
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.role = role;
+	}
+
+	public User(String id, boolean deleted, String username, String password, String name, String surname,
+			Gender gender, Date dateOfBirth, Role role) {
+		super();
+		this.id = id;
+		this.deleted = deleted;
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.role = role;
+	}
+	
+	public User(User user) {
+		super();
+		this.id = user.getId();
+		this.deleted = user.isDeleted();
+		this.username = user.getUsername();
+		this.password = user.getPassword();
+		this.name = user.getName();
+		this.surname = user.getSurname();
+		this.gender = user.getGender();
+		this.dateOfBirth = user.getDateOfBirth();
+		this.role = user.getRole();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	public String getUsername() {
@@ -57,10 +105,10 @@ public class User {
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
-	public LocalDate getDateOfBirth() {
+	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
-	public void setDateOfBirth(LocalDate dateOfBirth) {
+	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 	public Role getRole() {
