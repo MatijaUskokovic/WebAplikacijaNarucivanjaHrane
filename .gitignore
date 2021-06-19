@@ -104,16 +104,13 @@ target/
 *.pyc
 *.pyo
 *~
-.DS_Store
 .cache
-.classpath
 .ensime
 .ensime_cache/
 .ensime_lucene
 .generated-mima*
 .idea/
 .idea_modules/
-.project
 .pydevproject
 .settings
 R-unit-tests.log
