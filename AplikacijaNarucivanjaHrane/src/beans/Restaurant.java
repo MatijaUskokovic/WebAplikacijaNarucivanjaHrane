@@ -2,8 +2,11 @@ package beans;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Restaurant {
+	private String id;
+	private boolean deleted;
 	private String name;
 	private RestaurantType type;
 	private ArrayList<Item> items;
@@ -13,6 +16,21 @@ public class Restaurant {
 	
 	public Restaurant() {
 		items = new ArrayList<Item>();
+		this.setId(UUID.randomUUID().toString());
+		this.setDeleted(false);
+	}
+
+	public Restaurant(String id, boolean deleted, String name, RestaurantType type, ArrayList<Item> items,
+			RestaurantStatus status, Location location, Image logo) {
+		super();
+		this.setId(id);
+		this.deleted = deleted;
+		this.name = name;
+		this.type = type;
+		this.items = items;
+		this.status = status;
+		this.location = location;
+		this.logo = logo;
 	}
 
 	public Restaurant(String name, RestaurantType type, ArrayList<Item> items, RestaurantStatus status,
@@ -72,5 +90,21 @@ public class Restaurant {
 
 	public void setLogo(Image logo) {
 		this.logo = logo;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

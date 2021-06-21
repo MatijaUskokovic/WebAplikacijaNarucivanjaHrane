@@ -1,8 +1,11 @@
 package beans;
 
 import java.awt.Image;
+import java.util.UUID;
 
 public class Item {
+	private String id;
+	private boolean deleted;
 	private String name;
 	private double price;
 	private ItemType type;
@@ -12,7 +15,22 @@ public class Item {
 	private Image image;
 	
 	public Item() {
-		
+		this.id = UUID.randomUUID().toString();
+		this.deleted = false;
+	}
+
+	public Item(String id, boolean deleted, String name, double price, ItemType type, Restaurant restaurant,
+			double quantity, String description, Image image) {
+		super();
+		this.id = id;
+		this.deleted = deleted;
+		this.name = name;
+		this.price = price;
+		this.type = type;
+		this.restaurant = restaurant;
+		this.quantity = quantity;
+		this.description = description;
+		this.image = image;
 	}
 
 	public Item(String name, double price, ItemType type, Restaurant restaurant, double quantity, String description,
@@ -81,5 +99,21 @@ public class Item {
 
 	public void setImage(Image image) {
 		this.image = image;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

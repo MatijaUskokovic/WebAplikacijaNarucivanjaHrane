@@ -1,0 +1,2 @@
+123,false,Jabuka,100.0,jelo,111,100.0,Jabuka je crvena,slika
+1234,false,Pasta,250.0,jelo,111,300.0,Pasta bolonjeze :D,slika
