@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
@@ -42,8 +43,7 @@ public class ItemsFileRepository {
 			in = new BufferedReader(new FileReader(new File(fileLocation)));
 			while ((line = in.readLine()) != null) {
 				Item item = makeItemFromLine(line.trim());
-				if(!item.isDeleted())
-					items.put(item.getId(), item);
+				items.put(item.getId(), item);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,16 +62,74 @@ public class ItemsFileRepository {
 	 * Metoda dodaje novi "item" u datoteku
 	 * 
 	 * */
-	public boolean saveItem(Item item) {
+	public Item saveItem(Item item) {
 		try (FileWriter f = new FileWriter(fileLocation, true);
 				BufferedWriter b = new BufferedWriter(f);
 				PrintWriter p = new PrintWriter(b);) {
 			p.println(getStringFromItem(item));
-			return true;
+			return item;
 		} catch (IOException i) {
 			i.printStackTrace();
-			return false;
+			return null;
 		}
+	}
+	
+	/**
+	 * Metoda vrsi logicko brisanje itema ciji je id prosledjen
+	 * 
+	 * */
+	public Item deleteItem(String id) {
+		HashMap<String, Item> items = this.getAllItems();
+		
+		Item itemForDeleting = items.get(id);
+		itemForDeleting.setDeleted(true);
+		
+		writeAllItemsInFile(items);
+		
+		return null;
+	}
+	
+	public Item changeItem(String id, Item newItem) {
+		HashMap <String, Item> items = this.getAllItems();
+		
+		Item oldItem = items.get(id);
+		items.replace(id, oldItem, newItem);
+		
+		writeAllItemsInFile(items);
+		
+		return newItem;
+	}
+	
+	private void writeAllItemsInFile(HashMap<String, Item> items) {
+		FileWriter fileWriter = null;
+		ArrayList<String> itemsForWritting = getAllItemsForWriting(items);
+		try {
+			fileWriter = new FileWriter(fileLocation);
+			for(String item : itemsForWritting) {
+				fileWriter.write(item);
+				fileWriter.write("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(fileWriter != null) {
+				try {
+					fileWriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private ArrayList<String> getAllItemsForWriting(HashMap<String, Item> items) {
+		ArrayList<String> itemsForWriting = new ArrayList<String>();
+		
+		for(Item item : items.values()) {
+			itemsForWriting.add(this.getStringFromItem(item));
+		}
+		
+		return itemsForWriting;
 	}
 
 	private String getStringFromItem(Item item) {

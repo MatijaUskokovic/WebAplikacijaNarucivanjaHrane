@@ -1,2 +1,3 @@
 111,false,Bob,Rostilj,Radi,12.0,12.0,Neka ulica BB,logo
-222,true,Dva stapica,Kineski,Radi,64.0,62.0,Ulica 11,logo
+222,false,Jedan stapic,Kineski,Radi,64.0,62.0,Dunavska ulica 231,logo
+333,false,Azuri,Italijanski,Radi,50.0,50.0,Djure Jaksica 11,logo

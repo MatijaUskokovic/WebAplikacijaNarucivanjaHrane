@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -48,8 +49,7 @@ public class RestaurantFileRepository {
 			in = new BufferedReader(new FileReader(new File(fileLocation)));
 			while ((line = in.readLine()) != null) {
 				Restaurant restaurant = makeRestaurantFromLine(line);
-				if(!restaurant.isDeleted())
-					restaurants.put(restaurant.getId(), restaurant);
+				restaurants.put(restaurant.getId(), restaurant);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,26 +68,78 @@ public class RestaurantFileRepository {
 	 * Metoda upisuje novi restoran u fajl
 	 * 
 	 * */
-	public boolean saveRestaurant(Restaurant restaurant) {
+	public Restaurant saveRestaurant(Restaurant restaurant) {
 		try (FileWriter f = new FileWriter(fileLocation, true);
 				BufferedWriter b = new BufferedWriter(f);
 				PrintWriter p = new PrintWriter(b);) {
 			p.println(getStringFromRestaurant(restaurant));
-			return true;
+			return restaurant;
 		} catch (IOException i) {
 			i.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 	
-	//TODO:
+	/**
+	 * Metoda vrsi izmenu restorana sa prosledjenim id-jem
+	 * 
+	 * */
+	public Restaurant changeRestaurant(String id, Restaurant newRestaurant) {
+		HashMap<String, Restaurant> restaurants = this.getAllRestaurants();
+		
+		Restaurant oldRestaurant = restaurants.get(id);
+		restaurants.replace(id, oldRestaurant, newRestaurant);
+		writteAllRestaurantsInFile(restaurants);
+		
+		return newRestaurant;
+	} 
+	
+	/**
+	 * Metoda vrsi logicko brisanje restorana ciji je id prosledjen
+	 * 
+	 * */
 	public Restaurant deleteRestaurant(String id) {
-		return null;
+		HashMap<String, Restaurant> restaurants = this.getAllRestaurants();
+		
+		Restaurant restaurantForDeleting = restaurants.get(id);
+		restaurantForDeleting.setDeleted(true);
+		
+		writteAllRestaurantsInFile(restaurants);
+		
+		return restaurantForDeleting;
 	}
 	
-	public Restaurant changeRestaurant(String id, Restaurant newRestaurant) {
-		return null;
-	} 
+	private void writteAllRestaurantsInFile(HashMap<String, Restaurant> restaurants) {
+		FileWriter fileWriter = null;
+		ArrayList<String> restaurantsForWritting = getAllRestaurantsForWriting(restaurants);
+		try {
+			fileWriter = new FileWriter(fileLocation);
+			for(String restaurant : restaurantsForWritting) {
+				fileWriter.write(restaurant);
+				fileWriter.write("\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(fileWriter != null) {
+				try {
+					fileWriter.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private ArrayList<String> getAllRestaurantsForWriting(HashMap<String, Restaurant> restaurants) {
+		ArrayList<String> restaurantsForWriting = new ArrayList<String>();
+		
+		for(Restaurant restaurant : restaurants.values()) {
+			restaurantsForWriting.add(this.getStringFromRestaurant(restaurant));
+		}
+		
+		return restaurantsForWriting;
+	}
 	
 	private String getStringFromRestaurant(Restaurant restaurant) {
 		return restaurant.getId() + "," + Boolean.toString(restaurant.isDeleted()) + "," + restaurant.getName() + ","
