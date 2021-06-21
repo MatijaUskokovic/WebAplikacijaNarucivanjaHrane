@@ -1,0 +1,9 @@
+.flex-parent {
+    display: flex;
+  }
+  .flex-child {
+    flex: 1;
+    padding: 3%;
+    margin: 2%;
+    border:1px solid black;
+  }
