@@ -3,6 +3,8 @@ package rest;
 import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.put;
+import static spark.Spark.delete;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
@@ -12,7 +14,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import beans.Customer;
+import beans.Deliverer;
 import beans.Item;
+import beans.Manager;
 import beans.Restaurant;
 import beans.User;
 import gsonAdapters.DateAdapter;
@@ -39,7 +43,7 @@ public class SparkAppMain {
 			return "Works";
 		});
 		
-		// REGISTRACIJA kupca
+		// REGISTRACIJA KORISNIKA
 		post("rest/customers", (req, res) -> {
 			res.type("application/json");
 			String registrationParams = req.body();
@@ -49,6 +53,55 @@ public class SparkAppMain {
 				return null;
 			}
 			return g.toJson(customer);	// ovo je 1 opcija, druga je da vrati objeakt user
+		});
+		
+		post("rest/managers", (req, res) -> {
+			res.type("application/json");
+			String registrationParams = req.body();
+			Manager managerToReg = g.fromJson(registrationParams, Manager.class);
+			Manager manager = userService.registerManager(managerToReg);
+			if (manager == null) {
+				return null;
+			}
+			return g.toJson(manager);
+		});
+		
+		post("rest/deliverers", (req, res) -> {
+			res.type("application/json");
+			String registrationParams = req.body();
+			Deliverer delivererToReg = g.fromJson(registrationParams, Deliverer.class);
+			Deliverer deliverer = userService.registerDeliverer(delivererToReg);
+			if (deliverer == null) {
+				return null;
+			}
+			return g.toJson(deliverer);
+		});
+		
+		// IZMENA KORISNIKA
+		put("rest/customers/:id", (req, res) -> {
+			res.type("application/json");
+			Customer customer = g.fromJson(req.body(), Customer.class);
+			return g.toJson(userService.changeCustomer(customer));
+		});
+		
+		put("rest/managers/:id", (req, res) -> {
+			res.type("application/json");
+			Manager manager = g.fromJson(req.body(), Manager.class);
+			return g.toJson(userService.changeManager(manager));
+		});
+		
+		put("rest/deliverers/:id", (req, res) -> {
+			res.type("application/json");
+			Deliverer deliverer = g.fromJson(req.body(), Deliverer.class);
+			return g.toJson( userService.changeDeliverer(deliverer));
+		});
+		
+		// BRISANJE KORISNIKA
+		delete("rest/users/:id", (req, res) -> {
+			res.type("application/json");
+			User user = g.fromJson(req.body(), User.class);
+			userService.deleteUser(user.getUsername());
+			return "SUCCESS";
 		});
 		
 		//http://localhost:8080/login

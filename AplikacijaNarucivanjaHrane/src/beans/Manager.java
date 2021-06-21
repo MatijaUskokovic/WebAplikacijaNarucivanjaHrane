@@ -6,7 +6,7 @@ public class Manager extends User {
 	
 	public Manager() {
 		super();
-		this.restaurant = new Restaurant();
+		//this.restaurant = new Restaurant();
 	}
 	
 	public Manager(User user) {
