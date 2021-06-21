@@ -12,14 +12,15 @@ public class User {
 	private String surname;
 	private Gender gender;
 	private Date dateOfBirth;
-	private Role role;
+	private UserRole role;
 	
 	public User() {
-		
+		this.id = UUID.randomUUID().toString();
+		this.deleted = false;
 	}
 	
 	public User(String username, String password, String name, String surname, Gender gender, Date dateOfBirth,
-			Role role) {
+			UserRole role) {
 		super();
 		this.id = UUID.randomUUID().toString();
 		this.deleted = false;
@@ -33,7 +34,7 @@ public class User {
 	}
 
 	public User(String id, boolean deleted, String username, String password, String name, String surname,
-			Gender gender, Date dateOfBirth, Role role) {
+			Gender gender, Date dateOfBirth, UserRole role) {
 		super();
 		this.id = id;
 		this.deleted = deleted;
@@ -111,10 +112,10 @@ public class User {
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	public Role getRole() {
+	public UserRole getRole() {
 		return role;
 	}
-	public void setRole(Role role) {
+	public void setRole(UserRole role) {
 		this.role = role;
 	}
 }

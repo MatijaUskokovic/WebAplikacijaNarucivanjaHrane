@@ -1,5 +1,6 @@
 package services;
 
+import beans.Customer;
 import beans.User;
 import fileRepository.UserFileRepository;
 
@@ -17,5 +18,9 @@ public class UserService {
 			return null;
 		}
 		return user;
+	}
+	
+	public Customer registerCustomer(User user) {
+		return userRepository.registerCustomer(user);
 	}
 }

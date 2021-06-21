@@ -6,12 +6,16 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.util.Date;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import beans.Customer;
 import beans.Item;
 import beans.Restaurant;
 import beans.User;
+import gsonAdapters.DateAdapter;
 import services.ItemService;
 import services.RestaurantService;
 import services.UserService;
@@ -19,7 +23,8 @@ import spark.Session;
 
 public class SparkAppMain {
 
-	private static Gson g = new Gson();
+	private static DateAdapter dateAdapter = new DateAdapter();
+	private static Gson g = new GsonBuilder().registerTypeAdapter(Date.class, dateAdapter).create();
 	
 	private static UserService userService = new UserService();
 	private static ItemService itemService = new ItemService();
@@ -32,6 +37,18 @@ public class SparkAppMain {
 		
 		get("rest/test", (req, res) -> {
 			return "Works";
+		});
+		
+		// REGISTRACIJA kupca
+		post("rest/customers", (req, res) -> {
+			res.type("application/json");
+			String registrationParams = req.body();
+			User userToReg = g.fromJson(registrationParams, User.class);
+			Customer customer = userService.registerCustomer(userToReg);
+			if (customer == null) {
+				return null;
+			}
+			return g.toJson(customer);	// ovo je 1 opcija, druga je da vrati objeakt user
 		});
 		
 		//http://localhost:8080/login

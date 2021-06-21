@@ -13,6 +13,7 @@ public class Customer extends User {
 		super();
 		this.allOrders = new ArrayList<Order>();
 		this.shoppingCart = new ShoppingCart();
+		this.pointsCollected = 0;
 	}
 
 	public Customer(ArrayList<Order> allOrders, ShoppingCart shoppingCart, int pointsCollected, CustomerType type) {
@@ -27,6 +28,7 @@ public class Customer extends User {
 		super(user);
 		this.allOrders = new ArrayList<Order>();
 		this.shoppingCart = new ShoppingCart();
+		this.pointsCollected = 0;
 	}
 
 	public ArrayList<Order> getAllOrders() {

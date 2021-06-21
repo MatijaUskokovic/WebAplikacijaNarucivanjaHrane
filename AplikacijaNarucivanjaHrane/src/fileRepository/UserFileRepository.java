@@ -1,8 +1,12 @@
 package fileRepository;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,7 +16,7 @@ import beans.Customer;
 import beans.Deliverer;
 import beans.Gender;
 import beans.Manager;
-import beans.Role;
+import beans.UserRole;
 import beans.ShoppingCart;
 import beans.User;
 
@@ -40,6 +44,21 @@ public class UserFileRepository {
 		return users.get(username);
 	}
 	
+	/*
+	 * Metoda ce prvo proveriti da li je zauzet prosledjeni username i ukoliko nije cuva novog korisnika
+	 */
+	public Customer registerCustomer(User user) {
+		if (users.containsKey(user.getUsername())) {
+			return null;
+		}
+		Customer newCustomer = new Customer(user);
+		newCustomer.setRole(UserRole.Kupac);
+		return writeCustomer(newCustomer);
+	}
+	
+	/*
+	 * Metoda sluzi za ucitavanje svih entiteta iz txt fajla
+	 */
 	public void readUsers() {
 		BufferedReader in = null;
 		try {
@@ -61,17 +80,22 @@ public class UserFileRepository {
 				String surname = data[5];
 				Gender gender = Gender.valueOf(data[6]);
 				Date dateOfBirth = new Date(Long.parseLong(data[7]));
-				Role role = Role.valueOf(data[8]);
+				UserRole role = UserRole.valueOf(data[8]);
+				
+				// ukolko je korisnik logicki obrisan
+				if (deleted) {
+					continue;
+				}
 				
 				User user = new User(id, deleted, username, password, name, surname, gender, dateOfBirth, role);
 				users.put(user.getUsername(), user);
 				
 				// formiranje konkretnih korisnika
-				if (role == Role.Administrator) {
+				if (role == UserRole.Administrator) {
 					Administrator a = new Administrator(user);
 					administrators.put(a.getUsername(), a);
 				}
-				else if (role == Role.Kupac) {
+				else if (role == UserRole.Kupac) {
 					int pointsCollected = Integer.parseInt(data[9]);
 					Customer c = new Customer(user);
 					// TODO: KADA SE NAPRAVI BAZA ZA PORUDZBINE
@@ -82,14 +106,14 @@ public class UserFileRepository {
 					//c.setCustomerType(new CustomerType());
 					customers.put(c.getUsername(), c);
 				}
-				else if (role == Role.Menadzer) {
+				else if (role == UserRole.Menadzer) {
 					//String restaurantId = data[9];
 					Manager m = new Manager(user);
 					// TODO : KADA SE NAPRAVI BAZA ZA RESTORANE ODRADITI
 					//m.setRestaurant(null);
 					managers.put(m.getUsername(), m);
 				}
-				else if (role == Role.Dostavljac) {
+				else if (role == UserRole.Dostavljac) {
 					Deliverer d = new Deliverer(user);
 					// TODO : KADA SE NAPRAVI BAZA ZA ISPORUKE UCITATI KOJE ISPORUKE TREBA DA ISPORUCI
 					deliverers.put(d.getUsername(), d);
@@ -106,5 +130,27 @@ public class UserFileRepository {
 				catch (Exception e) { }
 			}
 		}
+	}
+	
+	/*
+	 * Metoda sluzi za upisivanje novog kupca u fajl
+	 */
+	private Customer writeCustomer(Customer customer) {
+		try (FileWriter f = new FileWriter(path, true);
+				BufferedWriter b = new BufferedWriter(f);
+				PrintWriter p = new PrintWriter(b);) {
+			p.println(customerToText(customer));
+			return customer;
+		} catch (IOException i) {
+			i.printStackTrace();
+			return null;
+		}
+	}
+	
+	private String customerToText(Customer customer) {
+		return customer.getId() + "," + customer.isDeleted() + "," + customer.getUsername() + "," 
+				+ customer.getPassword() + "," + customer.getName() + "," + customer.getSurname() + "," 
+				+ customer.getGender() + "," + customer.getDateOfBirth().getTime() + "," 
+				+ customer.getRole() + "," + customer.getPointsCollected();
 	}
 }
