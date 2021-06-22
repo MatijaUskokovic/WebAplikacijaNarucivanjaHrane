@@ -122,7 +122,7 @@ public class SparkAppMain {
 			return g.toJson(user);
 		});
 		
-		get("rest/testlogin", (req, res) -> {
+		get("rest/getLoggedUser", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
 			User user = ss.attribute("user");

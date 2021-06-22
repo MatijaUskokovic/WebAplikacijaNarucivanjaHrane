@@ -4,34 +4,29 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Naručivanje hrane</title>
 <script src="jquery.min.js"></script>
-<link rel="stylesheet" href="css/foundation.css">
+<link rel="stylesheet" href="css/mainView.css"/>
 <link rel="stylesheet" href="css/loginAndRegistration.css"/>
 </head>
 <body>
-	<!-- Navigation -->
-<div class="title-bar" data-responsive-toggle="realEstateMenu" data-hide-for="small">
-	<div class="title-bar-title">Menu</div>
-  </div>
-  
-  <div class="top-bar" id="realEstateMenu">
-	<div class="top-bar-left">
-	  <ul class="menu" data-responsive-menu="accordion">
-		<li><a href="#/">Početna stranica</a></li>
-		<li><a href="#">Two</a></li>
-		<li><a href="#">Three</a></li>
-	  </ul>
+	<div id="mainView">
+		<h2>Sajt za naručivanje hrane</h2>
+		<!-- Navigation -->	
+		<ul>
+			<li><a href="#/">Početna stranica</a></li>
+			<li><a href="#">Two</a></li>
+			<li><a href="#">Three</a></li>
+
+			<li style="float: right;" v-bind:hidden="userRole==='Neulogovan'"><a class="button" v-on:click="logout()">Odjavi se</a></li>
+			<li style="float: right;" v-bind:hidden="userRole==='Neulogovan'"><a href="#">Moj nalog</a></li>
+			<li style="float: right;" v-bind:hidden="userRole==='Neulogovan'"><span>Dobrodošli {{loggedUser.name}}</span></li>
+			<li style="float: right;" v-bind:hidden="userRole!=='Neulogovan'"><a class="button" href="#/login">Prijava/Registracija</a></li>
+		</ul>
+		<!-- /Navigation -->
+
+		<!-- Glavni prikaz koji se smenjuje -->
+		<router-view></router-view>
+		<!-- /Glavni prikaz koji se smenjuje -->
 	</div>
-	<div class="top-bar-right">
-	  <ul class="menu">
-		<li><a href="#">Moj nalog</a></li>
-		<li><a class="button" href="#/login">Prijava/Registracija</a></li>
-	  </ul>
-	</div>
-  </div>
-  <!-- /Navigation -->
-  <div id="mainView">
-  	<router-view></router-view>
-  </div>
 
   	<script src="js/vue.js"></script>
 	<script src="js/vue-router.js"></script>
