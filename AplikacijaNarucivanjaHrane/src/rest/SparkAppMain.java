@@ -81,18 +81,24 @@ public class SparkAppMain {
 		put("rest/customers/:id", (req, res) -> {
 			res.type("application/json");
 			Customer customer = g.fromJson(req.body(), Customer.class);
+			Session ss = req.session();
+			ss.attribute("user", customer);
 			return g.toJson(userService.changeCustomer(customer));
 		});
 		
 		put("rest/managers/:id", (req, res) -> {
 			res.type("application/json");
 			Manager manager = g.fromJson(req.body(), Manager.class);
+			Session ss = req.session();
+			ss.attribute("user", manager);
 			return g.toJson(userService.changeManager(manager));
 		});
 		
 		put("rest/deliverers/:id", (req, res) -> {
 			res.type("application/json");
 			Deliverer deliverer = g.fromJson(req.body(), Deliverer.class);
+			Session ss = req.session();
+			ss.attribute("user", deliverer);
 			return g.toJson( userService.changeDeliverer(deliverer));
 		});
 		
@@ -112,7 +118,7 @@ public class SparkAppMain {
 			User userToLogIn = g.fromJson(loginParameters, User.class);
 			String username = userToLogIn.getUsername();
 			String password = userToLogIn.getPassword();
-			User user = userService.findUser(username, password);			
+			Object user = userService.findUser(username, password);			
 			if (user == null) {
 				return null;
 			}
@@ -125,7 +131,7 @@ public class SparkAppMain {
 		get("rest/getLoggedUser", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
-			User user = ss.attribute("user");
+			Object user = ss.attribute("user");
 			
 			if (user == null) {
 				return null;  

@@ -48,6 +48,24 @@ public class UserFileRepository {
 		return users.get(username);
 	}
 	
+	//**********	Ne radi se ponovno ucitavanje podataka jer se ovo uvek poziva odmah nakog getUser//
+	public Customer getCustomer(String username) {
+		return customers.get(username);
+	}
+	
+	public Manager getManager(String username) {
+		return managers.get(username);
+	}
+	
+	public Deliverer getDeliverer(String username) {
+		return deliverers.get(username);
+	}
+	
+	public Administrator getAdministrator(String username) {
+		return administrators.get(username);
+	}
+	//**********//
+	
 	public void deleteUser(String username) {
 		readUsers();
 		User userToDelete = users.get(username);

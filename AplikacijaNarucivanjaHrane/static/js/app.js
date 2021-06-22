@@ -1,11 +1,13 @@
 const Restaurants = { template: '<restaurants></restaurants>'}
 const LoginAndRegistration = { template: '<loginAndRegistration></loginAndRegistration>'}
+const Profile = { template: '<profile></profile>'}
 
 const router = new VueRouter({
 	mode: 'hash',
 	  routes: [
 		{ path: '/', name: 'Početna', component: Restaurants},
-		{ path: '/login', name:'login', component:LoginAndRegistration}
+		{ path: '/login', name:'login', component: LoginAndRegistration},
+		{ path: '/profile', name:'profil', component: Profile}
 	  ]
 });
 
@@ -26,7 +28,6 @@ var app = new Vue({
 			.then(response => {
 				this.loggedUser = response.data;
 				this.userRole = this.loggedUser.role;
-				router.push('/');
 			})
 		},
         logout: function() {

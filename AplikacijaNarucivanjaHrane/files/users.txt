@@ -1,4 +1,4 @@
-123123123,false,pera,123,Peraaa,Perić,muski,1624108320467,Kupac,1500
+123123123,false,pera,123,Pera,Perić,muski,1624108320467,Kupac,0
 111222333,false,ivo,123,Ivo,Ivić,muski,1624108320467,Menadzer
 3db4c1db-e028-4af3-8dd7-26e4acebf01a,false,miki,123,Milivoje,Mikić,muski,1624108300000,Kupac,0
 0aedc6a1-4cb9-402f-ac70-e593f548886a,false,eee,123,Milivoje,Mikić,muski,1624108300000,Dostavljac,

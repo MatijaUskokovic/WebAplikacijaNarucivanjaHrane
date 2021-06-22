@@ -4,6 +4,7 @@ import beans.Customer;
 import beans.Deliverer;
 import beans.Manager;
 import beans.User;
+import beans.UserRole;
 import fileRepository.UserFileRepository;
 
 public class UserService {
@@ -14,10 +15,22 @@ public class UserService {
 		
 	}
 	
-	public User findUser(String username, String password) {
+	public Object findUser(String username, String password) {
 		User user = userRepository.getUser(username);
 		if (user == null || !user.getPassword().equals(password)) {
 			return null;
+		}
+		if (user.getRole() == UserRole.Kupac) {
+			return userRepository.getCustomer(username);
+		}
+		if (user.getRole() == UserRole.Menadzer) {
+			return userRepository.getManager(username);
+		}
+		if (user.getRole() == UserRole.Dostavljac) {
+			return userRepository.getDeliverer(username);
+		}
+		if (user.getRole() == UserRole.Administrator) {
+			return userRepository.getAdministrator(username);
 		}
 		return user;
 	}

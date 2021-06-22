@@ -56,6 +56,7 @@ Vue.component("loginAndRegistration", {
 			.post("rest/login", user)
 			.then(response => {
 				app.getLoggedUser();
+				router.push('/');
 			})
 			.catch(function(error){
 				alert('Neuspešno logovanje')
