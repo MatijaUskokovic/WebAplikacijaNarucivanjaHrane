@@ -43,6 +43,12 @@ public class SparkAppMain {
 			return "Works";
 		});
 		
+		// DOBABLJANJE SVIH KORISNIKA
+		get("rest/users", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(userService.getAllUsers());
+		});
+		
 		// REGISTRACIJA KORISNIKA
 		post("rest/customers", (req, res) -> {
 			res.type("application/json");

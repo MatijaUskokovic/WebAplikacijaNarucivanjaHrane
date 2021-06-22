@@ -1,13 +1,17 @@
 const Restaurants = { template: '<restaurants></restaurants>'}
 const LoginAndRegistration = { template: '<loginAndRegistration></loginAndRegistration>'}
 const Profile = { template: '<profile></profile>'}
+const CreateStaff = { template: '<createStaff></createStaff>'}
+const AllUsers = {template: '<allUsers></allUsers>'}
 
 const router = new VueRouter({
 	mode: 'hash',
 	  routes: [
 		{ path: '/', name: 'Početna', component: Restaurants},
 		{ path: '/login', name:'login', component: LoginAndRegistration},
-		{ path: '/profile', name:'profil', component: Profile}
+		{ path: '/profile', name:'profil', component: Profile},
+		{ path: '/createStaff', name:'noviZaposleni', component: CreateStaff},
+		{ path: '/allUsers', name:'sviKorisnici', component: AllUsers}
 	  ]
 });
 

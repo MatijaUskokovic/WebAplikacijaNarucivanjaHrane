@@ -38,9 +38,9 @@ public class UserFileRepository {
 		
 	}
 	
-	public ArrayList<User> getUsers(){
+	public Iterable<User> getUsers(){
 		readUsers();
-		return (ArrayList<User>) users.values();
+		return (Iterable<User>) users.values();
 	}
 	
 	public User getUser(String username) {

@@ -15,6 +15,10 @@ public class UserService {
 		
 	}
 	
+	public Iterable<User> getAllUsers(){
+		return userRepository.getUsers();
+	}
+	
 	public Object findUser(String username, String password) {
 		User user = userRepository.getUser(username);
 		if (user == null || !user.getPassword().equals(password)) {
