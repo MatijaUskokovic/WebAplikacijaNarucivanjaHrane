@@ -16,7 +16,6 @@ import javax.swing.ImageIcon;
 import beans.Item;
 import beans.ItemType;
 import beans.Restaurant;
-import services.RestaurantService;
 
 /**
  * Klasa koja vrsi manipulaciju rada sa datotekom restaurants.txt <br>
@@ -28,7 +27,7 @@ import services.RestaurantService;
 // TODO: image je null treba ispraviti
 public class ItemsFileRepository {
 	private static String fileLocation = "files/items.txt";
-	private static RestaurantService restaurantService = new RestaurantService();
+
 	public ItemsFileRepository() {
 	}
 
@@ -155,7 +154,8 @@ public class ItemsFileRepository {
 		String name = lineItems[2];
 		double price = Double.parseDouble(lineItems[3]);
 		ItemType type = this.getItemTypeFromString(lineItems[4]);
-		Restaurant restaurant = restaurantService.findRestaurantById(lineItems[5]);
+		Restaurant restaurant = new Restaurant();
+		restaurant.setId(lineItems[5]);
 		double quantity = Double.parseDouble(lineItems[6]);
 		String description = lineItems[7];
 		//Image image = this.getImageFromString(lineItems[8]);

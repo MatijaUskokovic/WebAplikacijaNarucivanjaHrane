@@ -12,7 +12,7 @@ public class RestaurantService {
 	public RestaurantService() {
 	}
 	
-	public Collection<Restaurant> getAllRestaurants(){
+	public Iterable<Restaurant> getAllRestaurants(){
 		HashMap<String, Restaurant> validRestaurants = new HashMap<String, Restaurant>();
 		for(Restaurant restaurant : rfr.getAllRestaurants().values()) {
 			if(!restaurant.isDeleted())

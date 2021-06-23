@@ -162,7 +162,7 @@ public class SparkAppMain {
 		
 		//TODO: dodati id pri svakom novom pravljenju u  okviru servisa
 		//TODO: dodati proveru da li u okviru restorana postoji artikal sa istim imenom
-		post("rest/item", (req, res) -> {
+		post("rest/items", (req, res) -> {
 				res.type("application/json");
 				Item item = g.fromJson(req.body(), Item.class);
 				//provera imena artikla
@@ -170,10 +170,11 @@ public class SparkAppMain {
 		});
 				
 		get("rest/items", (req, res) -> {
+			res.type("application/json");
 			return g.toJson(itemService.getAllItems());
 		});
 				
-		delete("rest/item/:id", (req, res) -> {
+		delete("rest/items/:id", (req, res) -> {
 		    res.type("application/json");
 		    return g.toJson(itemService.deleteItem(req.params(":id")));
 		});
@@ -187,13 +188,14 @@ public class SparkAppMain {
 				
 		//RESTORANTS
 		//TODO: dodati id pri svakom novom pravljenju
-		post("rest/restaurant", (req, res) -> {
+		post("rest/restaurants", (req, res) -> {
 			res.type("application/json");
 			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
 			return g.toJson(restaurantService.saveRestaurant(restaurant));
 		});
 				
 		get("rest/restaurants", (req, res) -> {
+			res.type("application/json");
 			return g.toJson(restaurantService.getAllRestaurants());
 		});
 				
@@ -211,6 +213,7 @@ public class SparkAppMain {
 		
 		//COMMENTS
 		get("rest/comments", (req, res) -> {
+			res.type("application/json");
 			return g.toJson(commentService.getAllComments());
 		});
 				

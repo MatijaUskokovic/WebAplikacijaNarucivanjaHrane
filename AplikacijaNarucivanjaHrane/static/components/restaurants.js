@@ -1,16 +1,20 @@
 Vue.component("restaurants", {
 	data: function () {
 		    return {
-		      polje: ". Primer polja"
+		    	allRestaurants : {},
+		    	ispis : "ovde dolaze restorani"
 		    }
 	},
 	template: ` 
 <div>
-	<p>Ovde će biti prikaz restorana {{polje}}.</p>
+<h3>{{ispis}}</h3>
 </div>		  
 `
 	, 
 	mounted () {
-		
-    }
+	
+    },
+	methods:{
+	
+	}
 });
