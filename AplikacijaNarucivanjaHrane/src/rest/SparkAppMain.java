@@ -13,6 +13,7 @@ import java.util.Date;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import beans.Comment;
 import beans.Customer;
 import beans.Deliverer;
 import beans.Item;
@@ -20,6 +21,7 @@ import beans.Manager;
 import beans.Restaurant;
 import beans.User;
 import gsonAdapters.DateAdapter;
+import services.CommentService;
 import services.ItemService;
 import services.RestaurantService;
 import services.UserService;
@@ -33,6 +35,7 @@ public class SparkAppMain {
 	private static UserService userService = new UserService();
 	private static ItemService itemService = new ItemService();
 	private static RestaurantService restaurantService = new RestaurantService();
+	private static CommentService commentService = new CommentService();
 	
 	public static void main(String[] args) throws Exception {
 		port(8080);
@@ -204,6 +207,17 @@ public class SparkAppMain {
 			Restaurant newRestaurant = g.fromJson(req.body(), Restaurant.class);
 			String id = newRestaurant.getId();
 			return g.toJson(restaurantService.changeRestaurant(id, newRestaurant));
+		});
+		
+		//COMMENTS
+		get("rest/comments", (req, res) -> {
+			return g.toJson(commentService.getAllComments());
+		});
+				
+		post("rest/comments", (req, res) -> {
+			res.type("application/json");
+			Comment comment = g.fromJson(req.body(), Comment.class);
+			return g.toJson(commentService.saveComment(comment));
 		});
 	}
 }

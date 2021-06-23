@@ -1,0 +1,4 @@
+123123123;111;Restoran je dobar i hrana je dobra;5
+123123123;111;Dostava je spora;3
+123123123;111;Porcije su ogromne!!;5
+123123123;111;Ok je restoran;3
