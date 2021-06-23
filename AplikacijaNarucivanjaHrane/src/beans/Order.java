@@ -1,25 +1,28 @@
 package beans;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Order {
-	private String id;
+	private String id;	// logika za dodeljivanje id-a od 10 karaktera se nalazi u "OrderFileRepository"
+	private boolean deleted;
 	private ArrayList<Item> orderedItems;
 	private Restaurant restaurantOfOrder;
-	private LocalDate dateOfOrder;
+	private Date dateOfOrder;
 	private double price;
 	private Customer customer;
 	private OrderStatus status;
 	
 	public Order() {
 		orderedItems = new ArrayList<Item>();
+		this.deleted = false;
 	}
 
-	public Order(String id, ArrayList<Item> orderedItems, Restaurant restaurantOfOrder, LocalDate dateOfOrder,
+	public Order(String id, boolean deleted, ArrayList<Item> orderedItems, Restaurant restaurantOfOrder, Date dateOfOrder,
 			double price, Customer customer, OrderStatus status) {
 		super();
 		this.id = id;
+		this.deleted = deleted;
 		this.orderedItems = orderedItems;
 		this.restaurantOfOrder = restaurantOfOrder;
 		this.dateOfOrder = dateOfOrder;
@@ -52,11 +55,11 @@ public class Order {
 		this.restaurantOfOrder = restaurantOfOrder;
 	}
 
-	public LocalDate getDateOfOrder() {
+	public Date getDateOfOrder() {
 		return dateOfOrder;
 	}
 
-	public void setDateOfOrder(LocalDate dateOfOrder) {
+	public void setDateOfOrder(Date dateOfOrder) {
 		this.dateOfOrder = dateOfOrder;
 	}
 
@@ -82,5 +85,13 @@ public class Order {
 
 	public void setStatus(OrderStatus status) {
 		this.status = status;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 }

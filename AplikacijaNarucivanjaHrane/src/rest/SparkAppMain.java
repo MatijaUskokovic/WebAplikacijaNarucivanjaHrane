@@ -1,10 +1,10 @@
 package rest;
 
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.put;
-import static spark.Spark.delete;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
@@ -18,11 +18,13 @@ import beans.Customer;
 import beans.Deliverer;
 import beans.Item;
 import beans.Manager;
+import beans.Order;
 import beans.Restaurant;
 import beans.User;
 import gsonAdapters.DateAdapter;
 import services.CommentService;
 import services.ItemService;
+import services.OrderService;
 import services.RestaurantService;
 import services.UserService;
 import spark.Session;
@@ -36,6 +38,7 @@ public class SparkAppMain {
 	private static ItemService itemService = new ItemService();
 	private static RestaurantService restaurantService = new RestaurantService();
 	private static CommentService commentService = new CommentService();
+	private static OrderService orderService = new OrderService();
 	
 	public static void main(String[] args) throws Exception {
 		port(8080);
@@ -221,6 +224,33 @@ public class SparkAppMain {
 			res.type("application/json");
 			Comment comment = g.fromJson(req.body(), Comment.class);
 			return g.toJson(commentService.saveComment(comment));
+		});
+		
+		// PORUDZBINE
+		// nova
+		post("rest/orders", (req, res) -> {
+			res.type("application/json");
+			Order newOrder = g.fromJson(req.body(), Order.class);
+			Order addedOrder = orderService.addOrder(newOrder);
+			if (addedOrder == null) {
+				return null;
+			}
+			return g.toJson(addedOrder);
+		});
+		
+		// izmena
+		put("rest/orders/:id", (req,res) -> {
+			res.type("application/json");
+			Order order = g.fromJson(req.body(), Order.class);
+			return g.toJson(orderService.changeOrder(order));
+		});
+		
+		// brisanje
+		delete("rest/orders/:id", (req, res) -> {
+			res.type("application/json");
+			Order order = g.fromJson(req.body(), Order.class);
+			orderService.deleteOrder(order.getId());
+			return "SUCCESS";
 		});
 	}
 }

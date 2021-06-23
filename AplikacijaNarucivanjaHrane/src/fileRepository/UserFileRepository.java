@@ -48,7 +48,7 @@ public class UserFileRepository {
 		return users.get(username);
 	}
 	
-	//**********	Ne radi se ponovno ucitavanje podataka jer se ovo uvek poziva odmah nakog getUser//
+	//**********Ne radi se ponovno ucitavanje podataka jer se ovo uvek poziva odmah nakog getUser//
 	public Customer getCustomer(String username) {
 		return customers.get(username);
 	}
