@@ -42,3 +42,10 @@ var app = new Vue({
         }
     }
 });
+
+function fixDate(users) {
+	for (var u of users) {
+		u.dateOfBirth = new Date(parseInt(u.dateOfBirth));
+	}
+	return users;
+}
