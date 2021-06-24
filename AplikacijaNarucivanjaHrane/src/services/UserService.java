@@ -15,8 +15,28 @@ public class UserService {
 		
 	}
 	
-	public Iterable<User> getAllUsers(){
+	public Iterable<Object> getAllUsers(){
 		return userRepository.getUsers();
+	}
+	
+	public Object getUserByUsername(String username) {
+		User user = userRepository.getUser(username);
+		if (user == null) {
+			return null;
+		}
+		if (user.getRole() == UserRole.Kupac) {
+			return userRepository.getCustomer(username);
+		}
+		if (user.getRole() == UserRole.Menadzer) {
+			return userRepository.getManager(username);
+		}
+		if (user.getRole() == UserRole.Dostavljac) {
+			return userRepository.getDeliverer(username);
+		}
+		if (user.getRole() == UserRole.Administrator) {
+			return userRepository.getAdministrator(username);
+		}
+		return user;
 	}
 	
 	public Object findUser(String username, String password) {

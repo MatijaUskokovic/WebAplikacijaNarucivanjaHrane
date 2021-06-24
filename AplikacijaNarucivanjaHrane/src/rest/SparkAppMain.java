@@ -55,6 +55,13 @@ public class SparkAppMain {
 			return g.toJson(userService.getAllUsers());
 		});
 		
+		// DOPAVLJANJE ODREDJENOG KORISNIKA
+		get("rest/users/:username", (req, res) -> {
+			res.type("application/json");
+			String username = req.params("username");
+			return g.toJson(userService.getUserByUsername(username));
+		});
+		
 		// REGISTRACIJA KORISNIKA
 		post("rest/customers", (req, res) -> {
 			res.type("application/json");
@@ -126,8 +133,7 @@ public class SparkAppMain {
 		post("rest/login", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
-			String loginParameters = req.body();
-			User userToLogIn = g.fromJson(loginParameters, User.class);
+			User userToLogIn = g.fromJson(req.body(), User.class);
 			String username = userToLogIn.getUsername();
 			String password = userToLogIn.getPassword();
 			Object user = userService.findUser(username, password);			
