@@ -1,5 +1,6 @@
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -41,5 +42,24 @@ public class ItemService {
 	public Item changeItem(String id, Item newItem) {
 		newItem.setDeleted(false);
 		return ifr.changeItem(id, newItem);
+	}
+	
+	public ArrayList<Item> getAllItemsOfRestaurant(String restaurantId){
+		ArrayList<Item> items = new ArrayList<Item>();
+		
+		for(Item item : this.getAllItems()) {
+			if(item.getRestaurant().getId().equals(restaurantId))
+				items.add(item);
+		}
+		
+		return items;
+	}
+	
+	public boolean isNameOfItemFree(Item item) {
+		for(Item i : this.getAllItemsOfRestaurant(item.getRestaurant().getId())) {
+			if(i.getName().equals(item.getName()) && !i.getId().equals(item.getId()))
+				return false;
+		}
+		return true;
 	}
 }

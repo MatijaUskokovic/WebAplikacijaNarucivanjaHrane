@@ -1,10 +1,8 @@
 package fileRepository;
 
-import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,14 +10,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.ImageIcon;
-
 import beans.Item;
 import beans.Location;
 import beans.Restaurant;
 import beans.RestaurantStatus;
 import beans.RestaurantType;
-import services.ItemService;
 
 /**
  * Klasa koja vrsi manipulaciju rada sa datotekom restaurants.txt <br>
@@ -163,27 +158,9 @@ public class RestaurantFileRepository {
 		Location location = new Location(Double.parseDouble(lineItems[5]), Double.parseDouble(lineItems[6]),
 				lineItems[7]);
 		//Image logo = this.getImageFromString(lineItems[8]);
-		ArrayList<Item> items = addAllItemsInRestaurant(id);
-		
+		ArrayList<Item> items = new ArrayList<Item>();
 		return new Restaurant(id, deleted, name, type, items, status, location, null);
 	}
-	
-	private ArrayList<Item> addAllItemsInRestaurant(String restaurantId){
-		ItemService is = new ItemService();
-		
-		ArrayList<Item> items = new ArrayList<Item>();
-		for(Item item : is.getAllItems()) {
-			if(restaurantId.equals(item.getRestaurant().getId()))
-				items.add(item);
-		}
-		
-		return items;
-	}
-
-//	private Image getImageFromString(String imagePath) {
-//		ImageIcon icon = new ImageIcon(imagePath);
-//		return icon.getImage();
-//	}
 
 	private RestaurantType getRestaurantTypeFromString(String type) {
 		if (type.equals("Italijanski"))

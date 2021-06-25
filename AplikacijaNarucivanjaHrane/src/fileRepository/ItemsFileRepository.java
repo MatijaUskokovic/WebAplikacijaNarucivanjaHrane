@@ -1,6 +1,5 @@
 package fileRepository;
 
-import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,8 +9,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.swing.ImageIcon;
 
 import beans.Item;
 import beans.ItemType;
@@ -86,7 +83,7 @@ public class ItemsFileRepository {
 		
 		writeAllItemsInFile(items);
 		
-		return null;
+		return itemForDeleting;
 	}
 	
 	public Item changeItem(String id, Item newItem) {
@@ -170,8 +167,4 @@ public class ItemsFileRepository {
 			return ItemType.pice;
 	}
 
-//	private Image getImageFromString(String imagePath) {
-//		ImageIcon icon = new ImageIcon(imagePath);
-//		return icon.getImage();
-//	}
 }

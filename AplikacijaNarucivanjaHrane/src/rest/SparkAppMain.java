@@ -33,35 +33,35 @@ public class SparkAppMain {
 
 	private static DateAdapter dateAdapter = new DateAdapter();
 	private static Gson g = new GsonBuilder().registerTypeAdapter(Date.class, dateAdapter).create();
-	
+
 	private static UserService userService = new UserService();
 	private static ItemService itemService = new ItemService();
 	private static RestaurantService restaurantService = new RestaurantService();
 	private static CommentService commentService = new CommentService();
 	private static OrderService orderService = new OrderService();
-	
+
 	public static void main(String[] args) throws Exception {
 		port(8080);
 
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
-		
+
 		get("rest/test", (req, res) -> {
 			return "Works";
 		});
-		
+
 		// DOBABLJANJE SVIH KORISNIKA
 		get("rest/users", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(userService.getAllUsers());
 		});
-		
+
 		// DOPAVLJANJE ODREDJENOG KORISNIKA
 		get("rest/users/:username", (req, res) -> {
 			res.type("application/json");
 			String username = req.params("username");
 			return g.toJson(userService.getUserByUsername(username));
 		});
-		
+
 		// REGISTRACIJA KORISNIKA
 		post("rest/customers", (req, res) -> {
 			res.type("application/json");
@@ -71,9 +71,9 @@ public class SparkAppMain {
 			if (customer == null) {
 				return null;
 			}
-			return g.toJson(customer);	// ovo je 1 opcija, druga je da vrati objeakt user
+			return g.toJson(customer); // ovo je 1 opcija, druga je da vrati objeakt user
 		});
-		
+
 		post("rest/managers", (req, res) -> {
 			res.type("application/json");
 			String registrationParams = req.body();
@@ -84,7 +84,7 @@ public class SparkAppMain {
 			}
 			return g.toJson(manager);
 		});
-		
+
 		post("rest/deliverers", (req, res) -> {
 			res.type("application/json");
 			String registrationParams = req.body();
@@ -95,7 +95,7 @@ public class SparkAppMain {
 			}
 			return g.toJson(deliverer);
 		});
-		
+
 		// IZMENA KORISNIKA
 		put("rest/customers/:id", (req, res) -> {
 			res.type("application/json");
@@ -104,7 +104,7 @@ public class SparkAppMain {
 			ss.attribute("user", customer);
 			return g.toJson(userService.changeCustomer(customer));
 		});
-		
+
 		put("rest/managers/:id", (req, res) -> {
 			res.type("application/json");
 			Manager manager = g.fromJson(req.body(), Manager.class);
@@ -112,15 +112,15 @@ public class SparkAppMain {
 			ss.attribute("user", manager);
 			return g.toJson(userService.changeManager(manager));
 		});
-		
+
 		put("rest/deliverers/:id", (req, res) -> {
 			res.type("application/json");
 			Deliverer deliverer = g.fromJson(req.body(), Deliverer.class);
 			Session ss = req.session();
 			ss.attribute("user", deliverer);
-			return g.toJson( userService.changeDeliverer(deliverer));
+			return g.toJson(userService.changeDeliverer(deliverer));
 		});
-		
+
 		// BRISANJE KORISNIKA
 		delete("rest/users/:id", (req, res) -> {
 			res.type("application/json");
@@ -128,110 +128,124 @@ public class SparkAppMain {
 			userService.deleteUser(user.getUsername());
 			return "SUCCESS";
 		});
-		
-		//http://localhost:8080/login
+
+		// http://localhost:8080/login
 		post("rest/login", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
 			User userToLogIn = g.fromJson(req.body(), User.class);
 			String username = userToLogIn.getUsername();
 			String password = userToLogIn.getPassword();
-			Object user = userService.findUser(username, password);			
+			Object user = userService.findUser(username, password);
 			if (user == null) {
 				return null;
-			}
-			else {
+			} else {
 				ss.attribute("user", user);
 			}
 			return g.toJson(user);
 		});
-		
+
 		get("rest/getLoggedUser", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
 			Object user = ss.attribute("user");
-			
+
 			if (user == null) {
-				return null;  
+				return null;
 			} else {
 				return g.toJson(user);
 			}
 		});
-		
+
 		get("rest/logout", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
 			User user = ss.attribute("user");
-			
+
 			if (user != null) {
 				ss.invalidate();
 			}
 			return true;
 		});
-		
-		//TODO: dodati id pri svakom novom pravljenju u  okviru servisa
-		//TODO: dodati proveru da li u okviru restorana postoji artikal sa istim imenom
+
+		// ITEMS
 		post("rest/items", (req, res) -> {
-				res.type("application/json");
-				Item item = g.fromJson(req.body(), Item.class);
-				//provera imena artikla
-				return itemService.saveItem(item);
+			res.type("application/json");
+			Item item = g.fromJson(req.body(), Item.class);
+			if (itemService.isNameOfItemFree(item)) {
+				return g.toJson(
+						restaurantService.findRestaurantById(itemService.saveItem(item).getRestaurant().getId()));
+			} else
+				return null;
 		});
-				
+
 		get("rest/items", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(itemService.getAllItems());
 		});
-				
+
 		delete("rest/items/:id", (req, res) -> {
-		    res.type("application/json");
-		    return g.toJson(itemService.deleteItem(req.params(":id")));
+			res.type("application/json");
+			String itemId = req.params(":id");
+			Item item = itemService.deleteItem(itemId);
+			return g.toJson(restaurantService.findRestaurantById(item.getRestaurant().getId()));
 		});
-				
+
 		put("rest/items", (req, res) -> {
-		    res.type("application/json");
-		    Item newItem = g.fromJson(req.body(), Item.class);
-		    String id = newItem.getId();
-		    return g.toJson(itemService.changeItem(id, newItem));
+			res.type("application/json");
+			Item newItem = g.fromJson(req.body(), Item.class);
+			String id = newItem.getId();
+
+			if (itemService.isNameOfItemFree(newItem)) {
+				return g.toJson(restaurantService
+						.findRestaurantById(itemService.changeItem(id, newItem).getRestaurant().getId()));
+			} else
+				return null;
 		});
-				
-		//RESTORANTS
-		//TODO: dodati id pri svakom novom pravljenju
+
+		// RESTORANTS
 		post("rest/restaurants", (req, res) -> {
 			res.type("application/json");
 			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
 			return g.toJson(restaurantService.saveRestaurant(restaurant));
 		});
-				
+
 		get("rest/restaurants", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(restaurantService.getAllRestaurants());
 		});
-				
-		delete("rest/restaurants/:id", (req, res) -> {
-		    res.type("application/json");
-		    return g.toJson(restaurantService.deleteRestaurant(req.params(":id")));
+
+		// DODAT ZAHTEV
+		get("rest/restaurants/:id", (req, res) -> {
+			res.type("application/json");
+			String id = req.params(":id");
+			return g.toJson(restaurantService.findRestaurantById(id));
 		});
-				
-		put("rest/restaurants", (req, res) -> {				    
+
+		delete("rest/restaurants/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(restaurantService.deleteRestaurant(req.params(":id")));
+		});
+
+		put("rest/restaurants", (req, res) -> {
 			res.type("application/json");
 			Restaurant newRestaurant = g.fromJson(req.body(), Restaurant.class);
 			String id = newRestaurant.getId();
 			return g.toJson(restaurantService.changeRestaurant(id, newRestaurant));
 		});
-		
-		//COMMENTS
+
+		// COMMENTS
 		get("rest/comments", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(commentService.getAllComments());
 		});
-				
+
 		post("rest/comments", (req, res) -> {
 			res.type("application/json");
 			Comment comment = g.fromJson(req.body(), Comment.class);
 			return g.toJson(commentService.saveComment(comment));
 		});
-		
+
 		// PORUDZBINE
 		// nova
 		post("rest/orders", (req, res) -> {
@@ -243,14 +257,14 @@ public class SparkAppMain {
 			}
 			return g.toJson(addedOrder);
 		});
-		
+
 		// izmena
-		put("rest/orders/:id", (req,res) -> {
+		put("rest/orders/:id", (req, res) -> {
 			res.type("application/json");
 			Order order = g.fromJson(req.body(), Order.class);
 			return g.toJson(orderService.changeOrder(order));
 		});
-		
+
 		// brisanje
 		delete("rest/orders/:id", (req, res) -> {
 			res.type("application/json");

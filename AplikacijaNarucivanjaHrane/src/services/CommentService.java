@@ -34,4 +34,21 @@ public class CommentService {
 				comments.add(comment);
 		return comments;
 	}
+	
+	public double getAvgGradeOfRestaurant(String id) {
+		ArrayList<Comment> comments = this.getAllCommentsOfRestaurant(id);
+		int numOfComment = 0;
+		int sumOfGrade = 0;
+		
+		if(comments.isEmpty()) {
+			return 0;
+		}
+		
+		for(Comment comment : comments) {
+			numOfComment++;
+			sumOfGrade += comment.getGrade();
+		}
+		
+		return sumOfGrade / numOfComment;
+	}
 }

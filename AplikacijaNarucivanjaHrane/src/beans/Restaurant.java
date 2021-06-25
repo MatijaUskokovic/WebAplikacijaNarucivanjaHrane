@@ -13,6 +13,7 @@ public class Restaurant {
 	private RestaurantStatus status;
 	private Location location;
 	private Image logo;
+	private double avgGrade;
 	
 	public Restaurant() {
 		items = new ArrayList<Item>();
@@ -106,5 +107,13 @@ public class Restaurant {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public double getAvgGrade() {
+		return avgGrade;
+	}
+
+	public void setAvgGrade(double avgGrade) {
+		this.avgGrade = avgGrade;
 	}
 }

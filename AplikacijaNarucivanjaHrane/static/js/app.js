@@ -3,6 +3,7 @@ const LoginAndRegistration = { template: '<loginAndRegistration></loginAndRegist
 const Profile = { template: '<profile></profile>'}
 const CreateStaff = { template: '<createStaff></createStaff>'}
 const AllUsers = {template: '<allUsers></allUsers>'}
+const RestaurantPage = {template: '<restaurantPage></restaurantPage>'}
 
 const router = new VueRouter({
 	mode: 'hash',
@@ -11,7 +12,8 @@ const router = new VueRouter({
 		{ path: '/login', name:'login', component: LoginAndRegistration},
 		{ path: '/profile', name:'profil', component: Profile},
 		{ path: '/createStaff', name:'noviZaposleni', component: CreateStaff},
-		{ path: '/allUsers', name:'sviKorisnici', component: AllUsers}
+		{ path: '/allUsers', name:'sviKorisnici', component: AllUsers},
+		{ path: '/restaurantPage', name:'stranicaRestorana', component: RestaurantPage}
 	  ]
 });
 
@@ -20,7 +22,8 @@ var app = new Vue({
 	el: '#mainView',
 	data: {
         loggedUser: {},
-        userRole: "Neulogovan"
+        userRole: "Neulogovan",
+		selectedRestaurant : {}
     },
 	mounted() {
         
@@ -39,7 +42,10 @@ var app = new Vue({
             axios
             .get('rest/logout')
             .then(response => (router.push('/')));
-        }
+        },
+		setSelectedRestaurant : function(restaurant) {
+			this.selectedRestaurant = restaurant;
+		}
     }
 });
 
