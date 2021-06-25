@@ -1,3 +1,4 @@
+e04ce7d1-54dc-4742-a418-2724a92972f4,true,beckaa,700.0,jelo,111,1500.0,Dobra,slika
 123,false,Kruska,45.0,jelo,111,120.0,Sorta viljamovka,slika
 1234,true,Pasta,250.0,jelo,111,300.0,Pasta bolonjeze :D,slika
 22d17e48-dec5-468e-8d03-04090e682fe2,false,Jabuka,50.0,jelo,111,200.0,Crvena,slika

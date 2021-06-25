@@ -10,18 +10,25 @@
 <body>
 	<div id="mainView">
 		<h2>Sajt za naručivanje hrane</h2>
-		<!-- Navigation -->	
-		<ul>
-			<li><a href="#/">Početna stranica</a></li>
-			<li v-bind:hidden="userRole!=='Administrator'"><a href="#/allUsers">Svi korisnici</a></li>
-			<li v-bind:hidden="userRole!=='Administrator'"><a href="#/createStaff">Kreiraj zaposlenog</a></li>
-
-			<li style="float: right;" v-bind:hidden="userRole==='Neulogovan'"><a class="button" v-on:click="logout()">Odjavi se</a></li>
-			<li style="float: right;" v-bind:hidden="userRole==='Neulogovan'"><a href="#/profile">Moj profil</a></li>
-			<li style="float: right;" v-bind:hidden="userRole==='Neulogovan'"><span>Dobrodošli {{loggedUser.name}}</span></li>
-			<li style="float: right;" v-bind:hidden="userRole!=='Neulogovan'"><a class="button" href="#/login">Prijava/Registracija</a></li>
-		</ul>
-		<!-- /Navigation -->
+			<!-- Navigation -->	
+			<div class="navbar">
+				<a href="#/">Početna stranica</a>
+				<a href="#/allUsers" v-bind:hidden="userRole!=='Administrator'">Svi korisnici</a>
+				<div class="dropdown">
+					<button class="dropbtn" v-bind:hidden="userRole!=='Administrator'">Kreiraj 
+						<i class="fa fa-caret-down"></i>
+					</button>
+					<div class="dropdown-content">
+						<a href="#/createStaff">Kreiraj zaposlenog</a>
+						<!--<a href="#/createRestaurant">Kreiraj restoran</a>-->
+					</div>
+				</div> 
+					<a class="button" v-on:click="logout()" style="float: right;" v-bind:hidden="userRole==='Neulogovan'">Odjavi se</a>
+					<a href="#/profile" style="float: right;" v-bind:hidden="userRole==='Neulogovan'">Moj profil</a>
+					<span style="float: right;" v-bind:hidden="userRole==='Neulogovan'">Dobrodošli {{loggedUser.name}}</span>
+					<a class="button" href="#/login" style="float: right;" v-bind:hidden="userRole!=='Neulogovan'">Prijava/Registracija</a>
+			</div>
+			<!-- /Navigation -->
 
 		<!-- Glavni prikaz koji se smenjuje -->
 		<router-view></router-view>

@@ -26,7 +26,7 @@ var app = new Vue({
 		selectedRestaurant : {}
     },
 	mounted() {
-        
+        this.getLoggedUser();
     },
     methods: {
 		getLoggedUser: function() {
