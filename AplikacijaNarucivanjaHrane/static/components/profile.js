@@ -43,6 +43,8 @@ Vue.component("profile", {
                 path = 'rest/deliverers/' + this.changedUser.id;
             } else if (this.changedUser.role === 'Menadzer'){
                 path = 'rest/managers/' + this.changedUser.id;
+            } else {
+                path = 'rest/administrators/' + this.changedUser.id;
             }
 			axios
 			.put(path, user)

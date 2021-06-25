@@ -17,10 +17,12 @@ import beans.Deliverer;
 import beans.Gender;
 import beans.Manager;
 import beans.Order;
+import beans.Restaurant;
 import beans.ShoppingCart;
 import beans.User;
 import beans.UserRole;
 import services.CustomerTypeService;
+import services.RestaurantService;
 
 /**
  * Klasa koja služi da interaguje sa trajnim skladištem za korisnike.
@@ -46,6 +48,11 @@ public class UserFileRepository {
 		users.addAll(deliverers.values());
 		users.addAll(managers.values());
 		return users;
+	}
+	
+	public Iterable<Manager> getManagers(){
+		readUsers();
+		return managers.values();
 	}
 	
 	public User getUser(String username) {
@@ -154,6 +161,12 @@ public class UserFileRepository {
 		return deliverer;
 	}
 	
+	public Administrator changeAdministrator(Administrator administrator) {
+		readUsers();
+		writeChangedUser(administrator.getId(), administratorToText(administrator));
+		return administrator;
+	}
+	
 	/*
 	 * Metoda sluzi za ucitavanje svih entiteta iz txt fajla
 	 */
@@ -197,10 +210,15 @@ public class UserFileRepository {
 				customers.put(c.getUsername(), c);
 			}
 			else if (role == UserRole.Menadzer) {
-				//String restaurantId = data[9];
+				String restaurantId = data[9];
 				Manager m = new Manager(user);
-				// TODO : KADA SE NAPRAVI BAZA ZA RESTORANE ODRADITI
-				//m.setRestaurant(null);
+				if (restaurantId.equals("-1")) {
+					m.setRestaurant(new Restaurant());
+					m.getRestaurant().setId(restaurantId);
+				} else {
+					RestaurantService rs = new RestaurantService();
+					m.setRestaurant(rs.findRestaurantById(restaurantId));
+				}
 				managers.put(m.getUsername(), m);
 			}
 			else if (role == UserRole.Dostavljac) {
@@ -315,5 +333,12 @@ public class UserFileRepository {
 			delivererString.append(";");
 		}
 		return delivererString.toString();
+	}
+	
+	private String administratorToText(Administrator administrator) {
+		return administrator.getId() + "," + administrator.isDeleted() + "," + administrator.getUsername() + "," 
+				+ administrator.getPassword() + "," + administrator.getName() + "," + administrator.getSurname() + "," 
+				+ administrator.getGender() + "," + administrator.getDateOfBirth().getTime() + "," 
+				+ administrator.getRole();
 	}
 }

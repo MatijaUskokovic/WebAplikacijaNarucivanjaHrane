@@ -42,21 +42,22 @@ Vue.component("createStaff", {
 		register : function(event) {
 			event.preventDefault();
 			this.regUser.dateOfBirth = this.regUser.dateOfBirth.getTime();
-			let user = JSON.stringify(this.regUser);
             let path = '';
             if (this.regUser.role == 'Dostavljac'){
                 path = 'rest/deliverers';
             }
             if (this.regUser.role == 'Menadzer'){
                 path = 'rest/managers';
+                this.regUser.restaurant.id = -1;
             }
+            let user = JSON.stringify(this.regUser);
 			axios.post(path, user)
 			.then(response => {
 				this.regUser = {};
                 alert('Uspešno ste registrovali novog zaposlenog')
 			})
 			.catch(function(error){
-				alert('Neuspesno registrovanje')
+				alert('Neuspešno registrovanje')
 			})
 		},
         getLoggedUser : function() {

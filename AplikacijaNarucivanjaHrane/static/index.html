@@ -6,6 +6,7 @@
 <script src="jquery.min.js"></script>
 <link rel="stylesheet" href="css/mainView.css"/>
 <link rel="stylesheet" href="css/loginAndRegistration.css"/>
+<link rel="stylesheet" href="css/entityView.css"/>
 </head>
 <body>
 	<div id="mainView">
@@ -20,7 +21,7 @@
 					</button>
 					<div class="dropdown-content">
 						<a href="#/createStaff">Kreiraj zaposlenog</a>
-						<!--<a href="#/createRestaurant">Kreiraj restoran</a>-->
+						<a href="#/createRestaurant">Kreiraj restoran</a>
 					</div>
 				</div> 
 					<a class="button" v-on:click="logout()" style="float: right;" v-bind:hidden="userRole==='Neulogovan'">Odjavi se</a>
@@ -41,11 +42,12 @@
 	<script src="js/vuejs-datepicker.min.js"></script>
 	<script src="js/moment.min.js"></script>
 	<script src="components/restaurants.js"></script>
-	<script src="components/createStuff.js"></script>
+	<script src="components/createStaff.js"></script>
 	<script src="components/allUsers.js"></script>
 	<script src="components/loginAndRegistration.js"></script>
 	<script src="components/profile.js"></script>
 	<script src="components/restaurantPage.js"></script>
+	<script src="components/createRestaurant.js"></script>
 	<script src="js/app.js"></script>
 </body>
 </html>

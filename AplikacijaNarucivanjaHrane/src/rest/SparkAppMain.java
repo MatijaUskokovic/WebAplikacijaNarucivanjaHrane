@@ -13,6 +13,7 @@ import java.util.Date;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import beans.Administrator;
 import beans.Comment;
 import beans.Customer;
 import beans.Deliverer;
@@ -53,6 +54,12 @@ public class SparkAppMain {
 		get("rest/users", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(userService.getAllUsers());
+		});
+		
+		// DOBAVLJANJE SVIH MENADZERA
+		get("rest/managers", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(userService.getAllManagers());
 		});
 
 		// DOPAVLJANJE ODREDJENOG KORISNIKA
@@ -101,7 +108,10 @@ public class SparkAppMain {
 			res.type("application/json");
 			Customer customer = g.fromJson(req.body(), Customer.class);
 			Session ss = req.session();
-			ss.attribute("user", customer);
+			Object user = ss.attribute("user");
+			if (user.getClass() == Customer.class) {
+				ss.attribute("user", customer);
+			}
 			return g.toJson(userService.changeCustomer(customer));
 		});
 
@@ -109,7 +119,10 @@ public class SparkAppMain {
 			res.type("application/json");
 			Manager manager = g.fromJson(req.body(), Manager.class);
 			Session ss = req.session();
-			ss.attribute("user", manager);
+			Object user = ss.attribute("user");
+			if (user.getClass() == Manager.class) {
+				ss.attribute("user", manager);
+			}
 			return g.toJson(userService.changeManager(manager));
 		});
 
@@ -117,8 +130,22 @@ public class SparkAppMain {
 			res.type("application/json");
 			Deliverer deliverer = g.fromJson(req.body(), Deliverer.class);
 			Session ss = req.session();
-			ss.attribute("user", deliverer);
+			Object user = ss.attribute("user");
+			if (user.getClass() == Deliverer.class) {
+				ss.attribute("user", deliverer);
+			}
 			return g.toJson(userService.changeDeliverer(deliverer));
+		});
+		
+		put("rest/administrators/:id", (req, res) -> {
+			res.type("application/json");
+			Administrator administrator = g.fromJson(req.body(), Administrator.class);
+			Session ss = req.session();
+			Object user = ss.attribute("user");
+			if (user.getClass() == Administrator.class) {
+				ss.attribute("user", administrator);
+			}
+			return g.toJson(userService.changeAdministrator(administrator));
 		});
 
 		// BRISANJE KORISNIKA

@@ -1,5 +1,6 @@
 package services;
 
+import beans.Administrator;
 import beans.Customer;
 import beans.Deliverer;
 import beans.Manager;
@@ -17,6 +18,10 @@ public class UserService {
 	
 	public Iterable<Object> getAllUsers(){
 		return userRepository.getUsers();
+	}
+	
+	public Iterable<Manager> getAllManagers(){
+		return userRepository.getManagers();
 	}
 	
 	public Object getUserByUsername(String username) {
@@ -83,6 +88,10 @@ public class UserService {
 	
 	public Deliverer changeDeliverer(Deliverer deliverer) {
 		return userRepository.changeDeliverer(deliverer);
+	}
+	
+	public Administrator changeAdministrator(Administrator administrator) {
+		return userRepository.changeAdministrator(administrator);
 	}
 	
 	// BRISANJE KORISNIKA
