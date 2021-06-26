@@ -8,6 +8,10 @@ public class ShoppingCartItem {
 	private int count;
 	private double totalPrice;
 	
+	public ShoppingCartItem() {
+		
+	}
+	
 	public ShoppingCartItem(Item item, int count) {
 		super();
 		this.item = item;

@@ -30,7 +30,7 @@ Vue.component("profile", {
 `
 	, 
 	mounted () {
-		this.changedUser = this.getLoggedUser();
+		this.getLoggedUser();
     },
 	methods: {
 		updateInfo : function(event) {
