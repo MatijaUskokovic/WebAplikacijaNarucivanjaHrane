@@ -4,5 +4,5 @@
 0aedc6a1-4cb9-402f-ac70-e593f548886a,false,eee,123,Milivoje,Mikić,muski,0704108300000,Dostavljac,
 0aedc6a1-4cb9-402f-ac70-e593f000000g,false,admin,123,Mitar,Marketar,muski,324108000000,Administrator
 97198b5b-e681-4ab0-b92f-32066b3e8589,false,jova,123,Jovica,Jović,muski,642287580000,Menadzer,-1
-a7528397-1d14-4c5d-8a49-d507f10b141e,false,mica,123,Milica,Miličić,zenski,0922569560000,Menadzer,-1
+a7528397-1d14-4c5d-8a49-d507f10b141e,false,mica,123,Milica,Miličić,zenski,0922569560000,Menadzer,111
 3a972b7e-7ca2-4e07-bdcd-0c22d1b78f7b,false,nina,123,Nina,Cekić,zenski,622579220000,Menadzer,-1

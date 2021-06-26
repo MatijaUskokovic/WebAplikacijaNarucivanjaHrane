@@ -12,19 +12,24 @@ Vue.component("restaurantPage", {
 					"restaurant": {},
 					"quantity": "",
 					"description": ""
-				}
+				},
+				//dodato
+				restaurantForChange : {}
 		    }
 	},
 	template: `
+
+	<!--MENJANO-->
+
 	<div style="margin: 10px;">
 		<div v-if="mode === 'PRETRAGA'">
 			<table >
 				<tr>
-					<td v-if="loggedUser.role === 'Menadzer'"><button @click="changeModeFromRestaurantUpdate()">Uredi restoran</button></td>
-					<td v-if="loggedUser.role === 'Menadzer'"><button @click="changeModeFromAddItem()">Dodaj proizvod</button></td>
+					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeRestaurant()">Uredi restoran</button></td>
+					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeModeFromAddItem()">Dodaj proizvod</button></td>
 				</tr>
 			</table>
-
+	
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
 
 			<div>
@@ -38,15 +43,15 @@ Vue.component("restaurantPage", {
 							<td>{{item.quantity}}</td>
 							<td>{{item.description}}</td>
 							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)">Dodaj u korpu</button></td>
-							<td v-if="loggedUser.role === 'Menadzer'"><button @click="changeItem(item)">Izmeni proizvod</button></td>
-							<td v-if="loggedUser.role === 'Menadzer'"><button @click="deleteItem(item)">Obriši proizvod</button></td>
+							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeItem(item)">Izmeni proizvod</button></td>
+							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="deleteItem(item)">Obriši proizvod</button></td>
 						</tr>
 					</table>
 				</div>
 			</div>
 		</div>
 
-		<!--IZMENA RESTORANA-->
+		<!--IZMENA RESTORANA MENJANO-->
 
 		<div v-if="mode === 'IZMENARESTORANA'">
 			<table>
@@ -57,10 +62,10 @@ Vue.component("restaurantPage", {
 
 			<form @submit="updateRestaurant">
 				<table>
-					<tr><td>Ime restorana</td><td><input type="text" v-model="restaurant.name"></td></tr>
+					<tr><td>Ime restorana</td><td><input type="text" v-model="restaurantForChange.name"></td></tr>
 					<tr>
 						<td>Tip restorana</td>
-						<td><select v-model="restaurant.type">
+						<td><select v-model="restaurantForChange.type">
 								<option value="Rostilj">Rostilj</option>
 								<option value="Kineski">Kineski</option>
 								<option value="Italijanski">Italijanski</option>
@@ -70,15 +75,15 @@ Vue.component("restaurantPage", {
 					</tr>
 					<tr>
 					<td>Status restorana</td>
-					<td><select v-model="restaurant.status">
+					<td><select v-model="restaurantForChange.status">
 							<option value="Radi">Radi</option>
 							<option value="Ne_radi">Ne radi</option>
 						</select>
 					</td>
 					</tr>
-					<tr><td>Geografska sirina</td><td><input type="number" v-model="restaurant.location.longitude"></td></tr>
-					<tr><td>Geografska duzina</td><td><input type="number" v-model="restaurant.location.latitude"></td></tr>
-					<tr><td>Adresa</td><td><input type="text" v-model="restaurant.location.adress"></td></tr>
+					<tr><td>Geografska sirina</td><td><input type="number" v-model="restaurantForChange.location.longitude"></td></tr>
+					<tr><td>Geografska duzina</td><td><input type="number" v-model="restaurantForChange.location.latitude"></td></tr>
+					<tr><td>Adresa</td><td><input type="text" v-model="restaurantForChange.location.adress"></td></tr>
 					<tr><td><input type="submit" value="Ažuriraj podatke"></td></tr>
 				</table>
 			</form>
@@ -179,20 +184,25 @@ Vue.component("restaurantPage", {
 				this.mode = "PRETRAGA";
 			}
 		},
+		//dodato
 		updateRestaurant : function(event){
 			event.preventDefault();
 
-			var restaurantForChange = JSON.stringify(this.restaurant);
-			axios
-			.put('rest/restaurants', restaurantForChange)
-			.then(response => {
-                this.restaurant = response.data;
-				alert('Uspešno ažurirani podaci');
-			})
-			.catch(function(error){
-				alert('Neuspešno ažuriranje podataka');
-			})
-
+			var changedRestaurant = JSON.stringify(this.restaurantForChange);
+			//validacija restorana
+			if(this.validateRestaurant()){
+				axios
+				.put('rest/restaurants', changedRestaurant)
+				.then(response => {
+					this.restaurant = response.data;
+					alert('Uspešno ažurirani podaci');
+				})
+				.catch(function(error){
+					alert('Neuspešno ažuriranje podataka');
+				})
+			}else{
+				alert("Molimo vas da obrišete sve zapete.")
+			}
 		},
 		changeItem : function(item){
 			this.itemForChange = 
@@ -208,42 +218,53 @@ Vue.component("restaurantPage", {
 			}
 			this.changeModeFromItemUpdate();
 		},
+		//dodato
 		addItem : function(event){
 			event.preventDefault();
 
 			this.newItem.restaurant = this.restaurant;
 
 			var addedItem = JSON.stringify(this.newItem);
+			// validacija itema
+			if(this.validateItem(this.newItem)){
+				axios.post('rest/items',addedItem)
+				.then(res => {
+					this.restaurant = res.data;
 
-			axios.post('rest/items',addedItem)
-			.then(res => {
-				this.restaurant = res.data;
+					this.newItem.name = "";
+					this.newItem.price = 0;
+					this.newItem.type = "";
+					this.newItem.quantity = 0;
+					this.newItem.description = "";
 
-				this.newItem.name = "";
-				this.newItem.price = 0;
-				this.newItem.type = "";
-				this.newItem.quantity = 0;
-				this.newItem.description = "";
-
-				alert("Proizvod uspešno kreiran");
-			})
-			.catch(err => {
-				alert("Greska prilikom kreiranja proizvoda");
-			})
-		}, 
+					alert("Proizvod uspešno kreiran");
+				})
+				.catch(err => {
+					alert("Greska prilikom kreiranja proizvoda");
+				})
+			}else{
+				alert("Molimo vas da obrišete sve zapete.");
+			}
+		},
+		//dodato 
 		updateItem : function(event){
 			event.preventDefault();
 			
 			var item = JSON.stringify(this.itemForChange);
-
-			axios.put('rest/items',item)
-			.then(res => {
-				this.restaurant = res.data;
-				alert("Proizvod je uspesno izmenjen");
-			})
-			.catch(err => {
-				alert("Došlo je do greške prilikom izmene proizvoda"); 
-			})
+			//validacija itema
+			if(this.validateItem(this.itemForChange)){
+				axios.put('rest/items',item)
+				.then(res => {
+					this.restaurant = res.data;
+					this.validateChangedItem();
+					alert("Proizvod je uspesno izmenjen");
+				})
+				.catch(err => {
+					alert("Došlo je do greške prilikom izmene proizvoda"); 
+				})
+			}else{
+				alert("Molimo vas da obrišete sve zapete.")
+			}
 		},
 		deleteItem : function(item) {
 			axios.delete('rest/items/' + item.id)
@@ -252,6 +273,65 @@ Vue.component("restaurantPage", {
 			})
 			.catch(err => {
 			})
+		},
+		//dodato
+		changeRestaurant : function(){
+			this.restaurantForChange = {
+				"id": this.restaurant.id,
+				"deleted": this.restaurant.deleted,
+				"name": this.restaurant.name,
+				"type": this.restaurant.type,
+				"status": this.restaurant.status,
+				"location": this.restaurant.location
+			}
+			this.changeModeFromRestaurantUpdate();
+		},
+		validateRestaurant : function(){
+			let reg = /[,]+/;
+
+			let isValid = true;
+
+			if(this.restaurantForChange.location.adress.match(reg)){
+				isValid = false;
+				return;
+				//css
+			}
+			else{
+				//css
+				isValid = true;
+			}
+
+			if(this.restaurantForChange.name.match(reg)){
+				//css
+				isValid = false;
+				return;
+			}
+			else{
+				//css
+				isValid =  true;
+			}
+
+			return isValid;
+		},
+		validateItem : function (item){
+			let reg = /[,]+/;
+			let isValid = true;
+			// dodati u klasi item da prazan konstruktor postavlja kolicinu i opis
+			if(item.name.match(reg)){
+				isValid = false;
+				return;
+			}else{
+				isValid = true;
+			}
+
+			if(item.description.match(reg)){
+				isValid = false;
+				return;
+			}else{
+				isValid = true;
+			}
+
+			return isValid;
 		}
 	}
 });
