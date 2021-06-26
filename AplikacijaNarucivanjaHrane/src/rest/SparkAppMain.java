@@ -21,6 +21,7 @@ import beans.Item;
 import beans.Manager;
 import beans.Order;
 import beans.Restaurant;
+import beans.ShoppingCartItem;
 import beans.User;
 import gsonAdapters.DateAdapter;
 import services.CommentService;
@@ -40,6 +41,8 @@ public class SparkAppMain {
 	private static RestaurantService restaurantService = new RestaurantService();
 	private static CommentService commentService = new CommentService();
 	private static OrderService orderService = new OrderService();
+	
+	private String idOfSelectedRestaurant;
 
 	public static void main(String[] args) throws Exception {
 		port(8080);
@@ -110,6 +113,10 @@ public class SparkAppMain {
 			Session ss = req.session();
 			Object user = ss.attribute("user");
 			if (user.getClass() == Customer.class) {
+				for (ShoppingCartItem scItem : customer.getShoppingCart().getItems()) {
+					scItem.calculateTotalPrice();
+				}
+				customer.getShoppingCart().CalculateTotalPrice();
 				ss.attribute("user", customer);
 			}
 			return g.toJson(userService.changeCustomer(customer));
@@ -242,6 +249,24 @@ public class SparkAppMain {
 			return g.toJson(restaurantService.getAllRestaurants());
 		});
 
+		// dodavanje id-a selektovanog restorana na sesiju
+		post("rest/selectedRestaurant", (req, res) -> {
+			res.type("application/json");
+			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
+			restaurantService.setIdOfSelectedRestaurant(restaurant.getId());
+			return g.toJson(restaurant);
+		});
+		
+		// preuzimanje id-a selektovanog restorana sa sesije i slanje tog restorana
+		get("rest/selectedRestaurant", (req, res) -> {
+			res.type("application/json");
+			String id = restaurantService.getIdOfSelectedRestaurant();
+			if (id == null) {
+				return null;
+			}
+			return g.toJson(restaurantService.findRestaurantById(id));
+		});
+		
 		// DODAT ZAHTEV
 		get("rest/restaurants/:id", (req, res) -> {
 			res.type("application/json");

@@ -26,8 +26,7 @@ var app = new Vue({
 	el: '#mainView',
 	data: {
         loggedUser: {},
-        userRole: "Neulogovan",
-		selectedRestaurant : {}
+        userRole: "Neulogovan"
     },
 	mounted() {
         this.getLoggedUser();
@@ -46,10 +45,7 @@ var app = new Vue({
             axios
             .get('rest/logout')
             .then(response => (router.push('/')));
-        },
-		setSelectedRestaurant : function(restaurant) {
-			this.selectedRestaurant = restaurant;
-		}
+        }
     }
 });
 

@@ -36,7 +36,7 @@ public class ShoppingCart {
 		return totalPrice;
 	}
 
-	private void CalculateTotalPrice() {
+	public void CalculateTotalPrice() {
 		double total = 0;
 		for (ShoppingCartItem item : items) {
 			total += item.getTotalPrice();

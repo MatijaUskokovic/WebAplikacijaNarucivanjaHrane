@@ -26,11 +26,11 @@ Vue.component("shoppingCart", {
     <b v-bind:hidden="customer.shoppingCart.items.length != 0">Vaša korpa je trenutno prazna</b>
     
     <hr/>
-    <div v-bind:hidden="customer.shoppingCart.items.length != 0">
+    <div v-bind:hidden="customer.shoppingCart.items.length == 0">
         <table>
         <tr>
             <td>UKUPNO:</td>
-            <td>{{customer.shoppingCart.totalPrice}}</td>
+            <td>{{customer.shoppingCart.totalPrice}} din</td>
         </tr>
         </table>
     </div>

@@ -9,7 +9,8 @@ public class ShoppingCartItem {
 	private double totalPrice;
 	
 	public ShoppingCartItem() {
-		
+		this.count = 0;
+		this.totalPrice = 0;
 	}
 	
 	public ShoppingCartItem(Item item, int count) {
@@ -19,7 +20,7 @@ public class ShoppingCartItem {
 		calculateTotalPrice();
 	}
 	
-	private void calculateTotalPrice() {
+	public void calculateTotalPrice() {
 		this.totalPrice = this.item.getPrice() * this.count;
 	}
 	

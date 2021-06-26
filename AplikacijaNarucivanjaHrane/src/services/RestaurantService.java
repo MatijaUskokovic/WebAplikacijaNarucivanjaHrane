@@ -9,7 +9,16 @@ public class RestaurantService {
 	private static RestaurantFileRepository rfr = new RestaurantFileRepository();
 	private static CommentService commentService = new CommentService();
 	private static ItemService itemService = new ItemService();
+	private String idOfSelectedRestaurant = null;
 	
+	public String getIdOfSelectedRestaurant() {
+		return idOfSelectedRestaurant;
+	}
+
+	public void setIdOfSelectedRestaurant(String idOfSelectedRestaurant) {
+		this.idOfSelectedRestaurant = idOfSelectedRestaurant;
+	}
+
 	public RestaurantService() {
 	}
 	

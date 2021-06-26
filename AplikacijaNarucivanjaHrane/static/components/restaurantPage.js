@@ -1,7 +1,7 @@
 Vue.component("restaurantPage", {
 	data: function () {
 		    return {
-		    	restaurant : {},
+		    	restaurant : {items: []},
 				loggedUser : {},
 				mode : 'PRETRAGA',
 				itemForChange : {},
@@ -13,7 +13,7 @@ Vue.component("restaurantPage", {
 					"quantity": "",
 					"description": ""
 				},
-				//dodato
+				
 				restaurantForChange : {}
 		    }
 	},
@@ -33,7 +33,7 @@ Vue.component("restaurantPage", {
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
 
 			<div>
-				<div style="max-width: 50%; margin: 10px;">
+				<div>
 					<table border="1px">
 						<th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
 						<tr v-for="item in restaurant.items">
@@ -42,6 +42,7 @@ Vue.component("restaurantPage", {
 							<td>{{item.type}}</td>
 							<td>{{item.quantity}}</td>
 							<td>{{item.description}}</td>
+							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count"></td>
 							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)">Dodaj u korpu</button></td>
 							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeItem(item)">Izmeni proizvod</button></td>
 							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="deleteItem(item)">Obriši proizvod</button></td>
@@ -150,15 +151,23 @@ Vue.component("restaurantPage", {
 `
 	, 
 	mounted () {
-		this.restaurant = app.selectedRestaurant;
-		this.loggedUser = app.loggedUser;
+		this.getSelectedRestaurant();
+		this.addCountAttributeForItems();	// dodavanje polja za broj artikala u listi artikala restorana
+		this.getLoggedUser();
     },
 	methods:{
+		getLoggedUser : function() {
+			axios
+			.get('rest/getLoggedUser')
+			.then(response => {
+				this.loggedUser = response.data;
+			})
+		},
 		getSelectedRestaurant : function() {
 			axios
-			.get('rest/restaurants/' + app.selectedRestaurant.id)
+			.get('rest/selectedRestaurant')
 			.then(res => {
-				app.setSelectedRestaurant(res.data);
+				this.restaurant = res.data;
 			})
 		}, 
 		changeModeFromRestaurantUpdate : function(){
@@ -180,11 +189,10 @@ Vue.component("restaurantPage", {
 				this.mode = "DODAVANJEPROIZVODA";
 			}else{
 				//DOBAVLJANJE NAJNOVIJIH PODATAKA ZA SELEKTOVANI RESTORAN
-				this.getSelectedRestaurant();
+				//this.getSelectedRestaurant();
 				this.mode = "PRETRAGA";
 			}
 		},
-		//dodato
 		updateRestaurant : function(event){
 			event.preventDefault();
 
@@ -218,7 +226,6 @@ Vue.component("restaurantPage", {
 			}
 			this.changeModeFromItemUpdate();
 		},
-		//dodato
 		addItem : function(event){
 			event.preventDefault();
 
@@ -246,7 +253,6 @@ Vue.component("restaurantPage", {
 				alert("Molimo vas da obrišete sve zapete.");
 			}
 		},
-		//dodato 
 		updateItem : function(event){
 			event.preventDefault();
 			
@@ -274,7 +280,6 @@ Vue.component("restaurantPage", {
 			.catch(err => {
 			})
 		},
-		//dodato
 		changeRestaurant : function(){
 			this.restaurantForChange = {
 				"id": this.restaurant.id,
@@ -285,6 +290,11 @@ Vue.component("restaurantPage", {
 				"location": this.restaurant.location
 			}
 			this.changeModeFromRestaurantUpdate();
+		},
+		addCountAttributeForItems : function() {
+			for (item of this.restaurant.items){
+				item.count = 1;
+			}
 		},
 		validateRestaurant : function(){
 			let reg = /[,]+/;
@@ -332,6 +342,33 @@ Vue.component("restaurantPage", {
 			}
 
 			return isValid;
+		},
+		// DODAVANJE PROIZVODA U KORPU
+		addItemInCart : function(item){
+			let count = item.count;
+			delete item.count;
+			if (isNaN(count) || count == ''){
+				alert('Pogrešno uneta količina proizvoda');
+				return;
+			}
+			let contain = false;
+			for (scitem of this.loggedUser.shoppingCart.items){
+				if (scitem.item.name == item.name){
+					scitem.count = Number(scitem.count) + Number(count);
+					contain = true;
+				}
+			}
+			if (!contain){
+				this.loggedUser.shoppingCart.items.push({item: item, count: count});
+			}
+			axios
+			.put('rest/customers/' + this.loggedUser.id, this.loggedUser)
+			.then(response => {
+				alert('Uspešno dodat artikal')
+			})
+			.catch(function(error){
+				alert('Neuspešno dodat artikal')
+			})
 		}
 	}
 });

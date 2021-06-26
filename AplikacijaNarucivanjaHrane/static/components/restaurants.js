@@ -143,8 +143,9 @@ Vue.component("restaurants", {
 			})
 		},
 		openRestaurantPage : function (restaurant) {
-			app.setSelectedRestaurant(restaurant);
-			router.push('/restaurantPage');
+			axios
+			.post('rest/selectedRestaurant', restaurant)
+			.then(response => router.push('/restaurantPage'));
 		},
         search : function(event){
             event.preventDefault();
