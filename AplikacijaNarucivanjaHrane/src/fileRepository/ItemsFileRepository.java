@@ -13,6 +13,7 @@ import java.util.HashMap;
 import beans.Item;
 import beans.ItemType;
 import beans.Restaurant;
+import services.RestaurantService;
 
 /**
  * Klasa koja vrsi manipulaciju rada sa datotekom restaurants.txt <br>
@@ -151,8 +152,8 @@ public class ItemsFileRepository {
 		String name = lineItems[2];
 		double price = Double.parseDouble(lineItems[3]);
 		ItemType type = this.getItemTypeFromString(lineItems[4]);
-		Restaurant restaurant = new Restaurant();
-		restaurant.setId(lineItems[5]);
+		RestaurantService rs = new RestaurantService();
+		Restaurant restaurant = rs.getRestaurantWithoutItems(lineItems[5]);
 		double quantity = Double.parseDouble(lineItems[6]);
 		String description = lineItems[7];
 		//Image image = this.getImageFromString(lineItems[8]);

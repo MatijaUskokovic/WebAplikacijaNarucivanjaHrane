@@ -81,7 +81,7 @@ public class CommentFileRepositroy {
 	private Comment makeCommentFromLine(String line) {
 		String[] lineItems = line.split(";");
 		Customer customer = new Customer();
-		Restaurant restaurant = restaurantService.findRestaurantById(lineItems[1]);
+		Restaurant restaurant = restaurantService.getRestaurantWithoutItemsAndGrade(lineItems[1]);
 
 		customer.setId(lineItems[0]);
 

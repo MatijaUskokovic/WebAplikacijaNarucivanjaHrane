@@ -6,7 +6,7 @@ import java.util.Date;
 public class Order {
 	private String id;	// logika za dodeljivanje id-a od 10 karaktera se nalazi u "OrderFileRepository"
 	private boolean deleted;
-	private ArrayList<Item> orderedItems;
+	private ArrayList<ShoppingCartItem> orderedItems;
 	private Restaurant restaurantOfOrder;
 	private Date dateOfOrder;
 	private double price;
@@ -14,11 +14,11 @@ public class Order {
 	private OrderStatus status;
 	
 	public Order() {
-		orderedItems = new ArrayList<Item>();
+		orderedItems = new ArrayList<ShoppingCartItem>();
 		this.deleted = false;
 	}
 
-	public Order(String id, boolean deleted, ArrayList<Item> orderedItems, Restaurant restaurantOfOrder, Date dateOfOrder,
+	public Order(String id, boolean deleted, ArrayList<ShoppingCartItem> orderedItems, Restaurant restaurantOfOrder, Date dateOfOrder,
 			double price, Customer customer, OrderStatus status) {
 		super();
 		this.id = id;
@@ -39,11 +39,11 @@ public class Order {
 		this.id = id;
 	}
 
-	public ArrayList<Item> getOrderedItems() {
+	public ArrayList<ShoppingCartItem> getOrderedItems() {
 		return orderedItems;
 	}
 
-	public void setOrderedItems(ArrayList<Item> orderedItems) {
+	public void setOrderedItems(ArrayList<ShoppingCartItem> orderedItems) {
 		this.orderedItems = orderedItems;
 	}
 

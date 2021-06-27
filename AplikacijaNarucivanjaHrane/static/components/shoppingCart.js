@@ -2,7 +2,8 @@ Vue.component("shoppingCart", {
 	data: function () {
 		    return {
 			  customer: {shoppingCart: {items: []}},
-              count: 0
+              count: 0,
+              restaurant: {}
 		    }
 	},
 	template: ` 
@@ -35,6 +36,9 @@ Vue.component("shoppingCart", {
             <td>UKUPNO:</td>
             <td>{{customer.shoppingCart.totalPrice}} din</td>
         </tr>
+        <tr>
+            <button @click="createOrder()">Poruči</button>
+        </tr>
         </table>
     </div>
 </div>
@@ -50,6 +54,11 @@ Vue.component("shoppingCart", {
 			.then(response => {
                 if (response.data.role == "Kupac"){
                     this.customer = response.data;
+                    // dobavljanje restorana
+                    for (let scItem of this.customer.shoppingCart.items){
+                        this.restaurant = scItem.item.restaurant;
+                        break;
+                    }
                 } else {
                     router.push('/')
                 }
@@ -87,6 +96,27 @@ Vue.component("shoppingCart", {
 			.catch(function(error){
 				alert('Neuspešna izmena korpe')
 			})
+        },
+        createOrder : function() {
+            let date = new Date();
+            let order = {
+                orderedItems : this.customer.shoppingCart.items,
+                restaurantOfOrder: this.restaurant,
+                dateOfOrder: date.getTime(),
+                price: this.customer.shoppingCart.totalPrice,
+                customer: this.customer,
+                status: 'U_pripremi'
+            };
+            let jsonOrder = JSON.stringify(order);
+            axios
+            .post('rest/orders', jsonOrder)
+            .then(response => {
+                this.customer.shoppingCart = {items: []};
+                alert("Uspešno kreirana porudžbina")
+            })
+            .catch(function(error) {
+                alert("Neuspešno kreiranje porudžbine")
+            })
         }
 	}
 });

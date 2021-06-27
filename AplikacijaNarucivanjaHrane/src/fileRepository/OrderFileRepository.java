@@ -52,6 +52,7 @@ public class OrderFileRepository {
 	 */
 	public Order addOrder(Order order) {
 		order.setId(assignId());
+		order.setDeleted(false);
 		if (writeOrder(g.toJson(order), true)) {
 			return order;
 		}
