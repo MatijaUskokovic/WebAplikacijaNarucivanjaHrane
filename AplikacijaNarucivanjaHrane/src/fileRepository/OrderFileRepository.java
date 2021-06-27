@@ -28,6 +28,11 @@ public class OrderFileRepository {
 		
 	}
 	
+	public Iterable<Order> getAllOrders(){
+		readOrders();
+		return orders.values();
+	}
+	
 	public Order getOrder(String id) {
 		readOrders();
 		return orders.get(id);

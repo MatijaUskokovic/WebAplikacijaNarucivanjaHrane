@@ -324,5 +324,11 @@ public class SparkAppMain {
 			orderService.deleteOrder(order.getId());
 			return "SUCCESS";
 		});
+		
+		// sve porudzbine odredjenog restorana
+		get("rest/ordersOfRestaurant/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(orderService.getOrdersOfRestaurant(req.params(":id")));
+		});
 	}
 }

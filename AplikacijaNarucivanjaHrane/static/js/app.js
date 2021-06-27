@@ -6,6 +6,7 @@ const AllUsers = {template: '<allUsers></allUsers>'}
 const RestaurantPage = {template: '<restaurantPage></restaurantPage>'}
 const CreateRestaurant = {template: '<createRestaurant></createRestaurant>'}
 const ShoppingCart = {template: '<shoppingCart></shoppingCart>'}
+const Orders = {template: '<orders></orders>'}
 
 const router = new VueRouter({
 	mode: 'hash',
@@ -17,7 +18,8 @@ const router = new VueRouter({
 		{ path: '/allUsers', name:'sviKorisnici', component: AllUsers},
 		{ path: '/restaurantPage', name:'stranicaRestorana', component: RestaurantPage},
 		{ path: '/createRestaurant', name:'noviRestoran', component: CreateRestaurant},
-		{ path: '/shoppingCart', name:'korpa', component: ShoppingCart}
+		{ path: '/shoppingCart', name:'korpa', component: ShoppingCart},
+		{ path: '/orders', name: 'porudzbine', component: Orders}
 	  ]
 });
 

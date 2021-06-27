@@ -1,5 +1,7 @@
 package services;
 
+import java.util.ArrayList;
+
 import beans.Order;
 import fileRepository.OrderFileRepository;
 
@@ -9,6 +11,18 @@ public class OrderService {
 	
 	public OrderService() {
 		
+	}
+	
+	public Iterable<Order> getOrdersOfRestaurant(String restaurantId){
+		ArrayList<Order> ordersOfRestaurant = new ArrayList<Order>();
+		
+		for (Order order : orderRepository.getAllOrders()) {
+			if (order.getRestaurantOfOrder().getId().equals(restaurantId)) {
+				ordersOfRestaurant.add(order);
+			}
+		}
+		
+		return ordersOfRestaurant;
 	}
 	
 	public Order getOrder(String id) {

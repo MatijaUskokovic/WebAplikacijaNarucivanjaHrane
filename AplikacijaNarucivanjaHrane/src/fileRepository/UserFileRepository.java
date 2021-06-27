@@ -22,6 +22,7 @@ import beans.ShoppingCart;
 import beans.User;
 import beans.UserRole;
 import services.CustomerTypeService;
+import services.OrderService;
 import services.RestaurantService;
 
 /**
@@ -200,13 +201,25 @@ public class UserFileRepository {
 			}
 			else if (role == UserRole.Kupac) {
 				int pointsCollected = Integer.parseInt(data[9]);
+				String ordersText = "";
 				Customer c = new Customer(user);
-				// TODO: KADA SE NAPRAVI BAZA ZA PORUDZBINE
-				//c.setAllOrders(new ArrayList<Order>);
+				try {
+					ordersText = data[10];
+					if (ordersText != null && ordersText != "") {
+						String[] idsOfOrders = ordersText.split(";");
+						OrderService os = new OrderService();
+						for (String orderId : idsOfOrders) {
+							c.getAllOrders().add(os.getOrder(orderId));
+						}
+					}
+				} catch(Exception e) {
+					
+				}
 				c.setShoppingCart(new ShoppingCart());
 				c.setPointsCollected(pointsCollected);
 				CustomerTypeService typeService = new CustomerTypeService();
 				c.setType(typeService.getAppropriateCustomerType(pointsCollected));
+				
 				customers.put(c.getUsername(), c);
 			}
 			else if (role == UserRole.Menadzer) {
@@ -222,8 +235,21 @@ public class UserFileRepository {
 				managers.put(m.getUsername(), m);
 			}
 			else if (role == UserRole.Dostavljac) {
+				String ordersText = "";
 				Deliverer d = new Deliverer(user);
-				// TODO : KADA SE NAPRAVI BAZA ZA ISPORUKE UCITATI KOJE ISPORUKE TREBA DA ISPORUCI
+				try {
+					ordersText = data[9];
+					if (ordersText != null && ordersText != "") {
+						String[] idsOfOrders = ordersText.split(";");
+						OrderService os = new OrderService();
+						for (String orderId : idsOfOrders) {
+							d.getOrdersToDeliver().add(os.getOrder(orderId));
+						}
+					}
+				} catch(Exception e) {
+					
+				}
+				
 				deliverers.put(d.getUsername(), d);
 			}
 		}
@@ -302,10 +328,19 @@ public class UserFileRepository {
 	 * Sve ispod metode sluze za formirane stringa od korisnika za upis u txt fajl 
 	 */
 	private String customerToText(Customer customer) {
-		return customer.getId() + "," + customer.isDeleted() + "," + customer.getUsername() + "," 
+		StringBuilder customerString = new StringBuilder("");
+		customerString.append(customer.getId() + "," + customer.isDeleted() + "," + customer.getUsername() + "," 
 				+ customer.getPassword() + "," + customer.getName() + "," + customer.getSurname() + "," 
 				+ customer.getGender() + "," + customer.getDateOfBirth().getTime() + "," 
-				+ customer.getRole() + "," + customer.getPointsCollected();
+				+ customer.getRole() + "," + customer.getPointsCollected() + ",");
+		
+		for (Order order : customer.getAllOrders()) {
+			customerString.append(order.getId());
+			customerString.append(";");
+		}
+		customerString.deleteCharAt(customerString.length() - 1);
+		
+		return customerString.toString();
 	}
 	
 	private String managerToText(Manager manager) {
@@ -332,6 +367,8 @@ public class UserFileRepository {
 			delivererString.append(o.getId());
 			delivererString.append(";");
 		}
+		delivererString.deleteCharAt(delivererString.length() - 1);
+		
 		return delivererString.toString();
 	}
 	
