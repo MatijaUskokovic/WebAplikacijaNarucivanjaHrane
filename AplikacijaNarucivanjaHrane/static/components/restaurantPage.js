@@ -365,6 +365,7 @@ Vue.component("restaurantPage", {
 			.put('rest/customers/' + this.loggedUser.id, this.loggedUser)
 			.then(response => {
 				alert('Uspešno dodat artikal')
+				item.count = count;
 			})
 			.catch(function(error){
 				alert('Neuspešno dodat artikal')
