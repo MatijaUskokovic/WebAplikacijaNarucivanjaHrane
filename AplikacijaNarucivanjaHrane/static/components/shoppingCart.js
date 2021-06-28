@@ -113,15 +113,16 @@ Vue.component("shoppingCart", {
             .then(response => {
                 this.customer.shoppingCart = {items: []};
                 alert("Uspešno kreirana porudžbina")
-                this.calculatePoints(order);
+                this.calculatePointsAndAddOrder(response.data);
             })
             .catch(function(error) {
                 alert("Neuspešno kreiranje porudžbine")
             })
         },
-        calculatePoints : function(order) {
+        calculatePointsAndAddOrder : function(order) {
             this.customer.pointsCollected = Number(this.customer.pointsCollected) + Math.round((order.price/1000) * 133);
-            var user = JSON.stringify(this.customer);
+            this.customer.allOrders.push(order);
+            let user = JSON.stringify(this.customer);
             axios
 			.put('rest/customers/' + this.customer.id, user)
 			.then(response => {

@@ -9,7 +9,7 @@ Vue.component("orders", {
 	template: ` 
 <div>
     <h3>Prikaz porudžbina</h3>
-    <div v-bind:hidden="loggedUser.role!=='Dostavljac'">
+    <div v-bind:hidden="loggedUser.role !== 'Dostavljac'">
         <table>
             <tr>
                 <td><button @click="setOrdersAwaitingDelivery()">Porudžbine koje čekaju dostavljača</button></td>
@@ -36,6 +36,8 @@ Vue.component("orders", {
             <td>{{order.price}}</td>
             <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'Obrada')"><button @click="startPreparation(order)">Pokreni pripremu</button></td>
             <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'U_pripremi')"><button @click="orderForDeliverer(order)">Spremno za dostavljača</button></td>
+            <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Obrada')"><button @click="cancelOrder(order)">Otkaži</button></td>
+            <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'Ceka_dostavljaca')"><button @click="sendRequest(order)">Pošalji zahtev</button></td>
         </tr>
     </table>
 </div>
@@ -115,6 +117,30 @@ Vue.component("orders", {
             .catch(function(error) {
                 alert("Neuspešna izmena statusa porudžbine")
             })
+        },
+        cancelOrder : function(order) {
+            this.loggedUser.pointsCollected = Number(this.loggedUser.pointsCollected) - Math.round((order.price/1000) * 133 * 4);
+            var user = JSON.stringify(this.loggedUser);
+            axios
+			.put('rest/customers/' + this.loggedUser.id, user)
+			.then(response => {
+			})
+			.catch(function(error){
+				alert('Greška prilikom skidanja bodova')
+			})
+            order.status = 'Otkazana';
+            let jsonOrder = JSON.stringify(order);
+            axios
+            .put('rest/orders/' + order.id, jsonOrder)
+            .then(response => {
+                alert("Uspešno otkazana porudžbina")
+            })
+            .catch(function(error) {
+                alert("Neuspešno otkazivanje porudžbine")
+            })
+        },
+        sendRequest : function(order) {
+            
         }
 	},
     filters: {

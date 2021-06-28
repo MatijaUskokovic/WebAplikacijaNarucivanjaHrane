@@ -41,8 +41,6 @@ public class SparkAppMain {
 	private static RestaurantService restaurantService = new RestaurantService();
 	private static CommentService commentService = new CommentService();
 	private static OrderService orderService = new OrderService();
-	
-	private String idOfSelectedRestaurant;
 
 	public static void main(String[] args) throws Exception {
 		port(8080);
@@ -182,12 +180,12 @@ public class SparkAppMain {
 		get("rest/getLoggedUser", (req, res) -> {
 			res.type("application/json");
 			Session ss = req.session(true);
-			Object user = ss.attribute("user");
-
+			User user = (User) ss.attribute("user");
 			if (user == null) {
 				return null;
 			} else {
-				return g.toJson(user);
+				Object retUser = userService.findUser(user.getUsername(), user.getPassword());
+				return g.toJson(retUser);
 			}
 		});
 
