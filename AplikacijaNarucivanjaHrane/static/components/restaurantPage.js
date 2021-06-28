@@ -11,16 +11,15 @@ Vue.component("restaurantPage", {
 					"type": "",
 					"restaurant": {},
 					"quantity": "",
-					"description": ""
+					"description": "",
+					"image": ''
 				},
 				
 				restaurantForChange : {}
 		    }
 	},
 	template: `
-
-	<!--MENJANO-->
-
+	
 	<div style="margin: 10px;">
 		<div v-if="mode === 'PRETRAGA'">
 			<table >
@@ -52,7 +51,7 @@ Vue.component("restaurantPage", {
 			</div>
 		</div>
 
-		<!--IZMENA RESTORANA MENJANO-->
+		<!--IZMENA RESTORANA-->
 
 		<div v-if="mode === 'IZMENARESTORANA'">
 			<table>
@@ -114,6 +113,9 @@ Vue.component("restaurantPage", {
 							</select>
 						</td>
 					</tr>
+					
+					<tr><td>Slika</td><td><input type="file" @change="handleFileUpload" accept="image/*"></td></tr>
+					
 					<tr><td><input type="submit" value="Kreiraj proizvod"></td></tr>
 				</table>
 			</form>
@@ -262,7 +264,6 @@ Vue.component("restaurantPage", {
 				axios.put('rest/items',item)
 				.then(res => {
 					this.restaurant = res.data;
-					this.validateChangedItem();
 					alert("Proizvod je uspesno izmenjen");
 				})
 				.catch(err => {
@@ -370,6 +371,21 @@ Vue.component("restaurantPage", {
 			.catch(function(error){
 				alert('Neuspešno dodat artikal')
 			})
+		}, 
+		handleFileUpload : function(event){
+			var file = event.target.files[0];
+			var reader = new FileReader();
+
+			reader.readAsDataURL(file);
+
+			reader.onload = () => {
+				//alert('RESULT: ' + reader.result)
+				this.newItem.image = reader.result
+				alert(this.newItem.image)
+			}
+			reader.onerror = function (error) {
+				console.log('Error: ', error)
+			}
 		}
 	}
 });

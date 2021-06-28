@@ -1,6 +1,5 @@
 package beans;
 
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -12,7 +11,7 @@ public class Restaurant {
 	private ArrayList<Item> items;
 	private RestaurantStatus status;
 	private Location location;
-	private Image logo;
+	private String logo;
 	private double avgGrade;
 	
 	public Restaurant() {
@@ -22,7 +21,7 @@ public class Restaurant {
 	}
 
 	public Restaurant(String id, boolean deleted, String name, RestaurantType type, ArrayList<Item> items,
-			RestaurantStatus status, Location location, Image logo) {
+			RestaurantStatus status, Location location, String logo) {
 		super();
 		this.setId(id);
 		this.deleted = deleted;
@@ -35,7 +34,7 @@ public class Restaurant {
 	}
 
 	public Restaurant(String name, RestaurantType type, ArrayList<Item> items, RestaurantStatus status,
-			Location location, Image logo) {
+			Location location, String logo) {
 		super();
 		this.name = name;
 		this.type = type;
@@ -85,11 +84,11 @@ public class Restaurant {
 		this.location = location;
 	}
 
-	public Image getLogo() {
+	public String getLogo() {
 		return logo;
 	}
 
-	public void setLogo(Image logo) {
+	public void setLogo(String logo) {
 		this.logo = logo;
 	}
 

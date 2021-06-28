@@ -1,6 +1,5 @@
 package beans;
 
-import java.awt.Image;
 import java.util.UUID;
 
 public class Item {
@@ -12,7 +11,7 @@ public class Item {
 	private Restaurant restaurant;
 	private double quantity;
 	private String description;
-	private Image image;
+	private String image;
 	
 	public Item() {
 		this.id = UUID.randomUUID().toString();
@@ -20,7 +19,7 @@ public class Item {
 	}
 
 	public Item(String id, boolean deleted, String name, double price, ItemType type, Restaurant restaurant,
-			double quantity, String description, Image image) {
+			double quantity, String description, String image) {
 		super();
 		this.id = id;
 		this.deleted = deleted;
@@ -34,7 +33,7 @@ public class Item {
 	}
 
 	public Item(String name, double price, ItemType type, Restaurant restaurant, double quantity, String description,
-			Image image) {
+			String image) {
 		super();
 		this.name = name;
 		this.price = price;
@@ -93,11 +92,11 @@ public class Item {
 		this.description = description;
 	}
 
-	public Image getImage() {
+	public String getImage() {
 		return image;
 	}
 
-	public void setImage(Image image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 

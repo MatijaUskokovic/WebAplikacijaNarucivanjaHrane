@@ -1,7 +1,7 @@
 Vue.component("createRestaurant", {
 	data: function () {
 		    return {
-			  newRestaurant: {location:{}},
+			  newRestaurant: {location:{}, logo:''},
               freeManagers: [],
               newManager: {},
               selectedManager: {}
@@ -33,6 +33,7 @@ Vue.component("createRestaurant", {
                 </tr>
                 <tr>
                     <td>Logo</td>
+                    <td><input type="file" @change="handleFileUpload" accept="image/*"></td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Kreiraj restoran"></td>
@@ -163,7 +164,22 @@ Vue.component("createRestaurant", {
             .catch(function(error){
                 router.push('/');
             })
-		}
+		},
+        handleFileUpload : function(event){
+			var file = event.target.files[0];
+			var reader = new FileReader();
+
+			reader.readAsDataURL(file);
+
+			reader.onload = () => {
+				//alert('RESULT: ' + reader.result)
+				this.newRestaurant.logo = reader.result
+				alert(this.newRestaurant.logo)
+			}
+			reader.onerror = function (error) {
+				console.log('Error: ', error)
+			}
+        }
 	},
 	components: {
 		vuejsDatepicker

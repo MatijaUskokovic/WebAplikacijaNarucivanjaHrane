@@ -25,7 +25,8 @@ import services.RestaurantService;
 // TODO: image je null treba ispraviti
 public class ItemsFileRepository {
 	private static String fileLocation = "files/items.txt";
-
+	private static ImageFileRepository imgfr = new ImageFileRepository();
+	
 	public ItemsFileRepository() {
 	}
 
@@ -64,7 +65,7 @@ public class ItemsFileRepository {
 		try (FileWriter f = new FileWriter(fileLocation, true);
 				BufferedWriter b = new BufferedWriter(f);
 				PrintWriter p = new PrintWriter(b);) {
-			p.println(getStringFromItem(item));
+			p.println(getStringFromItemForSaving(item));
 			return item;
 		} catch (IOException i) {
 			i.printStackTrace();
@@ -124,17 +125,26 @@ public class ItemsFileRepository {
 		ArrayList<String> itemsForWriting = new ArrayList<String>();
 		
 		for(Item item : items.values()) {
-			itemsForWriting.add(this.getStringFromItem(item));
+			itemsForWriting.add(this.getStringFromItemForDeletingAndChanging(item));
 		}
 		
 		return itemsForWriting;
 	}
 
-	private String getStringFromItem(Item item) {
+	private String getStringFromItemForSaving(Item item) {
+		String imagePath = imgfr.saveImage(item.getImage());
+		
 		return item.getId() + "," + Boolean.toString(item.isDeleted()) + "," + item.getName() + ","
 				+ Double.toString(item.getPrice()) + "," + getStringFromItemType(item) + ","
 				+ item.getRestaurant().getId() + "," + Double.toString(item.getQuantity()) + "," + item.getDescription()
-				+ "," + "slika";
+				+ "," + imagePath;
+	}
+
+	private String getStringFromItemForDeletingAndChanging(Item item) {
+		return item.getId() + "," + Boolean.toString(item.isDeleted()) + "," + item.getName() + ","
+				+ Double.toString(item.getPrice()) + "," + getStringFromItemType(item) + ","
+				+ item.getRestaurant().getId() + "," + Double.toString(item.getQuantity()) + "," + item.getDescription()
+				+ "," + item.getImage();
 	}
 
 	private String getStringFromItemType(Item item) {
@@ -156,9 +166,9 @@ public class ItemsFileRepository {
 		Restaurant restaurant = rs.getRestaurantWithoutItems(lineItems[5]);
 		double quantity = Double.parseDouble(lineItems[6]);
 		String description = lineItems[7];
-		//Image image = this.getImageFromString(lineItems[8]);
+		String image = lineItems[8];
 
-		return new Item(id, deleted, name, price, type, restaurant, quantity, description, null);
+		return new Item(id, deleted, name, price, type, restaurant, quantity, description, image);
 	}
 
 	private ItemType getItemTypeFromString(String type) {

@@ -25,9 +25,9 @@ import beans.RestaurantType;
  * @author bojan
  */
 
-//TODO: logo je null treba ispraviti
 public class RestaurantFileRepository {
 	private static String fileLocation = "files/restaurants.txt";
+	private static ImageFileRepository imgfr = new ImageFileRepository();
 
 	public RestaurantFileRepository() {
 	}
@@ -67,7 +67,7 @@ public class RestaurantFileRepository {
 		try (FileWriter f = new FileWriter(fileLocation, true);
 				BufferedWriter b = new BufferedWriter(f);
 				PrintWriter p = new PrintWriter(b);) {
-			p.println(getStringFromRestaurant(restaurant));
+			p.println(getStringFromRestaurantForSaving(restaurant));
 			return restaurant;
 		} catch (IOException i) {
 			i.printStackTrace();
@@ -130,16 +130,24 @@ public class RestaurantFileRepository {
 		ArrayList<String> restaurantsForWriting = new ArrayList<String>();
 		
 		for(Restaurant restaurant : restaurants.values()) {
-			restaurantsForWriting.add(this.getStringFromRestaurant(restaurant));
+			restaurantsForWriting.add(this.getStringFromRestaurantForDeletingAndChanging(restaurant));
 		}
 		
 		return restaurantsForWriting;
 	}
 	
-	private String getStringFromRestaurant(Restaurant restaurant) {
+	private String getStringFromRestaurantForSaving(Restaurant restaurant) {
+		String logo = imgfr.saveImage(restaurant.getLogo());
+		
 		return restaurant.getId() + "," + Boolean.toString(restaurant.isDeleted()) + "," + restaurant.getName() + ","
 				+ restaurant.getType().toString() + "," + restaurant.getStatus().toString() + ","
-				+ getStringFromLocation(restaurant.getLocation()) + "," + "logo";
+				+ getStringFromLocation(restaurant.getLocation()) + "," + logo;
+	}
+	
+	private String getStringFromRestaurantForDeletingAndChanging(Restaurant restaurant) {
+		return restaurant.getId() + "," + Boolean.toString(restaurant.isDeleted()) + "," + restaurant.getName() + ","
+				+ restaurant.getType().toString() + "," + restaurant.getStatus().toString() + ","
+				+ getStringFromLocation(restaurant.getLocation()) + "," + restaurant.getLogo();
 	}
 
 	private String getStringFromLocation(Location location) {
@@ -157,9 +165,10 @@ public class RestaurantFileRepository {
 		RestaurantStatus status = this.getRestaurantStatusFromString(lineItems[4]);
 		Location location = new Location(Double.parseDouble(lineItems[5]), Double.parseDouble(lineItems[6]),
 				lineItems[7]);
-		//Image logo = this.getImageFromString(lineItems[8]);
+		String logo = lineItems[8];
 		ArrayList<Item> items = new ArrayList<Item>();
-		return new Restaurant(id, deleted, name, type, items, status, location, null);
+		
+		return new Restaurant(id, deleted, name, type, items, status, location, logo);
 	}
 
 	private RestaurantType getRestaurantTypeFromString(String type) {
