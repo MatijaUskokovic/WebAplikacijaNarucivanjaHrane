@@ -37,7 +37,8 @@ Vue.component("orders", {
             <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'Obrada')"><button @click="startPreparation(order)">Pokreni pripremu</button></td>
             <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'U_pripremi')"><button @click="orderForDeliverer(order)">Spremno za dostavljača</button></td>
             <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Obrada')"><button @click="cancelOrder(order)">Otkaži</button></td>
-            <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'Ceka_dostavljaca')"><button @click="sendRequest(order)">Pošalji zahtev</button></td>
+            <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'Ceka_dostavljaca')"><button @click="sendDeliverRequest(order)">Pošalji zahtev</button></td>
+            <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'U_transportu')"><button @click="deliverOrder(order)">Dostavljena</button></td>
         </tr>
     </table>
 </div>
@@ -139,8 +140,32 @@ Vue.component("orders", {
                 alert("Neuspešno otkazivanje porudžbine")
             })
         },
-        sendRequest : function(order) {
-            
+        sendDeliverRequest : function(order) {
+            let deliverRequest = {
+                deliverer : this.loggedUser,
+                order : order
+            };
+            let jsonDR = JSON.stringify(deliverRequest);
+            axios
+            .post('rest/deliverRequests', jsonDR)
+            .then(response => {
+                alert("Uspešno poslat zahtev za preuzimanje porudžbine")
+            })
+            .catch(function(error) {
+                alert("Neuspešno slanje zahteva")
+            })
+        },
+        deliverOrder : function(order) {
+            order.status = 'Dostavljena';
+            let jsonOrder = JSON.stringify(order);
+            axios
+            .put('rest/orders/' + order.id, jsonOrder)
+            .then(response => {
+                alert("Uspešno izmenjen status porudžbine u 'Dostavljena'")
+            })
+            .catch(function(error) {
+                alert("Neuspešna izmena statusa porudžbine")
+            })
         }
 	},
     filters: {

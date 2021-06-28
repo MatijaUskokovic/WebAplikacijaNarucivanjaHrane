@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import beans.Administrator;
 import beans.Comment;
 import beans.Customer;
+import beans.DeliverRequest;
 import beans.Deliverer;
 import beans.Item;
 import beans.Manager;
@@ -25,6 +26,7 @@ import beans.ShoppingCartItem;
 import beans.User;
 import gsonAdapters.DateAdapter;
 import services.CommentService;
+import services.DeliverRequestService;
 import services.ItemService;
 import services.OrderService;
 import services.RestaurantService;
@@ -41,6 +43,7 @@ public class SparkAppMain {
 	private static RestaurantService restaurantService = new RestaurantService();
 	private static CommentService commentService = new CommentService();
 	private static OrderService orderService = new OrderService();
+	private static DeliverRequestService deliverRequestService = new DeliverRequestService();
 
 	public static void main(String[] args) throws Exception {
 		port(8080);
@@ -333,6 +336,32 @@ public class SparkAppMain {
 		get("rest/ordersOfRestaurant/:id", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(orderService.getOrdersOfRestaurant(req.params(":id")));
+		});
+		
+		// ZAHTEVI ZA PORUDZBINE
+		// dobavljanje zahteva za odredjenog menadzera
+		get("rest/deliverRequests/:restaurantId", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(deliverRequestService.getPendingDeliverRequestsForRestaurant(req.params(":restaurantId")));
+		
+		});
+		
+		// novi
+		post("rest/deliverRequests", (req, res) -> {
+			res.type("application/json");
+			DeliverRequest newRequest = g.fromJson(req.body(), DeliverRequest.class);
+			DeliverRequest addedRequest = deliverRequestService.addDeliverRequest(newRequest);
+			if (addedRequest == null) {
+				return null;
+			}
+			return g.toJson(addedRequest);
+		});
+		
+		// izmena
+		put("rest/deliverRequests/:id", (req, res) -> {
+			res.type("application/json");
+			DeliverRequest request = g.fromJson(req.body(), DeliverRequest.class);
+			return g.toJson(deliverRequestService.changeDeliverRequest(request));
 		});
 	}
 }
