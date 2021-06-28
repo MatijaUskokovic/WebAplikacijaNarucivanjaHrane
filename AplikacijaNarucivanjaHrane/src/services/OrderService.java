@@ -13,6 +13,18 @@ public class OrderService {
 		
 	}
 	
+	public Iterable<Order> getOrdersWithSpecificStatus(String status){
+		ArrayList<Order> orders = new ArrayList<Order>();
+		
+		for (Order order : orderRepository.getAllOrders()) {
+			if(order.getStatus().toString().equals(status)) {
+				orders.add(order);
+			}
+		}
+		
+		return orders;
+	}
+	
 	public Iterable<Order> getOrdersOfRestaurant(String restaurantId){
 		ArrayList<Order> ordersOfRestaurant = new ArrayList<Order>();
 		

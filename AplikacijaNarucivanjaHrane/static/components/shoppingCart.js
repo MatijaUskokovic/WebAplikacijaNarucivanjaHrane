@@ -105,7 +105,7 @@ Vue.component("shoppingCart", {
                 dateOfOrder: date.getTime(),
                 price: this.customer.shoppingCart.totalPrice,
                 customer: this.customer,
-                status: 'U_pripremi'
+                status: 'Obrada'
             };
             let jsonOrder = JSON.stringify(order);
             axios
@@ -113,10 +113,23 @@ Vue.component("shoppingCart", {
             .then(response => {
                 this.customer.shoppingCart = {items: []};
                 alert("Uspešno kreirana porudžbina")
+                this.calculatePoints(order);
             })
             .catch(function(error) {
                 alert("Neuspešno kreiranje porudžbine")
             })
+        },
+        calculatePoints : function(order) {
+            this.customer.pointsCollected = Number(this.customer.pointsCollected) + Math.round((order.price/1000) * 133);
+            var user = JSON.stringify(this.customer);
+            axios
+			.put('rest/customers/' + this.customer.id, user)
+			.then(response => {
+                
+			})
+			.catch(function(error){
+				alert('Greška prilikom dodavanja bodova')
+			})
         }
 	}
 });

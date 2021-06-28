@@ -42,8 +42,8 @@ Vue.component("restaurantPage", {
 							<td>{{item.type}}</td>
 							<td>{{item.quantity}}</td>
 							<td>{{item.description}}</td>
-							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count"></td>
-							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)">Dodaj u korpu</button></td>
+							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count" v-bind:disabled="restaurant.status != 'Radi'"></td>
+							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)" v-bind:disabled="restaurant.status != 'Radi'">Dodaj u korpu</button></td>
 							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeItem(item)">Izmeni proizvod</button></td>
 							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="deleteItem(item)">Obriši proizvod</button></td>
 						</tr>

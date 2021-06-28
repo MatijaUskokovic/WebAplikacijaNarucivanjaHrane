@@ -325,6 +325,12 @@ public class SparkAppMain {
 			return "SUCCESS";
 		});
 		
+		// sve porudzbine odredjenog statusa
+		get("rest/orders/:status", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(orderService.getOrdersWithSpecificStatus(req.params(":status")));
+		});
+		
 		// sve porudzbine odredjenog restorana
 		get("rest/ordersOfRestaurant/:id", (req, res) -> {
 			res.type("application/json");

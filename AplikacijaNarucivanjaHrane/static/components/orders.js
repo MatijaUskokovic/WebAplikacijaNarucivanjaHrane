@@ -9,6 +9,15 @@ Vue.component("orders", {
 	template: ` 
 <div>
     <h3>Prikaz porudžbina</h3>
+    <div v-bind:hidden="loggedUser.role!=='Dostavljac'">
+        <table>
+            <tr>
+                <td><button @click="setOrdersAwaitingDelivery()">Porudžbine koje čekaju dostavljača</button></td>
+                <td><button @click="setOrdersOfDeliverer()">Porudžbine za koje ste zaduženi</button></td>
+            </tr>
+        </tale>
+    </div>
+
     <table border="1">
         <tr bgcolor="lightgray">
             <th>Šifra porudžbine</th>
@@ -25,6 +34,8 @@ Vue.component("orders", {
             <td>{{order.restaurantOfOrder.name}}</td>
             <td>{{order.restaurantOfOrder.type}}</td>
             <td>{{order.price}}</td>
+            <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'Obrada')"><button @click="startPreparation(order)">Pokreni pripremu</button></td>
+            <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'U_pripremi')"><button @click="orderForDeliverer(order)">Spremno za dostavljača</button></td>
         </tr>
     </table>
 </div>
@@ -53,7 +64,14 @@ Vue.component("orders", {
             }
             // Dostavljac ima prikaz svih porudzbina koje su u statutu "Ceka_dostavljaca" i prikaz svih za koje je on zaduzen
             else if (this.loggedUser.role == 'Dostavljac'){
-                
+                axios
+                .get('rest/orders/Ceka_dostavljaca')
+                .then(response => {
+                    // allorders ce da predstavlja sve porudzbine koje su u statusu "Ceka_dostavljaca", a u samom dostavljacu se nalaze
+                    // porudzbine za koje je on zaduzen
+                    this.allOrders = response.data;
+                    this.ordersToShow = this.allOrders; // prvo ce se prikazivati porudzbine u statusu "Ceka_dostavljaca"
+                })
             }
             // Menadzer ima prikaz svih porudzbina koje su vezane za njegov restoran
             else if(this.loggedUser.role == 'Menadzer'){
@@ -67,6 +85,36 @@ Vue.component("orders", {
                 }
                 
             }
+        },
+        setOrdersAwaitingDelivery : function() {
+            this.ordersToShow = this.allOrders;
+        },
+        setOrdersOfDeliverer : function() {
+            this.ordersToShow = this.loggedUser.ordersToDeliver;
+        },
+        startPreparation : function(order) {
+            order.status = 'U_pripremi';
+            let jsonOrder = JSON.stringify(order);
+            axios
+            .put('rest/orders/' + order.id, jsonOrder)
+            .then(response => {
+                alert("Uspešno izmenjen status porudžbine")
+            })
+            .catch(function(error) {
+                alert("Neuspešna izmena statusa porudžbine")
+            })
+        },
+        orderForDeliverer : function(order) {
+            order.status = 'Ceka_dostavljaca';
+            let jsonOrder = JSON.stringify(order);
+            axios
+            .put('rest/orders/' + order.id, jsonOrder)
+            .then(response => {
+                alert("Uspešno izmenjen status porudžbine")
+            })
+            .catch(function(error) {
+                alert("Neuspešna izmena statusa porudžbine")
+            })
         }
 	},
     filters: {
