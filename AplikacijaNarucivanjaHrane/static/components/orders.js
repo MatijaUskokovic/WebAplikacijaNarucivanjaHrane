@@ -1,13 +1,103 @@
+function compareStrings(a, b){
+    let x = a.toLowerCase();
+    let y = b.toLowerCase();
+    if (x < y) {return -1;}
+    if (x > y) {return 1;}
+    return 0;
+}
+
 Vue.component("orders", {
 	data: function () {
 		    return {
 			  loggedUser: {},
               allOrders: {},
-              ordersToShow: {}
+              ordersToShow: {},
+              sortMode: '',
+              sortParameter: '',
+              restaurantName: '',
+              fromThePrice: '',
+              toThePrice: '',
+              fromTheDate: '',
+              toTheDate: '',
+              restaurantType: '',
+              orderStatus: ''
 		    }
 	},
 	template: ` 
 <div>
+
+    <form @submit='search'>
+        <table bgcolor="lightblue">
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Pretraga</th>
+            </tr>
+            <tr>
+                <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Naziv restorana" v-model="restaurantName"></td>
+                <td><input type="number" placeholder="Od cene" v-model="fromThePrice"></td>
+                <td><input type="number" placeholder="Do cene" v-model="toThePrice"></td>
+                <td><input type="date" placeholder="Od datuma" v-model="fromTheDate"></td>
+                <td><input type="date" placeholder="Do datuma" v-model="toTheDate"></td>
+                <td><input type="submit" value="Pretraži"></td>
+            </tr>
+        </table>
+    </form>
+
+    <form @submit='filter'>
+        <table bgcolor="lightgray">
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Filtriranje</th>
+            </tr>
+            <tr>
+                <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Tip restorana" v-model="restaurantType"></td>
+                <td>
+                    <select v-model="orderStatus">
+                        <option value="">Status porudzbine</option>
+                        <option value="Obrada">Obrada</option>
+                        <option value="U_pripremi">U pripremi</option>
+                        <option value="Ceka_dostavljaca">Ceka dostavljaca</option>
+                        <option value="U_transportu">U transportu</option>
+	                    <option value="Dostavljena">Dostavljena</option>
+                        <option value="Otkazana">Otkazana</option>	
+                    </select>
+                </td>
+                <td><input type="submit" value="Filtriraj"></td>
+            </tr>
+        </table>
+    </form>
+
+    <form>
+        <table bgcolor="lightgreen">
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Sortiranje</th>
+            </tr>
+            <tr>
+                <td>
+                    <select v-model="sortMode" @change="sort">
+                        <option value="rastuce">Rastuće</option>
+                        <option value="opadajuce">Opadajuće</option>
+                    </select>
+                </td>
+                <td>...............</td>
+                <td>
+                    Kriterijum sortiranja:
+                </td>
+                <td>
+                    <select v-model="sortParameter" @change="sort">
+                        <option v-if="(loggedUser.role != 'Menadzer')" value="restaurantName">Ime restorana</option>
+                        <option value="price">Cena</option>
+                        <option value="date">Datum</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </form>
+
     <h3>Prikaz porudžbina</h3>
     <div v-bind:hidden="loggedUser.role !== 'Dostavljac'">
         <table>
@@ -166,6 +256,58 @@ Vue.component("orders", {
             .catch(function(error) {
                 alert("Neuspešna izmena statusa porudžbine")
             })
+        },
+        sort : function(){
+            if (this.sortMode == 'rastuce'){
+                if (this.sortParameter == 'restaurantName'){
+                    this.ordersToShow.sort((a, b) => compareStrings(a.restaurantOfOrder.name, b.restaurantOfOrder.name));
+                }else if (this.sortParameter == 'price'){
+                    this.ordersToShow.sort((a, b) => a.price - b.price);
+                }else if (this.sortParameter == 'date'){
+                    this.ordersToShow.sort((a,b) => new Date(a.dateOfOrder) - new Date(b.dateOfOrder));
+                }
+            }
+            else if (this.sortMode == 'opadajuce'){
+                if (this.sortParameter == 'restaurantName'){
+                    this.ordersToShow.sort((a, b) => compareStrings(b.restaurantOfOrder.name, a.restaurantOfOrder.name));
+                }else if (this.sortParameter == 'price'){
+                    this.ordersToShow.sort((a, b) => b.price - a.price);
+                }else if (this.sortParameter == 'date'){
+                    this.ordersToShow.sort((a,b) => new Date(b.dateOfOrder) - new Date(a.dateOfOrder));
+                }
+            }
+        },
+        search : function(event){
+            event.preventDefault();
+            let filteredOrders = [];
+            for (order of this.allOrders){
+                if ((order.restaurantOfOrder.name.toLowerCase().includes(this.restaurantName.toLowerCase())) &&
+                    (order.price >= this.fromThePrice || this.fromThePrice === '') && 
+                    (order.price <= this.toThePrice || this.toThePrice === '') &&
+                    (new Date(order.dateOfOrder) >= new Date(this.fromTheDate) || !this.fromTheDate) &&
+                    (new Date(order.dateOfOrder) <= new Date(this.toTheDate) || !this.toTheDate)
+                ){
+                    filteredOrders.push(order);
+                }
+            }
+
+            this.ordersToShow = filteredOrders;
+            
+        },
+        filter : function(event){
+            event.preventDefault();
+
+            let filteredOrders = [];
+            for (order of this.allOrders){
+                if ((order.restaurantOfOrder.type.toLowerCase() === this.restaurantType.toLowerCase() ||
+                        this.restaurantType === '') &&
+                    (order.status === this.orderStatus || this.orderStatus === '') 
+                ){
+                    filteredOrders.push(order);
+                }
+            }
+
+            this.ordersToShow = filteredOrders;
         }
 	},
     filters: {
