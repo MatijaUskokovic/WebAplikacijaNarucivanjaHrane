@@ -34,8 +34,9 @@ Vue.component("restaurantPage", {
 			<div>
 				<div>
 					<table border="1px">
-						<th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
+						<th>Slika</th><th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
 						<tr v-for="item in restaurant.items">
+							<td><img :src="item.image" width="100" height="100"></td>
 							<td>{{item.name}}</td>
 							<td>{{item.price}}</td>
 							<td>{{item.type}}</td>

@@ -93,8 +93,9 @@ Vue.component("restaurants", {
 						 color: black;">
 							<table>
 								<tr>
-									<td style="width: 200px;">
-										<p> Ovde ide slika </p>
+									<td style="width: 220px;">
+									<!--SLIKA-->
+										<img :src="r.logo" width="200" height="120">
 									</td>
 										<td>
 										<table>

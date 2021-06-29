@@ -1,2 +1,2 @@
-78effe2f-186e-4d7c-8a83-d9f3785da85a,false,Pljeska,200.0,jelo,111,200.0,Velika,images/0551ee3b-7deb-4a3d-96f0-6eb677dc5604.jpeg
-a42aa9d2-3f53-4f32-a951-ffb9bf570520,true,Palacinke,100.0,jelo,111,200.0,Sa kremom,images/90688591-6d25-4c30-85ab-6c8f7fe1bbbf.png
+78effe2f-186e-4d7c-8a83-d9f3785da85a,false,Pljeska,200.0,jelo,111,200.0,Velika,components/images/0551ee3b-7deb-4a3d-96f0-6eb677dc5604.jpeg
+a42aa9d2-3f53-4f32-a951-ffb9bf570520,true,Palacinke,100.0,jelo,111,200.0,Sa kremom,components/images/90688591-6d25-4c30-85ab-6c8f7fe1bbbf.png

@@ -45,7 +45,8 @@ public class ImageFileRepository {
 		
 		// write the image to a file
 		String imageName = UUID.randomUUID().toString();
-		String path = "images/" + imageName + "." + extension;
+		String path = "static/components/images/" + imageName + "." + extension;
+		String retPath = "components/images/" + imageName + "." + extension;
 		File outputfile = new File(path);
 		try {
 			ImageIO.write(image, extension, outputfile);
@@ -53,7 +54,7 @@ public class ImageFileRepository {
 			e.printStackTrace();
 		}
 		
-		return path;
+		return retPath;
 	}
 	
 }
