@@ -106,7 +106,7 @@ Vue.component("restaurantPage", {
 					<tr><td>Količina proizvoda</td><td><input type="number" v-model="newItem.quantity"></td></tr>
 					<tr><td>Opis proizvoda</td><td><input type="text" v-model="newItem.description"></td></tr>
 					<tr>
-					<td>Status restorana</td>
+					<td>Tip proizvoda</td>
 						<td>
 							<select v-model="newItem.type">
 								<option value="jelo">Jelo</option>
@@ -138,7 +138,7 @@ Vue.component("restaurantPage", {
 					<tr><td>Količina proizvoda</td><td><input type="number" v-model="itemForChange.quantity"></td></tr>
 					<tr><td>Opis proizvoda</td><td><input type="text" v-model="itemForChange.description"></td></tr>
 					<tr>
-					<td>Status restorana</td>
+					<td>Tip proizvoda</td>
 						<td>
 							<select v-model="itemForChange.type">
 								<option value="jelo">Jelo</option>
@@ -363,8 +363,9 @@ Vue.component("restaurantPage", {
 			if (!contain){
 				this.loggedUser.shoppingCart.items.push({item: item, count: count});
 			}
+			this.loggedUser.shoppingCart.customerId = this.loggedUser.id;
 			axios
-			.put('rest/customers/' + this.loggedUser.id, this.loggedUser)
+			.post('rest/shoppingCarts', this.loggedUser.shoppingCart)
 			.then(response => {
 				alert('Uspešno dodat artikal')
 				item.count = count;

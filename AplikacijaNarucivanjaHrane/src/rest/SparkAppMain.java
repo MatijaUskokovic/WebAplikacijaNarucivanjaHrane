@@ -22,6 +22,7 @@ import beans.Item;
 import beans.Manager;
 import beans.Order;
 import beans.Restaurant;
+import beans.ShoppingCart;
 import beans.ShoppingCartItem;
 import beans.User;
 import gsonAdapters.DateAdapter;
@@ -30,6 +31,7 @@ import services.DeliverRequestService;
 import services.ItemService;
 import services.OrderService;
 import services.RestaurantService;
+import services.ShoppingCartService;
 import services.UserService;
 import spark.Session;
 
@@ -44,6 +46,7 @@ public class SparkAppMain {
 	private static CommentService commentService = new CommentService();
 	private static OrderService orderService = new OrderService();
 	private static DeliverRequestService deliverRequestService = new DeliverRequestService();
+	private static ShoppingCartService shoppingCartService = new ShoppingCartService();
 
 	public static void main(String[] args) throws Exception {
 		port(8080);
@@ -250,7 +253,7 @@ public class SparkAppMain {
 			return g.toJson(restaurantService.getAllRestaurants());
 		});
 
-		// dodavanje id-a selektovanog restorana na sesiju
+		// dodavanje id-a selektovanog restorana
 		post("rest/selectedRestaurant", (req, res) -> {
 			res.type("application/json");
 			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
@@ -258,7 +261,7 @@ public class SparkAppMain {
 			return g.toJson(restaurant);
 		});
 		
-		// preuzimanje id-a selektovanog restorana sa sesije i slanje tog restorana
+		// preuzimanje id-a selektovanog restorana
 		get("rest/selectedRestaurant", (req, res) -> {
 			res.type("application/json");
 			String id = restaurantService.getIdOfSelectedRestaurant();
@@ -299,6 +302,13 @@ public class SparkAppMain {
 			return g.toJson(commentService.saveComment(comment));
 		});
 
+		// SHOPPING CART
+		post("rest/shoppingCarts", (req, res) -> {
+			res.type("application/json");
+			ShoppingCart sc = g.fromJson(req.body(), ShoppingCart.class);
+			return g.toJson(shoppingCartService.changeOrAddShoppingCart(sc));
+		});
+		
 		// PORUDZBINE
 		// nova
 		post("rest/orders", (req, res) -> {
@@ -338,7 +348,7 @@ public class SparkAppMain {
 			return g.toJson(orderService.getOrdersOfRestaurant(req.params(":id")));
 		});
 		
-		// ZAHTEVI ZA PORUDZBINE
+		// ZAHTEVI ZA PREUZIMANJE PORUDZBINE
 		// dobavljanje zahteva za odredjenog menadzera
 		get("rest/deliverRequests/:restaurantId", (req, res) -> {
 			res.type("application/json");

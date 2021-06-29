@@ -7,14 +7,14 @@ import java.util.ArrayList;
  */
 public class ShoppingCart {
 	private ArrayList<ShoppingCartItem> items;
-	private Customer customer;
+	private String customerId;
 	private double totalPrice;
 	
 	public ShoppingCart() {
 		this.items = new ArrayList<ShoppingCartItem>();
 		this.totalPrice = 0;
 	}
-	
+
 	public void addItem(Item item, int count) {
 		items.add(new ShoppingCartItem(item, count));
 		CalculateTotalPrice();
@@ -24,12 +24,17 @@ public class ShoppingCart {
 		return items;
 	}
 	
-	public Customer getCustomer() {
-		return customer;
+	public void setItems(ArrayList<ShoppingCartItem> items) {
+		this.items = items;
+		CalculateTotalPrice();
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 	public double getTotalPrice() {

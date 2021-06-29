@@ -24,6 +24,7 @@ import beans.UserRole;
 import services.CustomerTypeService;
 import services.OrderService;
 import services.RestaurantService;
+import services.ShoppingCartService;
 
 /**
  * Klasa koja služi da interaguje sa trajnim skladištem za korisnike.
@@ -215,7 +216,13 @@ public class UserFileRepository {
 				} catch(Exception e) {
 					
 				}
-				c.setShoppingCart(new ShoppingCart());
+				ShoppingCartService scService = new ShoppingCartService();
+				ShoppingCart sc = scService.getShoppingCartOfUser(id);
+				if (sc == null) {
+					sc = new ShoppingCart();
+					sc.setCustomerId(id);
+				}
+				c.setShoppingCart(sc);
 				c.setPointsCollected(pointsCollected);
 				CustomerTypeService typeService = new CustomerTypeService();
 				c.setType(typeService.getAppropriateCustomerType(pointsCollected));

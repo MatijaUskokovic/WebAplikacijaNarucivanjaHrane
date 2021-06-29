@@ -88,10 +88,11 @@ Vue.component("shoppingCart", {
             }
         },
         saveChangeOnServer : function() {
+            let jsonShoppingCart = JSON.stringify(this.customer.shoppingCart);
             axios
-			.put('rest/customers/' + this.customer.id, this.customer)
+			.post('rest/shoppingCarts', jsonShoppingCart)
 			.then(response => {
-                this.customer = response.data;
+                this.customer.shoppingCart = response.data;
 			})
 			.catch(function(error){
 				alert('Neuspešna izmena korpe')
@@ -111,9 +112,10 @@ Vue.component("shoppingCart", {
             axios
             .post('rest/orders', jsonOrder)
             .then(response => {
-                this.customer.shoppingCart = {items: []};
+                this.customer.shoppingCart = {customerId: this.customer.id, items: []};
                 alert("Uspešno kreirana porudžbina")
                 this.calculatePointsAndAddOrder(response.data);
+                this.saveChangeOnServer();
             })
             .catch(function(error) {
                 alert("Neuspešno kreiranje porudžbine")
