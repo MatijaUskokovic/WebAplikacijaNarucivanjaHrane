@@ -10,6 +10,10 @@ Vue.component("orders", {
 	data: function () {
 		    return {
 			  loggedUser: {},
+              userRates: [],
+              grade: 5,
+              text: '',
+              restaurantForGrading: '',
               allOrders: {},
               ordersToShow: {},
               sortMode: '',
@@ -32,6 +36,9 @@ Vue.component("orders", {
                 <th></th>
                 <th></th>
                 <th>Pretraga</th>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Naziv restorana" v-model="restaurantName"></td>
@@ -75,6 +82,7 @@ Vue.component("orders", {
                 <th></th>
                 <th></th>
                 <th>Sortiranje</th>
+                <td></td>
             </tr>
             <tr>
                 <td>
@@ -129,8 +137,30 @@ Vue.component("orders", {
             <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Obrada')"><button @click="cancelOrder(order)">Otkaži</button></td>
             <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'Ceka_dostavljaca')"><button @click="sendDeliverRequest(order)">Pošalji zahtev</button></td>
             <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'U_transportu')"><button @click="deliverOrder(order)">Dostavljena</button></td>
+            <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Dostavljena') && !alreadyRated(order)">
+                <button @click="openForm(order)" class="open-button" >Oceni restoran</button>
+            </td>
         </tr>
     </table>
+
+    <div class="form-popup" id="myForm">
+        <form class="form-container" @submit="rateRestaurant">
+            <h3>Napišite komentar</h3>
+
+            <label for="grade"><b>Ocena</b></label>
+            <select name="grade" v-model="grade">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+            <textarea name="text" placeholder="Vaš komentar..." rows="5" cols="50" v-model="text"></textarea>
+            <button type="submit" class="btn">Pošalji</button>
+            <button type="button" class="btn cancel" @click="closeForm()">Zatvori</button>
+        </form>
+    </div>
+
 </div>
 `
 	, 
@@ -144,6 +174,7 @@ Vue.component("orders", {
 			.then(response => {
 				this.loggedUser = response.data;
                 this.getAppropriateOrders();
+                this.getUsersRates();
 			})
             .catch(function(error){
                 router.push('/');
@@ -179,11 +210,26 @@ Vue.component("orders", {
                 
             }
         },
+        getUsersRates : function() {
+            axios
+            .get('rest/commentsOfCustomer/' + this.loggedUser.id)
+            .then(response => {
+                this.userRates = response.data;
+            })
+        },
         setOrdersAwaitingDelivery : function() {
             this.ordersToShow = this.allOrders;
         },
         setOrdersOfDeliverer : function() {
             this.ordersToShow = this.loggedUser.ordersToDeliver;
+        },
+        alreadyRated : function(order) {
+            for (let rate of this.userRates){
+                if (rate.restaurantOfComment.id === order.restaurantOfOrder.id){
+                    return true;
+                }
+            }
+            return false;
         },
         startPreparation : function(order) {
             order.status = 'U_pripremi';
@@ -256,6 +302,33 @@ Vue.component("orders", {
             .catch(function(error) {
                 alert("Neuspešna izmena statusa porudžbine")
             })
+        },
+        rateRestaurant : function(event) {
+            event.preventDefault();
+            let comment = {
+                customerOfComment : this.loggedUser,
+                restaurantOfComment : this.restaurantForGrading,
+                text : this.text,
+                grade : this.grade
+            }
+            comment = JSON.stringify(comment);
+            axios
+            .post('rest/comments', comment)
+            .then(response => {
+                alert('Uspešno ste podneli zahtev za komentar');
+                this.text = '';
+                this.closeForm();
+            })
+            .catch(function(error) {
+                alert("Neuspešna podnošenje zahteva za komentar")
+            })
+        },
+        openForm : function(order) {
+            this.restaurantForGrading = order.restaurantOfOrder;
+            document.getElementById("myForm").style.display = "block";
+        },
+        closeForm : function() {
+            document.getElementById("myForm").style.display = "none";
         },
         sort : function(){
             if (this.sortMode == 'rastuce'){

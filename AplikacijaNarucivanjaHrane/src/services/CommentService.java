@@ -16,7 +16,11 @@ public class CommentService {
 	}
 	
 	public Comment saveComment(Comment comment) {
-		return cfr.saveComment(comment);
+		return cfr.addComment(comment);
+	}
+	
+	public Comment changeComment(Comment comment) {
+		return cfr.changeComment(comment);
 	}
 	
 	public ArrayList<Comment> getAllCommentsOfCustomer(String customerId){

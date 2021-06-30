@@ -306,11 +306,27 @@ public class SparkAppMain {
 			res.type("application/json");
 			return g.toJson(commentService.getAllComments());
 		});
+		
+		get("rest/commentsOfCustomer/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(commentService.getAllCommentsOfCustomer(req.params(":id")));
+		});
+		
+		get("rest/commentsOfRestaurant/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(commentService.getAllCommentsOfRestaurant(req.params(":id")));
+		});
 
 		post("rest/comments", (req, res) -> {
 			res.type("application/json");
 			Comment comment = g.fromJson(req.body(), Comment.class);
 			return g.toJson(commentService.saveComment(comment));
+		});
+		
+		put("rest/comments/:id", (req, res) -> {
+			res.type("application/json");
+			Comment comment = g.fromJson(req.body(), Comment.class);
+			return g.toJson(commentService.changeComment(comment));
 		});
 
 		// SHOPPING CART
