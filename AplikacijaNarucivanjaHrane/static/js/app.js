@@ -33,7 +33,7 @@ var app = new Vue({
 	router,
 	el: '#mainView',
 	data: {
-        loggedUser: {},
+        loggedUser: {restaurant: {}},
         userRole: "Neulogovan"
     },
 	mounted() {

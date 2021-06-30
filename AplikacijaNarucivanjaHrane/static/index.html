@@ -18,7 +18,7 @@
 				<a href="#/shoppingCart" v-bind:hidden="userRole!=='Kupac'">Korpa</a>
 				<a href="#/allUsers" v-bind:hidden="userRole!=='Administrator'">Svi korisnici</a>
 				<div class="dropdown">
-					<button class="dropbtn" v-bind:hidden="userRole!=='Menadzer'">Vaš restoran
+					<button class="dropbtn" v-bind:hidden="userRole !== 'Menadzer' || loggedUser.restaurant.id === '-1'">Vaš restoran
 						<i class="fa fa-caret-down"></i>
 					</button>
 					<div class="dropdown-content">
