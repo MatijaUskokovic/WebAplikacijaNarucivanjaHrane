@@ -18,6 +18,7 @@
 				<a href="#/shoppingCart" v-bind:hidden="userRole!=='Kupac'">Korpa</a>
 				<a href="#/allUsers" v-bind:hidden="userRole!=='Administrator'">Svi korisnici</a>
 				<a href="#/deliverRequests" v-bind:hidden="userRole!=='Menadzer'">Zahtevi za dostavu</a>
+				<a href="#/customersOfRestaurant" v-bind:hidden="userRole!=='Menadzer'">Kupci vašeg restorana</a>
 				<div class="dropdown">
 					<button class="dropbtn" v-bind:hidden="userRole!=='Administrator'">Kreiraj 
 						<i class="fa fa-caret-down"></i>
@@ -54,6 +55,7 @@
 	<script src="components/shoppingCart.js"></script>
 	<script src="components/orders.js"></script>
 	<script src="components/deliverRequests.js"></script>
+	<script src="components/customersOfRestaurant.js"></script>
 	<script src="js/app.js"></script>
 </body>
 </html>

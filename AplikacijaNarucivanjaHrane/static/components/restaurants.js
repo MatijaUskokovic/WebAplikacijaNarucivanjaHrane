@@ -141,6 +141,8 @@ Vue.component("restaurants", {
 			.then(res => {
 				this.allRestaurants = res.data;
 				this.restaurantsToShow = res.data;
+				this.allRestaurants.sort((a, b) => compareStrings(b.status, a.status));
+				this.restaurantsToShow.sort((a, b) => compareStrings(b.status, a.status));
 			})
 		},
 		openRestaurantPage : function (restaurant) {

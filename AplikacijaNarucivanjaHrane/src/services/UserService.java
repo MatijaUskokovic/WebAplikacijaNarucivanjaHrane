@@ -24,6 +24,15 @@ public class UserService {
 		return userRepository.getManagers();
 	}
 	
+	public Customer getCustomerById(String id) {
+		for (Customer customer : userRepository.getCustomers()) {
+			if (customer.getId().equals(id)) {
+				return customer;
+			}
+		}
+		return null;
+	}
+	
 	public Object getUserByUsername(String username) {
 		User user = userRepository.getUser(username);
 		if (user == null) {

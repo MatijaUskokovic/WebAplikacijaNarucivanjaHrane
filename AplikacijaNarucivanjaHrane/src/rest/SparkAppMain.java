@@ -271,6 +271,12 @@ public class SparkAppMain {
 			return g.toJson(restaurantService.findRestaurantById(id));
 		});
 		
+		get("rest/customersOfRestaurant/:id", (req, res) -> {
+			res.type("application/json");
+			String id = req.params(":id");
+			return g.toJson(restaurantService.getCustomersOfRestaurant(id));
+		});
+		
 		// DODAT ZAHTEV
 		get("rest/restaurants/:id", (req, res) -> {
 			res.type("application/json");

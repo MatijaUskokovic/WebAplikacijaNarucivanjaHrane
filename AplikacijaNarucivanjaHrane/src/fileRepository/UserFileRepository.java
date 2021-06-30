@@ -57,6 +57,11 @@ public class UserFileRepository {
 		return managers.values();
 	}
 	
+	public Iterable<Customer> getCustomers() {
+		readUsers();
+		return customers.values();
+	}
+	
 	public User getUser(String username) {
 		readUsers();
 		return users.get(username);

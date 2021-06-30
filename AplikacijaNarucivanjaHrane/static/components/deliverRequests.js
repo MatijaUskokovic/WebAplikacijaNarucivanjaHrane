@@ -8,21 +8,23 @@ Vue.component("deliverRequests", {
 	template: ` 
 <div>
     <h3>Zahtevi za preuzimanje porudžbine</h3>
-
-    <table border="1">
-        <tr bgcolor="lightgray">
-            <th>Ime dostavljača</th>
-            <th>Šifra porudžbine</th>
-            <th>Ukupno (din)</th>
-        </tr>
-        <tr v-for="request in deliverRequests">
-            <td>{{request.deliverer.name}}</td>
-            <td>{{request.order.id}}</td>
-            <td>{{request.order.price}}</td>
-            <td><button @click="approveRequest(request)">Odobri zahtev</button></td>
-            <td><button @click="rejectRequest(request)">Odbij zahtev</button></td>
-        </tr>
-    </table>
+    <p v-if="loggedUser.restaurant.id == '-1'">Trenutno niste zaduženi ni za jedan restoran</p>
+    <div v-if="loggedUser.restaurant.id != '-1'">
+        <table border="1">
+            <tr bgcolor="lightgray">
+                <th>Ime dostavljača</th>
+                <th>Šifra porudžbine</th>
+                <th>Ukupno (din)</th>
+            </tr>
+            <tr v-for="request in deliverRequests">
+                <td>{{request.deliverer.name}}</td>
+                <td>{{request.order.id}}</td>
+                <td>{{request.order.price}}</td>
+                <td><button @click="approveRequest(request)">Odobri zahtev</button></td>
+                <td><button @click="rejectRequest(request)">Odbij zahtev</button></td>
+            </tr>
+        </table>
+    </div>
 </div>
 `
 	, 
