@@ -1,7 +1,7 @@
 Vue.component("deliverRequests", {
 	data: function () {
 		    return {
-			  loggedUser: {},
+			  loggedUser: {restaurant: {}},
               deliverRequests: {}
 		    }
 	},
@@ -9,7 +9,8 @@ Vue.component("deliverRequests", {
 <div>
     <h3>Zahtevi za preuzimanje porudžbine</h3>
     <p v-if="loggedUser.restaurant.id == '-1'">Trenutno niste zaduženi ni za jedan restoran</p>
-    <div v-if="loggedUser.restaurant.id != '-1'">
+    <p v-if="deliverRequests.length == 0">Trenutno ne postoji ni jedan zahtev za preuzimanje porudžbine</p>
+    <div v-if="loggedUser.restaurant.id != '-1' && deliverRequests.length != 0">
         <table border="1">
             <tr bgcolor="lightgray">
                 <th>Ime dostavljača</th>

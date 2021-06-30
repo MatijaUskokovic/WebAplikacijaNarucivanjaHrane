@@ -14,11 +14,21 @@
 			<!-- Navigation -->	
 			<div class="navbar">
 				<a href="#/">Početna stranica</a>
-				<a href="#/orders" v-bind:hidden="userRole==='Administrator' || userRole==='Neulogovan'">Porudžbine</a>
+				<a href="#/orders" v-bind:hidden="userRole==='Administrator' || userRole==='Neulogovan' || userRole==='Menadzer'">Porudžbine</a>
 				<a href="#/shoppingCart" v-bind:hidden="userRole!=='Kupac'">Korpa</a>
 				<a href="#/allUsers" v-bind:hidden="userRole!=='Administrator'">Svi korisnici</a>
-				<a href="#/deliverRequests" v-bind:hidden="userRole!=='Menadzer'">Zahtevi za dostavu</a>
-				<a href="#/customersOfRestaurant" v-bind:hidden="userRole!=='Menadzer'">Kupci vašeg restorana</a>
+				<div class="dropdown">
+					<button class="dropbtn" v-bind:hidden="userRole!=='Menadzer'">Vaš restoran
+						<i class="fa fa-caret-down"></i>
+					</button>
+					<div class="dropdown-content">
+						<a href="#/managerRestaurant">Prikaz restorana</a>
+						<a href="#/orders">Porudžbine</a>
+						<a href="#/deliverRequests">Zahtevi za dostavu</a>
+						<a href="#/customersOfRestaurant">Kupci vašeg restorana</a>
+					</div>
+				</div>
+
 				<div class="dropdown">
 					<button class="dropbtn" v-bind:hidden="userRole!=='Administrator'">Kreiraj 
 						<i class="fa fa-caret-down"></i>
@@ -56,6 +66,7 @@
 	<script src="components/orders.js"></script>
 	<script src="components/deliverRequests.js"></script>
 	<script src="components/customersOfRestaurant.js"></script>
+	<script src="components/managerRestaurant.js"></script>
 	<script src="js/app.js"></script>
 </body>
 </html>

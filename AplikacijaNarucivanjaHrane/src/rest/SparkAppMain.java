@@ -261,7 +261,7 @@ public class SparkAppMain {
 			return g.toJson(restaurant);
 		});
 		
-		// preuzimanje id-a selektovanog restorana
+		// preuzimanje selektovanog restorana
 		get("rest/selectedRestaurant", (req, res) -> {
 			res.type("application/json");
 			String id = restaurantService.getIdOfSelectedRestaurant();
@@ -269,6 +269,11 @@ public class SparkAppMain {
 				return null;
 			}
 			return g.toJson(restaurantService.findRestaurantById(id));
+		});
+		
+		get("rest/selectedRestaurant/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(restaurantService.findRestaurantById(req.params(":id")));
 		});
 		
 		get("rest/customersOfRestaurant/:id", (req, res) -> {
