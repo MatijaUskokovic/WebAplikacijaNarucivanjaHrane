@@ -8,6 +8,7 @@ import static spark.Spark.put;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.gson.Gson;
@@ -399,6 +400,13 @@ public class SparkAppMain {
 			res.type("application/json");
 			DeliverRequest request = g.fromJson(req.body(), DeliverRequest.class);
 			return g.toJson(deliverRequestService.changeDeliverRequest(request));
+		});
+		
+		// DOBAVLJANJE SUMNJIVIH KORISNIKA
+		get("rest/suspiciousCustomers", (req, res) -> {
+			res.type("application/json");
+			ArrayList<Customer> customers = orderService.getAllSuspiciousCustomers();
+			return g.toJson(customers);
 		});
 	}
 }

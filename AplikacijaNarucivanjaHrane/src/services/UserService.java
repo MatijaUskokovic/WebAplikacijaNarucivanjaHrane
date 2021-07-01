@@ -1,5 +1,6 @@
 package services;
 
+
 import beans.Administrator;
 import beans.Customer;
 import beans.Deliverer;
@@ -107,4 +108,7 @@ public class UserService {
 	public void deleteUser(String username) {
 		userRepository.deleteUser(username);
 	}
+	
+	// BLOKIRANJE USERA
+	
 }

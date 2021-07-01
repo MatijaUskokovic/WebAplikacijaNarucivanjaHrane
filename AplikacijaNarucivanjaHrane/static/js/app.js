@@ -46,8 +46,14 @@ var app = new Vue({
 			axios
 			.get('rest/getLoggedUser')
 			.then(response => {
-				this.loggedUser = response.data;
-				this.userRole = this.loggedUser.role;
+				//DODATO ZA BLOKIRANJE
+				let user = response.data;
+				if(!user.blocked){
+					this.loggedUser = response.data;
+					this.userRole = this.loggedUser.role;
+				}else{
+					alert('Nije vam dozvoljena prijava, jer ste blokirani')
+				}
 			})
 		},
         logout: function() {

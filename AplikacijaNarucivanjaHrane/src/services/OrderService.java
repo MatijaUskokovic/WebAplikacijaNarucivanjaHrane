@@ -2,6 +2,7 @@ package services;
 
 import java.util.ArrayList;
 
+import beans.Customer;
 import beans.Order;
 import fileRepository.OrderFileRepository;
 
@@ -52,4 +53,10 @@ public class OrderService {
 	public void deleteOrder(String id) {
 		orderRepository.deleteOrder(id);
 	}
+	
+	//DODATO ZA BLOKIRANJE KORISNIKA
+	public ArrayList<Customer> getAllSuspiciousCustomers(){
+		return orderRepository.findAllSuspiciousCustomers();
+	}
+	
 }

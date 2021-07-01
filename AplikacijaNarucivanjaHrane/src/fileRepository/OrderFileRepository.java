@@ -8,12 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
 import com.google.gson.Gson;
 
+import beans.Customer;
 import beans.Order;
+import beans.OrderStatus;
 
 /**
  * Klasa koja služi da interaguje sa trajnim skladištem za narudžbine.
@@ -23,37 +27,37 @@ public class OrderFileRepository {
 	private String path = "./files/orders.txt";
 	private HashMap<String, Order> orders = new HashMap<String, Order>();
 	private Gson g = new Gson();
-	
+
 	public OrderFileRepository() {
-		
+
 	}
-	
-	public Iterable<Order> getAllOrders(){
+
+	public Iterable<Order> getAllOrders() {
 		readOrders();
 		return orders.values();
 	}
-	
+
 	public Order getOrder(String id) {
 		readOrders();
 		return orders.get(id);
 	}
-	
+
 	public Order changeOrder(Order changedOrder) {
 		readOrders();
 		writeChangedOrder(changedOrder.getId(), g.toJson(changedOrder));
 		return changedOrder;
 	}
-	
+
 	public void deleteOrder(String id) {
 		readOrders();
 		Order order = orders.get(id);
 		order.setDeleted(true);
 		writeChangedOrder(order.getId(), g.toJson(order));
 	}
-	
+
 	/*
-	 * Metoda sluzi za dodavanje narudzbine kojoj prvo doda id i onda pozove metodu za upisivanje u fajl
-	 * koja vraca true ako je uspesno dodato
+	 * Metoda sluzi za dodavanje narudzbine kojoj prvo doda id i onda pozove metodu
+	 * za upisivanje u fajl koja vraca true ako je uspesno dodato
 	 */
 	public Order addOrder(Order order) {
 		order.setId(assignId());
@@ -63,7 +67,7 @@ public class OrderFileRepository {
 		}
 		return null;
 	}
-	
+
 	private String assignId() {
 		String id;
 		do {
@@ -74,10 +78,10 @@ public class OrderFileRepository {
 				idChars[i] = allowedChars.charAt(rand.nextInt(allowedChars.length()));
 			}
 			id = new String(idChars);
-		} while(orders.containsKey(id));
+		} while (orders.containsKey(id));
 		return id;
 	}
-	
+
 	private void readOrders() {
 		orders.clear();
 		ArrayList<String> lines = readLines();
@@ -86,7 +90,7 @@ public class OrderFileRepository {
 			orders.put(order.getId(), order);
 		}
 	}
-	
+
 	private ArrayList<String> readLines() {
 		ArrayList<String> lines = new ArrayList<>();
 		BufferedReader in = null;
@@ -94,31 +98,31 @@ public class OrderFileRepository {
 			File file = new File(path);
 			in = new BufferedReader(new FileReader(file));
 			String line;
-			
+
 			while ((line = in.readLine()) != null) {
 				line = line.trim();
 				if (line.equals(""))
 					continue;
-				
+
 				lines.add(line);
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		finally {
-			if ( in != null ) {
+		} finally {
+			if (in != null) {
 				try {
 					in.close();
+				} catch (Exception e) {
 				}
-				catch (Exception e) { }
 			}
 		}
 		return lines;
 	}
-	
+
 	/*
-	 * Metoda sluzi za upisivanje nove porudzbine u fajl. Drugi parametar sluzi da kaze da li se
-	 * fajl iznova pise ili se dodaje novi red (true kada se dodaje novi red)
+	 * Metoda sluzi za upisivanje nove porudzbine u fajl. Drugi parametar sluzi da
+	 * kaze da li se fajl iznova pise ili se dodaje novi red (true kada se dodaje
+	 * novi red)
 	 */
 	private boolean writeOrder(String orderToWrite, boolean append) {
 		try (FileWriter f = new FileWriter(path, append);
@@ -131,19 +135,58 @@ public class OrderFileRepository {
 			return false;
 		}
 	}
-	
+
 	private void writeChangedOrder(String idOfChangedOrder, String changedOrder) {
 		ArrayList<String> lines = readLines();
 		boolean append = false;
 		for (String line : lines) {
 			Order order = g.fromJson(line, Order.class);
-			
+
 			if (order.getId().equals(idOfChangedOrder)) {
 				writeOrder(changedOrder, append);
-			}else {
+			} else {
 				writeOrder(line, append);
 			}
 			append = true;
 		}
+	}
+
+	// DODATO U OKVIRU DODATNOG ZADATKA
+	public ArrayList<Customer> findAllSuspiciousCustomers() {
+		
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+		UserFileRepository ufr = new UserFileRepository();
+		ArrayList<Order> canceledOrdersInLastMonth = this.findAllCanceledOrdersInLastMonth();
+		
+		for(Customer customer : ufr.getCustomers()) {
+			int numOfCancle = 0;
+			
+			for(Order order : canceledOrdersInLastMonth) {
+				if(order.getCustomer().getId().equals(customer.getId()))
+					numOfCancle++;
+			}
+			
+			if(numOfCancle >= 1)
+				customers.add(customer);
+		}
+		return customers;
+	}
+
+	private ArrayList<Order> findAllCanceledOrdersInLastMonth() {
+		ArrayList<Order> canceledOrders = new ArrayList<Order>();
+
+		for (Order order : this.getAllOrders()) {
+			Date nowDate = Calendar.getInstance().getTime();
+
+			Date orderDate = order.getDateOfOrder();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(orderDate);
+			calendar.add(Calendar.DATE, 30);
+			Date dateForComparation = calendar.getTime();
+			if (order.getStatus().equals(OrderStatus.Otkazana) && nowDate.before(dateForComparation)) {
+				canceledOrders.add(order);
+			}
+		}
+		return canceledOrders;
 	}
 }
