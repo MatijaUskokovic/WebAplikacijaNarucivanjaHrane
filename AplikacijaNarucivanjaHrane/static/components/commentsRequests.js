@@ -50,7 +50,12 @@ Vue.component("commentsRequests", {
             axios
             .get('rest/commentsOfRestaurant/' + this.loggedUser.restaurant.id)
             .then(response => {
-                this.commentsRequests = response.data;
+                this.commentsRequests = [];
+                for (let commentReq of response.data){
+                    if (!commentReq.processed){
+                        this.commentsRequests.push(commentReq);
+                    }
+                }
             })
         },
         approveRequest : function(commentRequest) {

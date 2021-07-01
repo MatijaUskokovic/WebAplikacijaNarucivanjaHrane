@@ -14,24 +14,53 @@ Vue.component("restaurantPage", {
 					"description": "",
 					"image": ''
 				},
-				
-				restaurantForChange : {}
+				restaurantForChange : {},
+				restaurantComments: []
 		    }
 	},
 	template: `
 	
 	<div style="margin: 10px;">
 		<div v-if="mode === 'PRETRAGA'">
-			<table >
+			<table>
 				<tr>
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeRestaurant()">Uredi restoran</button></td>
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeModeFromAddItem()">Dodaj proizvod</button></td>
 				</tr>
 			</table>
 	
+			<!--PRIKAZ INFORMACIJA O RESTORANU-->
+			<table>
+				<tr>
+					<td>Ime restorana</td>
+					<td>{{restaurant.name}}</td>
+				</tr>
+				<tr>
+					<td>Tip restorana</td>
+					<td>{{restaurant.type}}</td>
+				</tr>
+				<tr>
+					<td>Status restorana</td>
+					<td>{{restaurant.status}}</td>
+				</tr>
+				<tr>
+					<td>Geografska sirina</td>
+					<td>{{restaurant.location.latitude}}</td>
+				</tr>
+				<tr>
+					<td>Geografska duzina</td>
+					<td>{{restaurant.location.longitude}}</td>
+				</tr>
+				<tr>
+					<td>Adresa</td>
+					<td>{{restaurant.location.adress}}</td>
+				</tr>
+			</table>
+
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
 
 			<div>
+				<h3>Artikli restorana</h3>
 				<div>
 					<table border="1px">
 						<th>Slika</th><th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
@@ -50,6 +79,25 @@ Vue.component("restaurantPage", {
 					</table>
 				</div>
 			</div>
+
+			<!--PRIKAZ KOMENTARA RESTORANA-->
+			<h3>Komentari restorana</h3>
+			<table border="1">
+				<tr>
+					<th>Ime korisnika</th>
+					<th>Korisničko ime</th>
+					<th>Ocena</th>
+					<th>Komentar</th>
+					<th v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">Odobren</th>
+				</tr>
+				<tr v-for="comment in restaurantComments">
+					<td>{{comment.customerOfComment.name}}</td>
+					<td>{{comment.customerOfComment.username}}</td>
+					<td>{{comment.grade}}</td>
+					<td>{{comment.text}}</td>
+					<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
+        		</tr>
+			</table>
 		</div>
 
 		<!--IZMENA RESTORANA-->
@@ -171,8 +219,29 @@ Vue.component("restaurantPage", {
 			.get('rest/selectedRestaurant')
 			.then(res => {
 				this.restaurant = res.data;
+				this.getCommentsOfRestaurant();
 			})
-		}, 
+		},
+		getCommentsOfRestaurant : function() {
+			axios
+			.get('rest/commentsOfRestaurant/' + this.restaurant.id)
+			.then(res => {
+				this.restaurantComments = [];
+				if (this.loggedUser.role == 'Administrator' || (this.loggedUser.role == 'Menadzer' && this.loggedUser.restaurant.id == this.restaurant.id)){
+					for (let comment of res.data){
+						if (comment.processed) {
+							this.restaurantComments.push(comment);
+						}
+					}
+				} else {
+					for (let comment of res.data){
+						if (comment.processed && comment.approved){
+							this.restaurantComments.push(comment);
+						}
+					}
+				}
+			})
+		} ,
 		changeModeFromRestaurantUpdate : function(){
 			if(this.mode === "PRETRAGA"){
 				this.mode = "IZMENARESTORANA";
@@ -389,5 +458,13 @@ Vue.component("restaurantPage", {
 				console.log('Error: ', error)
 			}
 		}
-	}
+	},
+    filters: {
+    	approvedFilter: function (value) {
+    		if (value){
+				return 'da';
+			}
+    		return 'ne';
+    	}
+   	}
 });
