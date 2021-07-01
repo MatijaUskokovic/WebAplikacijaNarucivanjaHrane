@@ -6,6 +6,7 @@ import java.util.UUID;
 public class User {
 	private String id;
 	private boolean deleted;
+	private boolean blocked;
 	private String username;
 	private String password;
 	private String name;
@@ -17,6 +18,7 @@ public class User {
 	public User() {
 		this.id = UUID.randomUUID().toString();
 		this.deleted = false;
+		this.blocked = false;
 	}
 	
 	public User(String username, String password, String name, String surname, Gender gender, Date dateOfBirth,
@@ -24,6 +26,22 @@ public class User {
 		super();
 		this.id = UUID.randomUUID().toString();
 		this.deleted = false;
+		this.blocked = false;
+		this.username = username;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.role = role;
+	}
+	
+	public User(String id, boolean deleted, boolean blocked, String username, String password, String name,
+			String surname, Gender gender, Date dateOfBirth, UserRole role) {
+		super();
+		this.id = id;
+		this.deleted = deleted;
+		this.blocked = blocked;
 		this.username = username;
 		this.password = password;
 		this.name = name;
@@ -33,24 +51,11 @@ public class User {
 		this.role = role;
 	}
 
-	public User(String id, boolean deleted, String username, String password, String name, String surname,
-			Gender gender, Date dateOfBirth, UserRole role) {
-		super();
-		this.id = id;
-		this.deleted = deleted;
-		this.username = username;
-		this.password = password;
-		this.name = name;
-		this.surname = surname;
-		this.gender = gender;
-		this.dateOfBirth = dateOfBirth;
-		this.role = role;
-	}
-	
 	public User(User user) {
 		super();
 		this.id = user.getId();
 		this.deleted = user.isDeleted();
+		this.blocked = user.isBlocked();
 		this.username = user.getUsername();
 		this.password = user.getPassword();
 		this.name = user.getName();
@@ -74,6 +79,14 @@ public class User {
 
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	public boolean isBlocked() {
+		return blocked;
+	}
+
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
 	}
 
 	public String getUsername() {

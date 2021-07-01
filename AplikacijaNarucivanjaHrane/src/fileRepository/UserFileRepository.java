@@ -184,20 +184,21 @@ public class UserFileRepository {
 			String[] data = line.split(",");
 			String id = data[0];
 			boolean deleted = Boolean.parseBoolean(data[1]);
-			String username = data[2];
-			String password = data[3];
-			String name = data[4];
-			String surname = data[5];
-			Gender gender = Gender.valueOf(data[6]);
-			Date dateOfBirth = new Date(Long.parseLong(data[7]));
-			UserRole role = UserRole.valueOf(data[8]);
+			boolean blocked = Boolean.parseBoolean(data[2]);
+			String username = data[3];
+			String password = data[4];
+			String name = data[5];
+			String surname = data[6];
+			Gender gender = Gender.valueOf(data[7]);
+			Date dateOfBirth = new Date(Long.parseLong(data[8]));
+			UserRole role = UserRole.valueOf(data[9]);
 			
 			// ukolko je korisnik logicki obrisan
 			if (deleted) {
 				continue;
 			}
 			
-			User user = new User(id, deleted, username, password, name, surname, gender, dateOfBirth, role);
+			User user = new User(id, deleted, blocked, username, password, name, surname, gender, dateOfBirth, role);
 			users.put(user.getUsername(), user);
 			
 			// formiranje konkretnih korisnika
@@ -206,11 +207,11 @@ public class UserFileRepository {
 				administrators.put(a.getUsername(), a);
 			}
 			else if (role == UserRole.Kupac) {
-				int pointsCollected = Integer.parseInt(data[9]);
+				int pointsCollected = Integer.parseInt(data[10]);
 				String ordersText = "";
 				Customer c = new Customer(user);
 				try {
-					ordersText = data[10];
+					ordersText = data[11];
 					if (ordersText != null && ordersText != "") {
 						String[] idsOfOrders = ordersText.split(";");
 						OrderService os = new OrderService();
@@ -235,7 +236,7 @@ public class UserFileRepository {
 				customers.put(c.getUsername(), c);
 			}
 			else if (role == UserRole.Menadzer) {
-				String restaurantId = data[9];
+				String restaurantId = data[10];
 				Manager m = new Manager(user);
 				if (restaurantId.equals("-1")) {
 					m.setRestaurant(new Restaurant());
@@ -250,7 +251,7 @@ public class UserFileRepository {
 				String ordersText = "";
 				Deliverer d = new Deliverer(user);
 				try {
-					ordersText = data[9];
+					ordersText = data[10];
 					if (ordersText != null && ordersText != "") {
 						String[] idsOfOrders = ordersText.split(";");
 						OrderService os = new OrderService();
@@ -341,7 +342,8 @@ public class UserFileRepository {
 	 */
 	private String customerToText(Customer customer) {
 		StringBuilder customerString = new StringBuilder("");
-		customerString.append(customer.getId() + "," + customer.isDeleted() + "," + customer.getUsername() + "," 
+		customerString.append(customer.getId() + "," + customer.isDeleted() + "," + customer.isBlocked() + ","
+				+ customer.getUsername() + "," 
 				+ customer.getPassword() + "," + customer.getName() + "," + customer.getSurname() + "," 
 				+ customer.getGender() + "," + customer.getDateOfBirth().getTime() + "," 
 				+ customer.getRole() + "," + customer.getPointsCollected() + ",");
@@ -357,7 +359,8 @@ public class UserFileRepository {
 	
 	private String managerToText(Manager manager) {
 		StringBuilder managerString = new StringBuilder("");
-		managerString.append(manager.getId() + "," + manager.isDeleted() + "," + manager.getUsername() + "," 
+		managerString.append(manager.getId() + "," + manager.isDeleted() + "," + manager.isBlocked() + ","
+				+ manager.getUsername() + "," 
 				+ manager.getPassword() + "," + manager.getName() + "," + manager.getSurname() + "," 
 				+ manager.getGender() + "," + manager.getDateOfBirth().getTime() + "," 
 				+ manager.getRole() + ",");
@@ -371,7 +374,8 @@ public class UserFileRepository {
 	
 	private String delivererToText(Deliverer deliverer) {
 		StringBuilder delivererString = new StringBuilder("");
-		delivererString.append(deliverer.getId() + "," + deliverer.isDeleted() + "," + deliverer.getUsername() + "," 
+		delivererString.append(deliverer.getId() + "," + deliverer.isDeleted() + "," + deliverer.isBlocked() + ","
+				+ deliverer.getUsername() + "," 
 				+ deliverer.getPassword() + "," + deliverer.getName() + "," + deliverer.getSurname() + "," 
 				+ deliverer.getGender() + "," + deliverer.getDateOfBirth().getTime() + "," 
 				+ deliverer.getRole() + ",");
@@ -385,7 +389,8 @@ public class UserFileRepository {
 	}
 	
 	private String administratorToText(Administrator administrator) {
-		return administrator.getId() + "," + administrator.isDeleted() + "," + administrator.getUsername() + "," 
+		return administrator.getId() + "," + administrator.isDeleted() + "," + administrator.isBlocked() + ","
+				+ administrator.getUsername() + "," 
 				+ administrator.getPassword() + "," + administrator.getName() + "," + administrator.getSurname() + "," 
 				+ administrator.getGender() + "," + administrator.getDateOfBirth().getTime() + "," 
 				+ administrator.getRole();
