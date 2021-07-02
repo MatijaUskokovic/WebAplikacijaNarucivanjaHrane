@@ -11,6 +11,7 @@ const DeliverRequests = {template: '<deliverRequests></deliverRequests>'}
 const CustomersOfRestaurant = {template: '<customersOfRestaurant></customersOfRestaurant>'}
 const ManagerRestaurant = {template: '<managerRestaurant></managerRestaurant>'}
 const CommentsRequests = {template:'<commentsRequests></commentsRequests>'}
+const ChangeRestaurant = {template: '<changeRestaurant></changeRestaurant>'}
 
 const router = new VueRouter({
 	mode: 'hash',
@@ -27,7 +28,8 @@ const router = new VueRouter({
 		{ path: '/deliverRequests', name: 'zahteviDostave', component: DeliverRequests},
 		{ path: '/customersOfRestaurant', name: 'musterije', component: CustomersOfRestaurant},
 		{ path: '/managerRestaurant', name: 'restoranMenadzera', component: ManagerRestaurant},
-		{ path: '/commentsRequests', name: 'zahteviZaKomentare', component: CommentsRequests}
+		{ path: '/commentsRequests', name: 'zahteviZaKomentare', component: CommentsRequests},
+		{ path: '/changeRestaurant', name: 'izmenaRestorana', component: ChangeRestaurant}
 	  ]
 });
 
@@ -36,7 +38,8 @@ var app = new Vue({
 	el: '#mainView',
 	data: {
         loggedUser: {restaurant: {}},
-        userRole: "Neulogovan"
+        userRole: "Neulogovan",
+		location: { longitude: '', latitude: ''}
     },
 	mounted() {
         this.getLoggedUser();

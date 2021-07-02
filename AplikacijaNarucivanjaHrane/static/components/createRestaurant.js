@@ -5,7 +5,7 @@ Vue.component("createRestaurant", {
               newManager: {},
               selectedManager: {},
               map: {},
-              newRestaurant: {location:{adress : {street: '', streetNum: '', postalCode: ''}}, logo:''},
+              newRestaurant: {location:{adress : {street: '', streetNum: '', city: '', postalCode: ''}}, logo:''},
               latitude: '',
               longitude: ''
 		    }
@@ -15,13 +15,13 @@ Vue.component("createRestaurant", {
     <div class='child flex-child'>
         <h3>Napravite novi restoran</h3>
         <form @submit='create'>
-            <table>
+            <table border="1">
                 <tr>
-                    <td>Naziv</td>
+                    <td colspan="2">Naziv</td>
                     <td><input type="text" v-model="newRestaurant.name"></td>
                 </tr>
                 <tr>
-                    <td>Tip</td>
+                    <td colspan="2">Tip</td>
                     <td><select v-model="newRestaurant.type">
                             <option value="Italijanski">Italijanski</option>
                             <option value="Kineski">Kineski</option>
@@ -31,17 +31,25 @@ Vue.component("createRestaurant", {
                     </td>
                 </tr>
                 <tr>
-                    <td>Lokacija</td>
-                    <td><div id="map" class="map"></div></td>
+                    <td colspan="2">Lokacija</td>
+                    <td><div id="map" class="map" @click="refreshLocation"></div></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Koordinate (odaberite na mapi)</td>
+                    <td>{{longitude}}, {{latitude}}</td>
+                </tr>
+                <tr>
+                    <td>Grad</td>
+                    <td><input type="text" placeholder="Grad" v-model="newRestaurant.location.adress.city"/></td>
+                    <td><input type="text" placeholder="Poštanski broj" v-model="newRestaurant.location.adress.postalCode"/></td>
                 </tr>
                 <tr>
                     <td>Adresa</td>
-                    <td><input type="text" placeholder="Ulica" v-bind="newRestaurant.location.street" /></td>
-                    <td><input type="text" placeholder="Broj" id="streetNum" v-bind="newRestaurant.location.streetNum"/></td>
-                    <td><input type="text" placeholder="Poštanski broj" v-bind="newRestaurant.location.postalCode"/></td>
+                    <td><input type="text" placeholder="Ulica" v-model="newRestaurant.location.adress.street" /></td>
+                    <td><input type="text" placeholder="Broj" id="streetNum" v-model="newRestaurant.location.adress.streetNum"/></td>  
                 </tr>
                 <tr>
-                    <td>Logo</td>
+                    <td colspan="2">Logo</td>
                     <td><input type="file" @change="handleFileUpload" accept="image/*"></td>
                 </tr>
                 <tr>
@@ -113,9 +121,8 @@ Vue.component("createRestaurant", {
         });
         this.map.on('click', function (evt) {
             var coord = ol.proj.toLonLat(evt.coordinate);   // OVDE SE TACNO NALAZE KOORDINATE
-            this.longitude = coord[0];
-            this.latitude = coord[1];
-            alert('Odabrane koordinate:' + coord);
+            app.location.longitude = coord[0];
+            app.location.latitude = coord[1];
         });
     },
 	methods: {
@@ -139,13 +146,18 @@ Vue.component("createRestaurant", {
 		},
         create : function(event) {
             event.preventDefault();
+            if (this.selectedManager.id == null){
+                alert('Niste odabrali menadžera za restoran');
+                return;
+            }
             if (this.longitude == '') {
                 alert('Niste odabrali lokaciju restorana na mapi');
                 return;
             }
             this.newRestaurant.status = 'Radi';
-            this.newRestaurant.longitude = this.longitude;
-            this.newRestaurant.latitude = this.latitude;
+            this.newRestaurant.location.longitude = this.longitude;
+            this.newRestaurant.location.latitude = this.latitude;
+            this.newRestaurant.avgGrade = 0.0;
             let restaurant = JSON.stringify(this.newRestaurant);
             axios
             .post("rest/restaurants", restaurant)
@@ -205,11 +217,15 @@ Vue.component("createRestaurant", {
 			reader.onload = () => {
 				//alert('RESULT: ' + reader.result)
 				this.newRestaurant.logo = reader.result
-				alert(this.newRestaurant.logo)
+				//alert(this.newRestaurant.logo)
 			}
 			reader.onerror = function (error) {
 				console.log('Error: ', error)
 			}
+        },
+        refreshLocation : function() {
+            this.longitude = app.location.longitude;
+            this.latitude = app.location.latitude;
         }
 	},
 	components: {

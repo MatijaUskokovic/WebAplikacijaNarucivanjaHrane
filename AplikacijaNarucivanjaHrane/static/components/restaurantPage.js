@@ -1,7 +1,8 @@
 Vue.component("restaurantPage", {
 	data: function () {
 		    return {
-		    	restaurant : {items: []},
+		    	restaurant : {items: [], location: {adress: {}}},
+				map: {},
 				loggedUser : {},
 				mode : 'PRETRAGA',
 				itemForChange : {},
@@ -14,7 +15,6 @@ Vue.component("restaurantPage", {
 					"description": "",
 					"image": ''
 				},
-				restaurantForChange : {},
 				restaurantComments: []
 		    }
 	},
@@ -44,16 +44,12 @@ Vue.component("restaurantPage", {
 					<td>{{restaurant.status}}</td>
 				</tr>
 				<tr>
-					<td>Geografska sirina</td>
-					<td>{{restaurant.location.latitude}}</td>
-				</tr>
-				<tr>
-					<td>Geografska duzina</td>
-					<td>{{restaurant.location.longitude}}</td>
-				</tr>
-				<tr>
 					<td>Adresa</td>
 					<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
+				</tr>
+				<tr>
+					<td>Lokacija</td>
+					<td><div id="map" class="map"></div></td>
 				</tr>
 			</table>
 
@@ -103,41 +99,14 @@ Vue.component("restaurantPage", {
 
 		<!--IZMENA RESTORANA-->
 
-		<div v-if="mode === 'IZMENARESTORANA'">
-			<table>
-				<tr>
-					<td><button @click="changeModeFromRestaurantUpdate()">Prikaz proizvoda</button></td>
-				</tr>
-			</table>
-
-			<form @submit="updateRestaurant">
-				<table>
-					<tr><td>Ime restorana</td><td><input type="text" v-model="restaurantForChange.name"></td></tr>
-					<tr>
-						<td>Tip restorana</td>
-						<td><select v-model="restaurantForChange.type">
-								<option value="Rostilj">Rostilj</option>
-								<option value="Kineski">Kineski</option>
-								<option value="Italijanski">Italijanski</option>
-								<option value="Meksicki">Meksicki</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-					<td>Status restorana</td>
-					<td><select v-model="restaurantForChange.status">
-							<option value="Radi">Radi</option>
-							<option value="Ne_radi">Ne radi</option>
-						</select>
-					</td>
-					</tr>
-					<tr><td>Geografska sirina</td><td><input type="number" v-model="restaurantForChange.location.longitude"></td></tr>
-					<tr><td>Geografska duzina</td><td><input type="number" v-model="restaurantForChange.location.latitude"></td></tr>
-					<tr><td>Adresa</td><td><input type="text" v-model="restaurantForChange.location.adress"></td></tr>
-					<tr><td><input type="submit" value="Ažuriraj podatke"></td></tr>
-				</table>
-			</form>
-		</div>
+	fsdfs	<div v-if="mode === 'IZMENARESTORANA'">
+	fdsfs		<table>
+	fsdfsd			<tr>
+	fsdfsd				<td><button @click="changeModeFromRestaurantUpdate()">Prikaz proizvoda</button></td>
+	fdsfsd			</tr>
+	fsdfsd		</table>
+fsdfsdf
+	dsfsd	</div>
 
 		<!--DODAVANJE PROIZVODA-->
 
@@ -220,8 +189,41 @@ Vue.component("restaurantPage", {
 			.get('rest/selectedRestaurant')
 			.then(res => {
 				this.restaurant = res.data;
+				this.showMap();
 				this.getCommentsOfRestaurant();
 			})
+		},
+		showMap : function() {
+				const features = [];
+				features.push(new ol.Feature({
+					geometry: new ol.geom.Point(ol.proj.fromLonLat([this.restaurant.location.longitude, this.restaurant.location.latitude]))
+				  }))
+				const vectorSource = new ol.source.Vector({
+					features
+				  });
+				const vectorLayer = new ol.layer.Vector({
+					source: vectorSource,
+					style: new ol.style.Style({
+					  image: new ol.style.Circle({
+						radius: 4,
+						fill: new ol.style.Fill({color: 'red'})
+					  })
+					})
+				  });
+
+				this.map = new ol.Map({
+					target: 'map',
+					layers: [
+					  new ol.layer.Tile({
+						source: new ol.source.OSM()
+					  }),
+					  vectorLayer
+					],
+					view: new ol.View({
+					  center: ol.proj.fromLonLat([this.restaurant.location.longitude, this.restaurant.location.latitude]),
+					  zoom: 15
+					})
+				});
 		},
 		getCommentsOfRestaurant : function() {
 			axios
@@ -242,13 +244,6 @@ Vue.component("restaurantPage", {
 					}
 				}
 			})
-		} ,
-		changeModeFromRestaurantUpdate : function(){
-			if(this.mode === "PRETRAGA"){
-				this.mode = "IZMENARESTORANA";
-			}else{
-				this.mode = "PRETRAGA";
-			}
 		},
 		changeModeFromItemUpdate : function(){
 			if(this.mode === "PRETRAGA"){
@@ -264,25 +259,6 @@ Vue.component("restaurantPage", {
 				//DOBAVLJANJE NAJNOVIJIH PODATAKA ZA SELEKTOVANI RESTORAN
 				//this.getSelectedRestaurant();
 				this.mode = "PRETRAGA";
-			}
-		},
-		updateRestaurant : function(event){
-			event.preventDefault();
-
-			var changedRestaurant = JSON.stringify(this.restaurantForChange);
-			//validacija restorana
-			if(this.validateRestaurant()){
-				axios
-				.put('rest/restaurants', changedRestaurant)
-				.then(response => {
-					this.restaurant = response.data;
-					alert('Uspešno ažurirani podaci');
-				})
-				.catch(function(error){
-					alert('Neuspešno ažuriranje podataka');
-				})
-			}else{
-				alert("Molimo vas da obrišete sve zapete.")
 			}
 		},
 		changeItem : function(item){
@@ -353,48 +329,14 @@ Vue.component("restaurantPage", {
 			})
 		},
 		changeRestaurant : function(){
-			this.restaurantForChange = {
-				"id": this.restaurant.id,
-				"deleted": this.restaurant.deleted,
-				"name": this.restaurant.name,
-				"type": this.restaurant.type,
-				"status": this.restaurant.status,
-				"location": this.restaurant.location
-			}
-			this.changeModeFromRestaurantUpdate();
+			router.push('/changeRestaurant')
 		},
 		addCountAttributeForItems : function() {
 			for (item of this.restaurant.items){
 				item.count = 1;
 			}
 		},
-		validateRestaurant : function(){
-			let reg = /[,]+/;
-
-			let isValid = true;
-
-			if(this.restaurantForChange.location.adress.match(reg)){
-				isValid = false;
-				return;
-				//css
-			}
-			else{
-				//css
-				isValid = true;
-			}
-
-			if(this.restaurantForChange.name.match(reg)){
-				//css
-				isValid = false;
-				return;
-			}
-			else{
-				//css
-				isValid =  true;
-			}
-
-			return isValid;
-		},
+		
 		validateItem : function (item){
 			let reg = /[,]+/;
 			let isValid = true;
