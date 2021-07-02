@@ -97,17 +97,6 @@ Vue.component("restaurantPage", {
 			<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
 		</div>
 
-		<!--IZMENA RESTORANA-->
-
-	fsdfs	<div v-if="mode === 'IZMENARESTORANA'">
-	fdsfs		<table>
-	fsdfsd			<tr>
-	fsdfsd				<td><button @click="changeModeFromRestaurantUpdate()">Prikaz proizvoda</button></td>
-	fdsfsd			</tr>
-	fsdfsd		</table>
-fsdfsdf
-	dsfsd	</div>
-
 		<!--DODAVANJE PROIZVODA-->
 
 		<div v-if="mode === 'DODAVANJEPROIZVODA'">
