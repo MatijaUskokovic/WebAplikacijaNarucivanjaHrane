@@ -33,9 +33,13 @@ public class CommentService {
 	
 	public ArrayList<Comment> getAllCommentsOfRestaurant(String restaurantId){
 		ArrayList<Comment> comments = new ArrayList<Comment>();
-		for(Comment comment : this.getAllComments())
-			if(comment.getRestaurantOfComment().getId().equals(restaurantId))
-				comments.add(comment);
+		for(Comment comment : this.getAllComments()) {
+			if (comment != null) {
+				if(comment.getRestaurantOfComment().getId().equals(restaurantId))
+					comments.add(comment);
+			}
+		}
+		
 		return comments;
 	}
 	

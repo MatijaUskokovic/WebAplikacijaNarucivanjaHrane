@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import beans.Adress;
 import beans.Item;
 import beans.Location;
 import beans.Restaurant;
@@ -19,7 +20,7 @@ import beans.RestaurantType;
 /**
  * Klasa koja vrsi manipulaciju rada sa datotekom restaurants.txt <br>
  * NACIN PISANJA U DATOTECI:
- * id,deleted,name,type,status,location(longitude,latitude,address),logo(relative
+ * id,deleted,name,type,status,location(longitude,latitude,street,streetNum,postalCode),logo(relative
  * address)
  * 
  * @author bojan
@@ -152,7 +153,8 @@ public class RestaurantFileRepository {
 
 	private String getStringFromLocation(Location location) {
 		return Double.toString(location.getLongitude()) + "," + Double.toString(location.getLatitude()) + ","
-				+ location.getAdress();
+				+ location.getAdress().getStreet() + "," + location.getAdress().getStreetNum() + ","
+				+ location.getAdress().getCity() + "," + location.getAdress().getPostalCode();
 	}
 	
 	private Restaurant makeRestaurantFromLine(String line) {
@@ -164,8 +166,8 @@ public class RestaurantFileRepository {
 		RestaurantType type = this.getRestaurantTypeFromString(lineItems[3]);
 		RestaurantStatus status = this.getRestaurantStatusFromString(lineItems[4]);
 		Location location = new Location(Double.parseDouble(lineItems[5]), Double.parseDouble(lineItems[6]),
-				lineItems[7]);
-		String logo = lineItems[8];
+				new Adress(lineItems[7], lineItems[8], lineItems[9], Integer.parseInt(lineItems[10])));
+		String logo = lineItems[11];
 		ArrayList<Item> items = new ArrayList<Item>();
 		
 		return new Restaurant(id, deleted, name, type, items, status, location, logo);

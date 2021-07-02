@@ -1,10 +1,13 @@
 Vue.component("createRestaurant", {
 	data: function () {
 		    return {
-			  newRestaurant: {location:{}, logo:''},
               freeManagers: [],
               newManager: {},
-              selectedManager: {}
+              selectedManager: {},
+              map: {},
+              newRestaurant: {location:{adress : {street: '', streetNum: '', postalCode: ''}}, logo:''},
+              latitude: '',
+              longitude: ''
 		    }
 	},
 	template: ` 
@@ -29,7 +32,13 @@ Vue.component("createRestaurant", {
                 </tr>
                 <tr>
                     <td>Lokacija</td>
-                    <td><input type="text" v-model="newRestaurant.location.adress"></td>
+                    <td><div id="map" class="map"></div></td>
+                </tr>
+                <tr>
+                    <td>Adresa</td>
+                    <td><input type="text" placeholder="Ulica" v-bind="newRestaurant.location.street" /></td>
+                    <td><input type="text" placeholder="Broj" id="streetNum" v-bind="newRestaurant.location.streetNum"/></td>
+                    <td><input type="text" placeholder="Poštanski broj" v-bind="newRestaurant.location.postalCode"/></td>
                 </tr>
                 <tr>
                     <td>Logo</td>
@@ -90,6 +99,24 @@ Vue.component("createRestaurant", {
 	mounted () {
 		this.getLoggedUser();
         this.getFreeManagers();
+        this.map = new ol.Map({
+            target: 'map',
+            layers: [
+              new ol.layer.Tile({
+                source: new ol.source.OSM()
+              })
+            ],
+            view: new ol.View({
+              center: ol.proj.fromLonLat([20.36, 44.55]),
+              zoom: 6.5
+            })
+        });
+        this.map.on('click', function (evt) {
+            var coord = ol.proj.toLonLat(evt.coordinate);   // OVDE SE TACNO NALAZE KOORDINATE
+            this.longitude = coord[0];
+            this.latitude = coord[1];
+            alert('Odabrane koordinate:' + coord);
+        });
     },
 	methods: {
         selectManager : function(manager) {
@@ -112,9 +139,13 @@ Vue.component("createRestaurant", {
 		},
         create : function(event) {
             event.preventDefault();
-            this.newRestaurant.location.longitude = '50';
-            this.newRestaurant.location.latitude = '50';
+            if (this.longitude == '') {
+                alert('Niste odabrali lokaciju restorana na mapi');
+                return;
+            }
             this.newRestaurant.status = 'Radi';
+            this.newRestaurant.longitude = this.longitude;
+            this.newRestaurant.latitude = this.latitude;
             let restaurant = JSON.stringify(this.newRestaurant);
             axios
             .post("rest/restaurants", restaurant)

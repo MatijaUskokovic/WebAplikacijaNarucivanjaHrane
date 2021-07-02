@@ -1,0 +1,8 @@
+.map {
+    height: 300px;
+    width: 300px;
+  }
+
+  #streetNum {
+    max-width: 50px;
+  }

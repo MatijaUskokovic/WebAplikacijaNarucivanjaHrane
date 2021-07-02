@@ -3,13 +3,13 @@ package beans;
 public class Location {
 	private double longitude;
 	private double latitude;
-	private String adress;
+	private Adress adress;
 	
 	public Location() {
 		
 	}
 	
-	public Location(double longitude, double latitude, String adress) {
+	public Location(double longitude, double latitude, Adress adress) {
 		super();
 		this.longitude = longitude;
 		this.latitude = latitude;
@@ -27,10 +27,10 @@ public class Location {
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
-	public String getAdress() {
+	public Adress getAdress() {
 		return adress;
 	}
-	public void setAdress(String adress) {
+	public void setAdress(Adress adress) {
 		this.adress = adress;
 	}
 }

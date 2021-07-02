@@ -32,7 +32,7 @@ Vue.component("restaurants", {
 							<option value="Meksicki">Meksički</option>
 						</select>
 					</td>
-					<td><input type="text" placeholder="Lokacija(grad ili država)" v-model="adress"></td>
+					<td><input type="text" placeholder="Lokacija(grad)" v-model="adress"></td>
 					<td>
 						<select v-model="avgGrade">
 							<option value="">Prosečna ocena</option>
@@ -105,7 +105,7 @@ Vue.component("restaurants", {
 											</tr>
 											<tr>
 												<td>Adresa:</td>
-												<td>{{r.location.adress}}</td>
+												<td>{{r.location.adress.street}} {{r.location.adress.streetNum}}, {{r.location.adress.city}}, {{r.location.adress.postalCode}}</td>
 											</tr>
 											<tr>
 												<td>Prosecna ocena:</td>
@@ -156,7 +156,7 @@ Vue.component("restaurants", {
             for (restaurant of this.allRestaurants){
 				if (restaurant.name.toLowerCase().includes(this.name.toLowerCase()) &&
 					(restaurant.type == this.type || this.type == '') &&
-					restaurant.location.adress.toLowerCase().includes(this.adress.toLowerCase()) &&
+					restaurant.location.adress.city.toLowerCase().includes(this.adress.toLowerCase()) &&
 					(restaurant.status == this.restaurantStatus || this.restaurantStatus == '') &&
 					(((this.avgGrade - 1) <= restaurant.avgGrade && this.avgGrade >= restaurant.avgGrade) || this.avgGrade == '')){
 						filteredRestaurants.push(restaurant);
@@ -169,7 +169,7 @@ Vue.component("restaurants", {
                 if (this.sortParameter == 'name'){
                     this.restaurantsToShow.sort((a, b) => compareStrings(a.name, b.name));
                 }else if (this.sortParameter == 'adress'){
-                    this.restaurantsToShow.sort((a, b) => compareStrings(a.location.adress, b.location.adress));
+                    this.restaurantsToShow.sort((a, b) => compareStrings(a.location.adress.city, b.location.adress.city));
                 }else if (this.sortParameter == 'avgGrade'){
                     this.restaurantsToShow.sort((a, b) => a.avgGrade - b.avgGrade);
                 }
@@ -178,7 +178,7 @@ Vue.component("restaurants", {
                 if (this.sortParameter == 'name'){
                     this.restaurantsToShow.sort((a, b) => compareStrings(b.name, a.name));
                 }else if (this.sortParameter == 'adress'){
-                    this.restaurantsToShow.sort((a, b) => compareStrings(b.location.adress, a.location.adress));
+                    this.restaurantsToShow.sort((a, b) => compareStrings(b.location.adress.city, a.location.adress.city));
                 }else if (this.sortParameter == 'avgGrade'){
                     this.restaurantsToShow.sort((a, b) => b.avgGrade - a.avgGrade);
                 }

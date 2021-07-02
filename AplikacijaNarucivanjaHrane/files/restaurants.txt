@@ -1,3 +1,3 @@
-111,false,Bob,Rostilj,Radi,12.0,12.0,Neka ulica BB,components/images/90688591-6d25-4c30-85ab-6c8f7fe1bbbf.png
-333,false,Azuri,Italijanski,Ne_radi,50.0,50.0,Djure Jaksica 11,components/images/9a23962d-6b97-40d0-92a4-662b60ea7fc4.png
-b31aa743-eb84-4633-b0fa-e3404c129b79,false,Restoran,Italijanski,Radi,50.0,50.0,Neka adresa 11,components/images/3e012030-6489-42a6-8d5e-eb66f4421fa5.png
+111,false,Bob,Rostilj,Radi,12.0,12.0,Neka ulica,BB,Novi Sad,21102,components/images/90688591-6d25-4c30-85ab-6c8f7fe1bbbf.png
+333,false,Azuri,Italijanski,Ne_radi,50.0,50.0,Djure Jaksica,11,Zrenjanin,21111,components/images/9a23962d-6b97-40d0-92a4-662b60ea7fc4.png
+b31aa743-eb84-4633-b0fa-e3404c129b79,false,Restoran,Italijanski,Radi,50.0,50.0,Neka adresa,11,Vršac,11111,components/images/3e012030-6489-42a6-8d5e-eb66f4421fa5.png

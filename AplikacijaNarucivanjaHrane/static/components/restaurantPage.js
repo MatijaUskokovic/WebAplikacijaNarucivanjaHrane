@@ -53,7 +53,7 @@ Vue.component("restaurantPage", {
 				</tr>
 				<tr>
 					<td>Adresa</td>
-					<td>{{restaurant.location.adress}}</td>
+					<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
 				</tr>
 			</table>
 
@@ -82,7 +82,7 @@ Vue.component("restaurantPage", {
 
 			<!--PRIKAZ KOMENTARA RESTORANA-->
 			<h3>Komentari restorana</h3>
-			<table border="1">
+			<table border="1" v-if="restaurantComments.length != 0">
 				<tr>
 					<th>Ime korisnika</th>
 					<th>Korisničko ime</th>
@@ -98,6 +98,7 @@ Vue.component("restaurantPage", {
 					<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
         		</tr>
 			</table>
+			<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
 		</div>
 
 		<!--IZMENA RESTORANA-->
