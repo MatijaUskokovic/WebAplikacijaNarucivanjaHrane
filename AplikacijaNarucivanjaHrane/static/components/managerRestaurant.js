@@ -1,7 +1,8 @@
 Vue.component("managerRestaurant", {
 	data: function () {
-		    return {
-		    	restaurant : {items: []},
+			return {
+				restaurant : {items: [], location: {adress: {}}},
+				map: {},
 				loggedUser : {},
 				mode : 'PRETRAGA',
 				itemForChange : {},
@@ -14,24 +15,48 @@ Vue.component("managerRestaurant", {
 					"description": "",
 					"image": ''
 				},
-				
-				restaurantForChange : {}
-		    }
+				restaurantComments: []
+			}
 	},
 	template: `
-	
+
 	<div style="margin: 10px;">
 		<div v-if="mode === 'PRETRAGA'">
-			<table >
+			<table>
 				<tr>
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeRestaurant()">Uredi restoran</button></td>
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeModeFromAddItem()">Dodaj proizvod</button></td>
 				</tr>
 			</table>
-	
+
+			<!--PRIKAZ INFORMACIJA O RESTORANU-->
+			<table>
+				<tr>
+					<td>Ime restorana</td>
+					<td>{{restaurant.name}}</td>
+				</tr>
+				<tr>
+					<td>Tip restorana</td>
+					<td>{{restaurant.type}}</td>
+				</tr>
+				<tr>
+					<td>Status restorana</td>
+					<td>{{restaurant.status}}</td>
+				</tr>
+				<tr>
+					<td>Adresa</td>
+					<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
+				</tr>
+				<tr>
+					<td>Lokacija</td>
+					<td><div id="map" class="map"></div></td>
+				</tr>
+			</table>
+
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
 
 			<div>
+				<h3>Artikli restorana</h3>
 				<div>
 					<table border="1px">
 						<th>Slika</th><th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
@@ -50,44 +75,26 @@ Vue.component("managerRestaurant", {
 					</table>
 				</div>
 			</div>
-		</div>
 
-		<!--IZMENA RESTORANA-->
-
-		<div v-if="mode === 'IZMENARESTORANA'">
-			<table>
+			<!--PRIKAZ KOMENTARA RESTORANA-->
+			<h3>Komentari restorana</h3>
+			<table border="1" v-if="restaurantComments.length != 0">
 				<tr>
-					<td><button @click="changeModeFromRestaurantUpdate()">Prikaz proizvoda</button></td>
+					<th>Ime korisnika</th>
+					<th>Korisničko ime</th>
+					<th>Ocena</th>
+					<th>Komentar</th>
+					<th v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">Odobren</th>
+				</tr>
+				<tr v-for="comment in restaurantComments">
+					<td>{{comment.customerOfComment.name}}</td>
+					<td>{{comment.customerOfComment.username}}</td>
+					<td>{{comment.grade}}</td>
+					<td>{{comment.text}}</td>
+					<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
 				</tr>
 			</table>
-
-			<form @submit="updateRestaurant">
-				<table>
-					<tr><td>Ime restorana</td><td><input type="text" v-model="restaurantForChange.name"></td></tr>
-					<tr>
-						<td>Tip restorana</td>
-						<td><select v-model="restaurantForChange.type">
-								<option value="Rostilj">Rostilj</option>
-								<option value="Kineski">Kineski</option>
-								<option value="Italijanski">Italijanski</option>
-								<option value="Meksicki">Meksicki</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-					<td>Status restorana</td>
-					<td><select v-model="restaurantForChange.status">
-							<option value="Radi">Radi</option>
-							<option value="Ne_radi">Ne radi</option>
-						</select>
-					</td>
-					</tr>
-					<tr><td>Geografska sirina</td><td><input type="number" v-model="restaurantForChange.location.longitude"></td></tr>
-					<tr><td>Geografska duzina</td><td><input type="number" v-model="restaurantForChange.location.latitude"></td></tr>
-					<tr><td>Adresa</td><td><input type="text" v-model="restaurantForChange.location.adress"></td></tr>
-					<tr><td><input type="submit" value="Ažuriraj podatke"></td></tr>
-				</table>
-			</form>
+			<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
 		</div>
 
 		<!--DODAVANJE PROIZVODA-->
@@ -151,12 +158,12 @@ Vue.component("managerRestaurant", {
 			</form>
 		</div>
 	</div>
-`
+	`
 	, 
 	mounted () {
 		this.getLoggedUserAndRestaurant();
 		this.addCountAttributeForItems();	// dodavanje polja za broj artikala u listi artikala restorana
-    },
+	},
 	methods:{
 		getLoggedUserAndRestaurant : function() {
 			axios
@@ -175,14 +182,61 @@ Vue.component("managerRestaurant", {
 			.get('rest/restaurants/' + restaurantId)
 			.then(res => {
 				this.restaurant = res.data;
+				this.showMap();
+				this.getCommentsOfRestaurant();
 			})
 		},
-		changeModeFromRestaurantUpdate : function(){
-			if(this.mode === "PRETRAGA"){
-				this.mode = "IZMENARESTORANA";
-			}else{
-				this.mode = "PRETRAGA";
-			}
+		showMap : function() {
+				const features = [];
+				features.push(new ol.Feature({
+					geometry: new ol.geom.Point(ol.proj.fromLonLat([this.restaurant.location.longitude, this.restaurant.location.latitude]))
+				}))
+				const vectorSource = new ol.source.Vector({
+					features
+				});
+				const vectorLayer = new ol.layer.Vector({
+					source: vectorSource,
+					style: new ol.style.Style({
+					image: new ol.style.Circle({
+						radius: 4,
+						fill: new ol.style.Fill({color: 'red'})
+					})
+					})
+				});
+
+				this.map = new ol.Map({
+					target: 'map',
+					layers: [
+					new ol.layer.Tile({
+						source: new ol.source.OSM()
+					}),
+					vectorLayer
+					],
+					view: new ol.View({
+					center: ol.proj.fromLonLat([this.restaurant.location.longitude, this.restaurant.location.latitude]),
+					zoom: 15
+					})
+				});
+		},
+		getCommentsOfRestaurant : function() {
+			axios
+			.get('rest/commentsOfRestaurant/' + this.restaurant.id)
+			.then(res => {
+				this.restaurantComments = [];
+				if (this.loggedUser.role == 'Administrator' || (this.loggedUser.role == 'Menadzer' && this.loggedUser.restaurant.id == this.restaurant.id)){
+					for (let comment of res.data){
+						if (comment.processed) {
+							this.restaurantComments.push(comment);
+						}
+					}
+				} else {
+					for (let comment of res.data){
+						if (comment.processed && comment.approved){
+							this.restaurantComments.push(comment);
+						}
+					}
+				}
+			})
 		},
 		changeModeFromItemUpdate : function(){
 			if(this.mode === "PRETRAGA"){
@@ -195,26 +249,9 @@ Vue.component("managerRestaurant", {
 			if(this.mode === "PRETRAGA"){
 				this.mode = "DODAVANJEPROIZVODA";
 			}else{
+				//DOBAVLJANJE NAJNOVIJIH PODATAKA ZA SELEKTOVANI RESTORAN
+				//this.getSelectedRestaurant();
 				this.mode = "PRETRAGA";
-			}
-		},
-		updateRestaurant : function(event){
-			event.preventDefault();
-
-			var changedRestaurant = JSON.stringify(this.restaurantForChange);
-			//validacija restorana
-			if(this.validateRestaurant()){
-				axios
-				.put('rest/restaurants', changedRestaurant)
-				.then(response => {
-					this.restaurant = response.data;
-					alert('Uspešno ažurirani podaci');
-				})
-				.catch(function(error){
-					alert('Neuspešno ažuriranje podataka');
-				})
-			}else{
-				alert("Molimo vas da obrišete sve zapete.")
 			}
 		},
 		changeItem : function(item){
@@ -285,48 +322,15 @@ Vue.component("managerRestaurant", {
 			})
 		},
 		changeRestaurant : function(){
-			this.restaurantForChange = {
-				"id": this.restaurant.id,
-				"deleted": this.restaurant.deleted,
-				"name": this.restaurant.name,
-				"type": this.restaurant.type,
-				"status": this.restaurant.status,
-				"location": this.restaurant.location
-			}
-			this.changeModeFromRestaurantUpdate();
+			app.selectedRestaurant = this.restaurant;
+			router.push('/changeRestaurant')
 		},
 		addCountAttributeForItems : function() {
 			for (item of this.restaurant.items){
 				item.count = 1;
 			}
 		},
-		validateRestaurant : function(){
-			let reg = /[,]+/;
-
-			let isValid = true;
-
-			if(this.restaurantForChange.location.adress.match(reg)){
-				isValid = false;
-				return;
-				//css
-			}
-			else{
-				//css
-				isValid = true;
-			}
-
-			if(this.restaurantForChange.name.match(reg)){
-				//css
-				isValid = false;
-				return;
-			}
-			else{
-				//css
-				isValid =  true;
-			}
-
-			return isValid;
-		},
+		
 		validateItem : function (item){
 			let reg = /[,]+/;
 			let isValid = true;
@@ -390,6 +394,14 @@ Vue.component("managerRestaurant", {
 			reader.onerror = function (error) {
 				console.log('Error: ', error)
 			}
+		}
+	},
+	filters: {
+		approvedFilter: function (value) {
+			if (value){
+				return 'da';
+			}
+			return 'ne';
 		}
 	}
 });

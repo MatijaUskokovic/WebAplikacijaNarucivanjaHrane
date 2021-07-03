@@ -32,6 +32,9 @@ public class RestaurantService {
 	public Restaurant findRestaurantById(String id) {
 		HashMap<String, Restaurant> restaurants = rfr.getAllRestaurants();
 		Restaurant restaurant = restaurants.get(id);
+		if (restaurant == null) {
+			return null;
+		}
 		restaurant.setItems(itemService.getAllItemsOfRestaurant(restaurant.getId()));
 		if(!restaurant.isDeleted())
 			return restaurant;
@@ -42,6 +45,9 @@ public class RestaurantService {
 	public Restaurant getRestaurantWithoutItems(String id) {
 		HashMap<String, Restaurant> restaurants = rfr.getAllRestaurants();
 		Restaurant restaurant = restaurants.get(id);
+		if (restaurant == null) {
+			return null;
+		}
 		restaurant.setAvgGrade(commentService.getAvgGradeOfRestaurant(restaurant.getId()));
 		if(!restaurant.isDeleted())
 			return restaurant;
@@ -52,6 +58,9 @@ public class RestaurantService {
 	public Restaurant getRestaurantWithoutItemsAndGrade(String id) {
 		HashMap<String, Restaurant> restaurants = rfr.getAllRestaurants();
 		Restaurant restaurant = restaurants.get(id);
+		if (restaurant == null) {
+			return null;
+		}
 		if(!restaurant.isDeleted())
 			return restaurant;
 		else
