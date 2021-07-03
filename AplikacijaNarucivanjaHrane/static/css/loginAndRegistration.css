@@ -1,9 +1,16 @@
 .flex-parent {
     display: flex;
   }
-  .flex-child {
+.flex-child {
     flex: 1;
     padding: 3%;
     margin: 2%;
     border:1px solid black;
   }
+
+.left-child {
+  background: whitesmoke;
+}
+.right-child{
+  background: lightgray;
+}

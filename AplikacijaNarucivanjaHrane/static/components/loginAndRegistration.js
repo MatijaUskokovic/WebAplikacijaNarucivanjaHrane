@@ -7,8 +7,8 @@ Vue.component("loginAndRegistration", {
 	},
 	template: ` 
 <div class='parent flex-parent'>
-		<div class='child flex-child'>
-			<p>Registrovani korisnik</p>
+		<div class='child flex-child left-child'>
+			<p><strong>Registrovani korisnik</strong></p>
 			<form @submit='login'>
 				<table>
 					<tr><td>Korisničko ime</td><td><input type="text" v-model="logInUser.username"></td></tr>
@@ -19,8 +19,8 @@ Vue.component("loginAndRegistration", {
 			</form>
 		</div>
 
-		<div class='child flex-child'>
-			<p>Napravite profil</p>
+		<div class='child flex-child right-child'>
+			<p><strong>Napravite profil</strong></p>
 			<form @submit='register'>
 				<table>
 					<tr><td>Korisničko ime*</td><td><input type="text" v-model="regUser.username"></td></tr>
