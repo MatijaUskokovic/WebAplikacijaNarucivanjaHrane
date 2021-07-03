@@ -172,15 +172,22 @@ Vue.component("restaurantPage", {
 			.then(response => {
 				this.loggedUser = response.data;
 			})
+			.catch()
 		},
 		getSelectedRestaurant : function() {
-			axios
-			.get('rest/selectedRestaurant')
-			.then(res => {
-				this.restaurant = res.data;
-				this.showMap();
-				this.getCommentsOfRestaurant();
-			})
+			if (app == null){
+				router.push('/');
+			}
+			else {
+				axios
+				.get('rest/restaurants/' + app.selectedRestaurant.id)
+				.then (response => {
+					this.restaurant = response.data;
+					this.showMap();
+					this.getCommentsOfRestaurant();
+				})
+			}
+
 		},
 		showMap : function() {
 				const features = [];

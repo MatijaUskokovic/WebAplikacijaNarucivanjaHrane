@@ -39,7 +39,8 @@ var app = new Vue({
 	data: {
         loggedUser: {restaurant: {}},
         userRole: "Neulogovan",
-		location: { longitude: '', latitude: ''}
+		location: { longitude: '', latitude: ''},
+		selectedRestaurant: {}
     },
 	mounted() {
         this.getLoggedUser();

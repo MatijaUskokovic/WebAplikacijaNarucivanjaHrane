@@ -111,16 +111,21 @@ Vue.component("changeRestaurant", {
 			return true;
 		},
         getRestaurantAndLoggedUser : function() {
-			axios
-			.get('rest/selectedRestaurant')
-			.then(response => {
-                this.restaurantForChange = response.data;
-                this.getLoggedUser();
-                this.showMap();
-			})
-            .catch(function(error){
-                router.push('/');
-            })
+            if (app == null){
+				router.push('/');
+			}
+            else {
+                axios
+                .get('rest/restaurants/' + app.selectedRestaurant.id)
+                .then(response => {
+                    this.restaurantForChange = response.data;
+                    this.getLoggedUser();
+                    this.showMap();
+                })
+                .catch(function(error){
+                    router.push('/');
+                })
+            }
 		},
         getLoggedUser : function() {
             axios

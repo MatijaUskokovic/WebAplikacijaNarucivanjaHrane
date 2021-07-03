@@ -253,26 +253,8 @@ public class SparkAppMain {
 			res.type("application/json");
 			return g.toJson(restaurantService.getAllRestaurants());
 		});
-
-		// dodavanje id-a selektovanog restorana
-		post("rest/selectedRestaurant", (req, res) -> {
-			res.type("application/json");
-			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
-			restaurantService.setIdOfSelectedRestaurant(restaurant.getId());
-			return g.toJson(restaurant);
-		});
 		
-		// preuzimanje selektovanog restorana
-		get("rest/selectedRestaurant", (req, res) -> {
-			res.type("application/json");
-			String id = restaurantService.getIdOfSelectedRestaurant();
-			if (id == null) {
-				return null;
-			}
-			return g.toJson(restaurantService.findRestaurantById(id));
-		});
-		
-		get("rest/selectedRestaurant/:id", (req, res) -> {
+		get("rest/restaurants/:id", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(restaurantService.findRestaurantById(req.params(":id")));
 		});
@@ -281,13 +263,6 @@ public class SparkAppMain {
 			res.type("application/json");
 			String id = req.params(":id");
 			return g.toJson(restaurantService.getCustomersOfRestaurant(id));
-		});
-		
-		// DODAT ZAHTEV
-		get("rest/restaurants/:id", (req, res) -> {
-			res.type("application/json");
-			String id = req.params(":id");
-			return g.toJson(restaurantService.findRestaurantById(id));
 		});
 
 		delete("rest/restaurants/:id", (req, res) -> {

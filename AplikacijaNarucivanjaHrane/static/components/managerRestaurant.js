@@ -172,7 +172,7 @@ Vue.component("managerRestaurant", {
 		},
 		getRestaurantOfManager : function(restaurantId) {
 			axios
-			.get('rest/selectedRestaurant/' + restaurantId)
+			.get('rest/restaurants/' + restaurantId)
 			.then(res => {
 				this.restaurant = res.data;
 			})
