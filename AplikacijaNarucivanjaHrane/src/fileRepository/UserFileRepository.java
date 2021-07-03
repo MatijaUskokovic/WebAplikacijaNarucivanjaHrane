@@ -113,7 +113,9 @@ public class UserFileRepository {
 	public Customer registerCustomer(User user) {
 		readUsers();
 		if (users.containsKey(user.getUsername())) {
-			return null;
+			Customer c = new Customer();
+			c.setUsername("-1");	// ako je username zauzet vrati -1 u tom polju
+			return c;
 		}
 		Customer newCustomer = new Customer(user);
 		newCustomer.setRole(UserRole.Kupac);

@@ -86,7 +86,7 @@ public class SparkAppMain {
 			if (customer == null) {
 				return null;
 			}
-			return g.toJson(customer); // ovo je 1 opcija, druga je da vrati objeakt user
+			return g.toJson(customer);
 		});
 
 		post("rest/managers", (req, res) -> {
