@@ -355,8 +355,19 @@ Vue.component("restaurantPage", {
 		},
 		// DODAVANJE PROIZVODA U KORPU
 		addItemInCart : function(item){
+			// provera da li je novi proizvod iz restorana iz kog su ostali proizvodi
+			let firstScItem = this.loggedUser.shoppingCart.items[0];
+			if (firstScItem != null && (firstScItem.item.restaurant.id != item.restaurant.id)) {
+				if (confirm("Dodajete proizvod iz drugog restorana, ako nastavite poništiće Vam se korpa. Nastaviti?")) {
+					this.loggedUser.shoppingCart.items = [];
+				} else {
+					return;
+				}
+			}
+			
 			let count = item.count;
 			delete item.count;
+
 			if (isNaN(count) || count == ''){
 				alert('Pogrešno uneta količina proizvoda');
 				return;
@@ -391,7 +402,7 @@ Vue.component("restaurantPage", {
 			reader.onload = () => {
 				//alert('RESULT: ' + reader.result)
 				this.newItem.image = reader.result
-				alert(this.newItem.image)
+				//alert(this.newItem.image)
 			}
 			reader.onerror = function (error) {
 				console.log('Error: ', error)

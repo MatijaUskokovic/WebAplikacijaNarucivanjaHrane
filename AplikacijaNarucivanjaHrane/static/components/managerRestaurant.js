@@ -389,7 +389,7 @@ Vue.component("managerRestaurant", {
 			reader.onload = () => {
 				//alert('RESULT: ' + reader.result)
 				this.newItem.image = reader.result
-				alert(this.newItem.image)
+				//alert(this.newItem.image)
 			}
 			reader.onerror = function (error) {
 				console.log('Error: ', error)
