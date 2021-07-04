@@ -2,10 +2,10 @@ Vue.component("createRestaurant", {
 	data: function () {
 		    return {
               freeManagers: [],
-              newManager: {},
+              newManager: {username: '', password: '', name: '', surname: '', gender: '', dateOfBirth: ''},
               selectedManager: {},
               map: {},
-              newRestaurant: {location:{adress : {street: '', streetNum: '', city: '', postalCode: ''}}, logo:''},
+              newRestaurant: {name: '', type: '', location:{adress : {street: '', streetNum: '', city: '', postalCode: ''}}, logo:''},
               latitude: '',
               longitude: ''
 		    }
@@ -131,18 +131,59 @@ Vue.component("createRestaurant", {
         },
 		register : function(event) {
 			event.preventDefault();
+
+            if (!this.isValidToRegister()){
+				alert('Nisu popunjena sva neophodna polja ili ste koristili pogrešne karaktere(",")');
+				return;
+			}
+			if (this.newManager.username == '-1'){
+				alert('Nemoguće odabrati navedeno korisničko ime');
+				return;
+			}
+
 			this.newManager.dateOfBirth = this.newManager.dateOfBirth.getTime();
             this.newManager.type = 'Menadzer';
 			let user = JSON.stringify(this.newManager);
+            // vracanje datuma rodjenja u tip Date
+			this.newManager.dateOfBirth = new Date(parseInt(this.newManager.dateOfBirth));
 			axios
             .post('rest/managers', user)
 			.then(response => {
-				this.newManager = {};
-                this.freeManagers.push(response.data);
+                if (response.data.username == '-1'){
+					alert('Korisničko ime je već zauzeto');
+				}
+                else {
+                    this.newManager = {username: '', password: '', name: '', surname: '', gender: '', dateOfBirth: ''};
+                    this.freeManagers.push(response.data);
+                }
 			})
 			.catch(function(error){
 				alert('Neuspešno registrovanje')
 			})
+		},
+        isValidToRegister : function() {
+            let reg = /[,]+/;
+
+			if (this.newManager.username == '' || this.newManager.username.match(reg)) {
+				return false;
+			}
+			if (this.newManager.password == '' || this.newManager.password.match(reg)) {
+				return false;
+			}
+			if (this.newManager.name == '' || this.newManager.name.match(reg)) {
+				return false;
+			}
+			if (this.newManager.surname == '' || this.newManager.surname.match(reg)) {
+				return false;
+			}
+			if (this.newManager.gender == '') {
+				return false;
+			}
+			if (this.newManager.dateOfBirth == '') {
+				return false;
+			}
+
+			return true;
 		},
         create : function(event) {
             event.preventDefault();
@@ -154,6 +195,22 @@ Vue.component("createRestaurant", {
                 alert('Niste odabrali lokaciju restorana na mapi');
                 return;
             }
+
+            if (!this.isValidToCreateRestaurant()){
+				alert('Nisu popunjena sva neophodna polja ili ste koristili pogrešne karaktere(",")');
+				return;
+			}
+
+            if (isNaN(this.newRestaurant.location.adress.postalCode)){
+                alert('Poštanski broj se mora sasatojati samo od cifara');
+                return;
+            }
+
+            if (this.newRestaurant.logo == '') {
+                alert('Morate odabrati logo restorana');
+                return;
+            }
+
             this.newRestaurant.status = 'Radi';
             this.newRestaurant.location.longitude = this.longitude;
             this.newRestaurant.location.latitude = this.latitude;
@@ -168,6 +225,30 @@ Vue.component("createRestaurant", {
 			.catch(function(error){
 				alert('Neuspešno kreiranje')
 			})
+        },
+        isValidToCreateRestaurant : function() {
+            let reg = /[,]+/;
+
+			if (this.newRestaurant.name == '' || this.newRestaurant.name.match(reg)) {
+				return false;
+			}
+			if (this.newRestaurant.type == '') {
+				return false;
+			}
+			if (this.newRestaurant.location.adress.street == '' || this.newRestaurant.location.adress.street.match(reg)) {
+				return false;
+			}
+			if (this.newRestaurant.location.adress.streetNum == '' || this.newRestaurant.location.adress.streetNum.match(reg)) {
+				return false;
+			}
+			if (this.newRestaurant.location.adress.city == '' || this.newRestaurant.location.adress.city.match(reg)) {
+				return false;
+			}
+			if (this.newRestaurant.location.adress.postalCode == '') {
+				return false;
+			}
+
+			return true;
         },
         setManagerToRestaurant : function(restaurant){
             this.selectedManager.restaurant = restaurant;

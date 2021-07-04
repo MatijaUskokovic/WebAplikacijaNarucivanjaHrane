@@ -65,51 +65,52 @@ Vue.component("changeRestaurant", {
 		updateRestaurant : function(event){
 			event.preventDefault();
 
-			var changedRestaurant = JSON.stringify(this.restaurantForChange);
-			//validacija restorana
-			if(this.validateRestaurant()){
-				axios
-				.put('rest/restaurants', changedRestaurant)
-				.then(response => {
-					this.restaurant = response.data;
-					alert('Uspešno ažurirani podaci');
-                    router.push('/restaurantPage');
-				})
-				.catch(function(error){
-					alert('Neuspešno ažuriranje podataka');
-				})
-			}else{
-				alert("Molimo vas da obrišete sve zapete.")
-			}
-		},
-        validateRestaurant : function(){
-			let reg = /[,]+/;
-
-			if(this.restaurantForChange.location.adress.city.match(reg)){
-				return false;
-				//css
+            if (!this.isValidToCreateRestaurant()){
+				alert('Nisu popunjena sva neophodna polja ili ste koristili pogrešne karaktere(",")');
+				return;
 			}
 
             if (isNaN(this.restaurantForChange.location.adress.postalCode)){
-                alert('Poštanski broj se mora sastojati samo od cifara');
-                return false;
+                alert('Poštanski broj se mora sasatojati samo od cifara');
+                return;
             }
 
-            if (this.restaurantForChange.location.adress.street.match(reg)) {
-                return false;
-            }
+			var changedRestaurant = JSON.stringify(this.restaurantForChange);
+			axios
+			.put('rest/restaurants', changedRestaurant)
+			.then(response => {
+				this.restaurant = response.data;
+				alert('Uspešno ažurirani podaci');
+                router.push('/restaurantPage');
+			})
+			.catch(function(error){
+				alert('Neuspešno ažuriranje podataka');
+			})
+		},
+        isValidToCreateRestaurant : function() {
+            let reg = /[,]+/;
 
-            if (this.restaurantForChange.location.adress.streetNum.match(reg)){
-                return false;
-            }
-
-			if(this.restaurantForChange.name.match(reg)){
-				//css
+			if (this.restaurantForChange.name == '' || this.restaurantForChange.name.match(reg)) {
+				return false;
+			}
+			if (this.restaurantForChange.type == '') {
+				return false;
+			}
+			if (this.restaurantForChange.location.adress.street == '' || this.restaurantForChange.location.adress.street.match(reg)) {
+				return false;
+			}
+			if (this.restaurantForChange.location.adress.streetNum == '' || this.restaurantForChange.location.adress.streetNum.match(reg)) {
+				return false;
+			}
+			if (this.restaurantForChange.location.adress.city == '' || this.restaurantForChange.location.adress.city.match(reg)) {
+				return false;
+			}
+			if (this.restaurantForChange.location.adress.postalCode == '') {
 				return false;
 			}
 
 			return true;
-		},
+        },
         getRestaurantAndLoggedUser : function() {
             if (app == null){
 				router.push('/');
