@@ -1,7 +1,7 @@
 Vue.component("shoppingCart", {
 	data: function () {
 		    return {
-			  customer: {shoppingCart: {items: []}},
+			  customer: {shoppingCart: {items: []}, type: {}},
               count: 0,
               restaurant: {}
 		    }
@@ -33,8 +33,19 @@ Vue.component("shoppingCart", {
     <div v-bind:hidden="customer.shoppingCart.items.length == 0">
         <table>
         <tr>
-            <td>UKUPNO:</td>
+            <td>Ukupno bez popusta:</td>
             <td>{{customer.shoppingCart.totalPrice}} din</td>
+        </tr>
+        <tr>
+            <td>Popust:</td>
+            <td>{{customer.type.discountPercent}} %</td>
+        </tr>
+        <tr>
+            <td colspan="2">---------------------------------------------</td>
+        </tr>
+        <tr>
+            <td><b>UKUPNO sa popustom:</b></td>
+            <td>{{customer.shoppingCart.totalPrice * (1 - (customer.type.discountPercent / 100))}} din</td>
         </tr>
         <tr>
             <button @click="createOrder()">Poruči</button>
@@ -104,7 +115,7 @@ Vue.component("shoppingCart", {
                 orderedItems : this.customer.shoppingCart.items,
                 restaurantOfOrder: this.restaurant,
                 dateOfOrder: date.getTime(),
-                price: this.customer.shoppingCart.totalPrice,
+                price: this.customer.shoppingCart.totalPrice * (1 - (this.customer.type.discountPercent / 100)), // racunanje popusta
                 customer: this.customer,
                 status: 'Obrada'
             };

@@ -132,6 +132,7 @@ Vue.component("orders", {
             <td>{{order.restaurantOfOrder.name}}</td>
             <td>{{order.restaurantOfOrder.type}}</td>
             <td>{{order.price}}</td>
+            <td><button @click="showOrder(order)">Prikaži</button></td>
             <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'Obrada')"><button @click="startPreparation(order)">Pokreni pripremu</button></td>
             <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'U_pripremi')"><button @click="orderForDeliverer(order)">Spremno za dostavljača</button></td>
             <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Obrada')"><button @click="cancelOrder(order)">Otkaži</button></td>
@@ -381,6 +382,10 @@ Vue.component("orders", {
             }
 
             this.ordersToShow = filteredOrders;
+        },
+        showOrder : function(order) {
+            app.selectedOrder = order;
+            router.push('/orderView');
         }
 	},
     filters: {

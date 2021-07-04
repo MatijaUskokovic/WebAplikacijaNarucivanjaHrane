@@ -32,6 +32,9 @@ Vue.component("restaurantPage", {
 			<!--PRIKAZ INFORMACIJA O RESTORANU-->
 			<table>
 				<tr>
+					<td colspan="2"><img :src="restaurant.logo" width="200" height="120"></td>
+				</tr>
+				<tr>
 					<td>Ime restorana</td>
 					<td>{{restaurant.name}}</td>
 				</tr>
