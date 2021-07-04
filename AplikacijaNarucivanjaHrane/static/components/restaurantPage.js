@@ -60,15 +60,17 @@ Vue.component("restaurantPage", {
 
 			<div>
 				<h3>Artikli restorana</h3>
+				<br/>
 				<div>
-					<table border="1px">
-						<th>Slika</th><th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
+					<table style="text-align: center;">
+						<th></th><th>Naziv proizvoda</th><th style="width: 100px">Cena</th><th style="width: 100px">Tip</th><th>Količina</th><th>Opis</th>
 						<tr v-for="item in restaurant.items">
 							<td><img :src="item.image" width="100" height="100"></td>
 							<td>{{item.name}}</td>
 							<td>{{item.price}}</td>
 							<td>{{item.type}}</td>
-							<td>{{item.quantity}}</td>
+							<td v-if="item.type === 'jelo'">{{item.quantity}} (g)</td>
+							<td v-else>{{item.quantity}} (ml)</td>
 							<td>{{item.description}}</td>
 							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count" v-bind:disabled="restaurant.status != 'Radi'"></td>
 							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)" v-bind:disabled="restaurant.status != 'Radi'">Dodaj u korpu</button></td>
@@ -111,12 +113,12 @@ Vue.component("restaurantPage", {
 
 			<form @submit="addItem">
 				<table>
-					<tr><td>Ime proizvoda</td><td><input type="text" v-model="newItem.name"></td></tr>
-					<tr><td>Cena proizvoda</td><td><input type="number" v-model="newItem.price"></td></tr>
+					<tr><td>Ime proizvoda*</td><td><input type="text" v-model="newItem.name"></td></tr>
+					<tr><td>Cena proizvoda*</td><td><input type="number" v-model="newItem.price"></td></tr>
 					<tr><td>Količina proizvoda</td><td><input type="number" v-model="newItem.quantity"></td></tr>
 					<tr><td>Opis proizvoda</td><td><input type="text" v-model="newItem.description"></td></tr>
 					<tr>
-					<td>Tip proizvoda</td>
+					<td>Tip proizvoda*</td>
 						<td>
 							<select v-model="newItem.type">
 								<option value="jelo">Jelo</option>
@@ -125,7 +127,7 @@ Vue.component("restaurantPage", {
 						</td>
 					</tr>
 					
-					<tr><td>Slika</td><td><input type="file" @change="handleFileUpload" accept="image/*"></td></tr>
+					<tr><td>Slika*</td><td><input type="file" @change="handleFileUpload" accept="image/*"></td></tr>
 					
 					<tr><td><input type="submit" value="Kreiraj proizvod"></td></tr>
 				</table>
@@ -143,12 +145,12 @@ Vue.component("restaurantPage", {
 
 			<form @submit="updateItem">
 				<table>
-					<tr><td>Ime proizvoda</td><td><input type="text" v-model="itemForChange.name"></td></tr>
-					<tr><td>Cena proizvoda</td><td><input type="number" v-model="itemForChange.price"></td></tr>
+					<tr><td>Ime proizvoda*</td><td><input type="text" v-model="itemForChange.name"></td></tr>
+					<tr><td>Cena proizvoda*</td><td><input type="number" v-model="itemForChange.price"></td></tr>
 					<tr><td>Količina proizvoda</td><td><input type="number" v-model="itemForChange.quantity"></td></tr>
 					<tr><td>Opis proizvoda</td><td><input type="text" v-model="itemForChange.description"></td></tr>
 					<tr>
-					<td>Tip proizvoda</td>
+					<td>Tip proizvoda*</td>
 						<td>
 							<select v-model="itemForChange.type">
 								<option value="jelo">Jelo</option>
@@ -270,7 +272,8 @@ Vue.component("restaurantPage", {
 				"type": item.type,
 				"restaurant": item.restaurant,
 				"quantity": item.quantity,
-				"description": item.description
+				"description": item.description,
+				"image": item.image
 			}
 			this.changeModeFromItemUpdate();
 		},
@@ -278,10 +281,16 @@ Vue.component("restaurantPage", {
 			event.preventDefault();
 
 			this.newItem.restaurant = this.restaurant;
-
-			var addedItem = JSON.stringify(this.newItem);
 			// validacija itema
 			if(this.validateItem(this.newItem)){
+				if(this.newItem.description.trim() === ""){
+					this.newItem.description = "#";
+				}
+				if(this.newItem.quantity === ""){
+					this.newItem.quantity = 0;
+				}
+
+				var addedItem = JSON.stringify(this.newItem);
 				axios.post('rest/items',addedItem)
 				.then(res => {
 					this.restaurant = res.data;
@@ -298,15 +307,20 @@ Vue.component("restaurantPage", {
 					alert("Greska prilikom kreiranja proizvoda");
 				})
 			}else{
-				alert("Molimo vas da obrišete sve zapete.");
+				alert("Molimo vas da obrišete sve zapete, ili popunite sva polja označena zvezdicom.");
 			}
 		},
 		updateItem : function(event){
 			event.preventDefault();
-			
-			var item = JSON.stringify(this.itemForChange);
 			//validacija itema
 			if(this.validateItem(this.itemForChange)){
+				if(this.itemForChange.quantity === ""){
+					this.itemForChange.quantity = 0;
+				}
+				if(this.itemForChange.description.trim() === ""){
+					this.itemForChange.description = '#';
+				}
+				var item = JSON.stringify(this.itemForChange);
 				axios.put('rest/items',item)
 				.then(res => {
 					this.restaurant = res.data;
@@ -316,7 +330,7 @@ Vue.component("restaurantPage", {
 					alert("Došlo je do greške prilikom izmene proizvoda"); 
 				})
 			}else{
-				alert("Molimo vas da obrišete sve zapete.")
+				alert("Molimo vas da obrišete sve zapete, ili popunite sva polja označena zvezdicom.")
 			}
 		},
 		deleteItem : function(item) {
@@ -338,23 +352,35 @@ Vue.component("restaurantPage", {
 		
 		validateItem : function (item){
 			let reg = /[,]+/;
-			let isValid = true;
-			// dodati u klasi item da prazan konstruktor postavlja kolicinu i opis
-			if(item.name.match(reg)){
-				isValid = false;
-				return;
-			}else{
-				isValid = true;
+
+			for(i of this.restaurant.items){
+				if(i.name === item.name && i.id != item.id){
+					alert("Već postoji proizvod sa istim imenom, molimo vas da promenite ime proizvoda.")
+					return false;
+				}
+			}
+
+			if(item.name.match(reg) || item.name.trim() === ""){
+				return false;
 			}
 
 			if(item.description.match(reg)){
-				isValid = false;
-				return;
-			}else{
-				isValid = true;
+				return false;
 			}
 
-			return isValid;
+			if(item.price === ""){
+				return false;
+			}
+
+			if(item.image === ""){
+				return false;
+			}
+
+			if(item.type === ""){
+				return false;
+			}
+
+			return true;
 		},
 		// DODAVANJE PROIZVODA U KORPU
 		addItemInCart : function(item){

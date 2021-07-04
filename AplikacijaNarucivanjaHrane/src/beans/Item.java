@@ -16,6 +16,8 @@ public class Item {
 	public Item() {
 		this.id = UUID.randomUUID().toString();
 		this.deleted = false;
+		this.quantity = 0;
+		this.description = " ";
 	}
 
 	public Item(String id, boolean deleted, String name, double price, ItemType type, Restaurant restaurant,
