@@ -69,7 +69,7 @@ Vue.component("loginAndRegistration", {
 		register : function(event) {
 			event.preventDefault();
 			if (!this.isValidToRegister()){
-				alert('Nisu popunjena sva neophodna polja');
+				alert('Nisu popunjena sva neophodna polja ili ste koristili pogrešne karaktere(",")');
 				return;
 			}
 			if (this.regUser.username == '-1'){
@@ -97,16 +97,18 @@ Vue.component("loginAndRegistration", {
 			})
 		},
 		isValidToRegister : function() {
-			if (this.regUser.username == '') {
+			let reg = /[,]+/;
+
+			if (this.regUser.username == '' || this.regUser.username.match(reg)) {
 				return false;
 			}
-			if (this.regUser.password == '') {
+			if (this.regUser.password == '' || this.regUser.password.match(reg)) {
 				return false;
 			}
-			if (this.regUser.name == '') {
+			if (this.regUser.name == '' || this.regUser.name.match(reg)) {
 				return false;
 			}
-			if (this.regUser.surname == '') {
+			if (this.regUser.surname == '' || this.regUser.surname.match(reg)) {
 				return false;
 			}
 			if (this.regUser.gender == '') {

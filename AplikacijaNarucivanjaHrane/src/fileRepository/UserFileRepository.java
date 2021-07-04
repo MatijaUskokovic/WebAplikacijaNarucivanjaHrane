@@ -129,7 +129,9 @@ public class UserFileRepository {
 		readUsers();
 		manager.setRole(UserRole.Menadzer);
 		if (users.containsKey(manager.getUsername())){
-			return null;
+			Manager m = new Manager();
+			m.setUsername("-1");
+			return m;
 		}
 		if (writeUser(managerToText(manager), true)) {
 			return manager;
@@ -141,7 +143,9 @@ public class UserFileRepository {
 		readUsers();
 		deliverer.setRole(UserRole.Dostavljac);
 		if (users.containsKey(deliverer.getUsername())) {
-			return null;
+			Deliverer d = new Deliverer();
+			d.setUsername("-1");
+			return d;
 		}
 		if (writeUser(delivererToText(deliverer), true)) {
 			return deliverer;
