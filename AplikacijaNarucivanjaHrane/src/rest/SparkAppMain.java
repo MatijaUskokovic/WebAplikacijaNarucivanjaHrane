@@ -24,7 +24,6 @@ import beans.Manager;
 import beans.Order;
 import beans.Restaurant;
 import beans.ShoppingCart;
-import beans.ShoppingCartItem;
 import beans.User;
 import gsonAdapters.DateAdapter;
 import services.CommentService;
@@ -117,14 +116,12 @@ public class SparkAppMain {
 			Customer customer = g.fromJson(req.body(), Customer.class);
 			Session ss = req.session();
 			Object user = ss.attribute("user");
-			if (user.getClass() == Customer.class) {
-				for (ShoppingCartItem scItem : customer.getShoppingCart().getItems()) {
-					scItem.calculateTotalPrice();
-				}
-				customer.getShoppingCart().CalculateTotalPrice();
+			customer = userService.changeCustomer(customer);
+			// kada je username -1 znaci da je zauzeto i da izmena nije uspela
+			if (user.getClass() == Customer.class && !customer.getUsername().equals("-1")) {
 				ss.attribute("user", customer);
 			}
-			return g.toJson(userService.changeCustomer(customer));
+			return g.toJson(customer);
 		});
 
 		put("rest/managers/:id", (req, res) -> {
@@ -132,10 +129,12 @@ public class SparkAppMain {
 			Manager manager = g.fromJson(req.body(), Manager.class);
 			Session ss = req.session();
 			Object user = ss.attribute("user");
-			if (user.getClass() == Manager.class) {
+			manager = userService.changeManager(manager);
+			// kada je username -1 znaci da je zauzeto i da izmena nije uspela
+			if (user.getClass() == Manager.class && !manager.getUsername().equals("-1")) {
 				ss.attribute("user", manager);
 			}
-			return g.toJson(userService.changeManager(manager));
+			return g.toJson(manager);
 		});
 
 		put("rest/deliverers/:id", (req, res) -> {
@@ -143,10 +142,12 @@ public class SparkAppMain {
 			Deliverer deliverer = g.fromJson(req.body(), Deliverer.class);
 			Session ss = req.session();
 			Object user = ss.attribute("user");
-			if (user.getClass() == Deliverer.class) {
+			deliverer = userService.changeDeliverer(deliverer);
+			// kada je username -1 znaci da je zauzeto i da izmena nije uspela
+			if (user.getClass() == Deliverer.class && !deliverer.getUsername().equals("-1")) {
 				ss.attribute("user", deliverer);
 			}
-			return g.toJson(userService.changeDeliverer(deliverer));
+			return g.toJson(deliverer);
 		});
 		
 		put("rest/administrators/:id", (req, res) -> {
@@ -154,10 +155,12 @@ public class SparkAppMain {
 			Administrator administrator = g.fromJson(req.body(), Administrator.class);
 			Session ss = req.session();
 			Object user = ss.attribute("user");
-			if (user.getClass() == Administrator.class) {
+			administrator = userService.changeAdministrator(administrator);
+			// kada je username -1 znaci da je zauzeto i da izmena nije uspela
+			if (user.getClass() == Administrator.class && !administrator.getUsername().equals("-1")) {
 				ss.attribute("user", administrator);
 			}
-			return g.toJson(userService.changeAdministrator(administrator));
+			return g.toJson(administrator);
 		});
 
 		// BRISANJE KORISNIKA

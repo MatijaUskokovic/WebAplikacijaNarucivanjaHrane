@@ -18,7 +18,7 @@ Vue.component("shoppingCart", {
             <th>Ukupno</th>
         </tr>
         <tr v-for="cartItem in customer.shoppingCart.items">
-            <td>Slika proizvoda</td>
+            <td><img :src="cartItem.item.image" width="100" height="70"></td>
             <td>{{cartItem.item.name}}</td>
             <td>{{cartItem.item.price}}</td>
             <td><input type="text" v-model="cartItem.count" @change="changeCount(cartItem)" @mouseenter="saveCount(cartItem.count)"></td>

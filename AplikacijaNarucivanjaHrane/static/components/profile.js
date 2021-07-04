@@ -35,7 +35,19 @@ Vue.component("profile", {
 	methods: {
 		updateInfo : function(event) {
 			event.preventDefault();
+
+            if (!this.isValidToUpdateInfo()){
+				alert('Nisu popunjena sva neophodna polja ili ste koristili nedozvoljene karaktere(",")');
+				return;
+			}
+			if (this.changedUser.username == '-1'){
+				alert('Nemoguće odabrati navedeno korisničko ime');
+				return;
+			}
+
+            this.changedUser.dateOfBirth = this.changedUser.dateOfBirth.getTime();
 			var user = JSON.stringify(this.changedUser);
+            this.changedUser.dateOfBirth = new Date(parseInt(this.changedUser.dateOfBirth));
             var path = '';
             if (this.changedUser.role === 'Kupac'){
                 path = 'rest/customers/' + this.changedUser.id;
@@ -49,20 +61,51 @@ Vue.component("profile", {
 			axios
 			.put(path, user)
 			.then(response => {
-                // da se azurira logovani korisnik od kojeg se priakzuje ime na pocetnom ekranu
-                app.getLoggedUser();
-                this.changedUser = response.data;
-				alert('Uspešno ažurirani podaci')
+                if (response.data.username == '-1'){
+					alert('Korisničko ime je već zauzeto');
+				}
+                else {
+                    // da se azurira logovani korisnik od kojeg se priakzuje ime na pocetnom ekranu
+                    app.getLoggedUser();
+                    this.changedUser = response.data;
+                    this.changedUser.dateOfBirth = new Date(parseInt(this.changedUser.dateOfBirth));
+                    alert('Uspešno ažurirani podaci')
+                }
 			})
 			.catch(function(error){
 				alert('Neuspešno ažuriranje podataka')
 			})
+		},
+        isValidToUpdateInfo : function() {
+			let reg = /[,]+/;
+
+			if (this.changedUser.username == '' || this.changedUser.username.match(reg)) {
+				return false;
+			}
+			if (this.changedUser.password == '' || this.changedUser.password.match(reg)) {
+				return false;
+			}
+			if (this.changedUser.name == '' || this.changedUser.name.match(reg)) {
+				return false;
+			}
+			if (this.changedUser.surname == '' || this.changedUser.surname.match(reg)) {
+				return false;
+			}
+			if (this.changedUser.gender == '') {
+				return false;
+			}
+			if (this.changedUser.dateOfBirth == '') {
+				return false;
+			}
+
+			return true;
 		},
         getLoggedUser : function() {
 			axios
 			.get('rest/getLoggedUser')
 			.then(response => {
 				this.changedUser = response.data;
+                this.changedUser.dateOfBirth = new Date(parseInt(this.changedUser.dateOfBirth));
 			})
             .catch(function(error){
                 router.push('/');

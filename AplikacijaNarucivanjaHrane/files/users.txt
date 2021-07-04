@@ -1,9 +1,10 @@
 123123123,false,false,pera,123,Petar,Petrović,muski,1122108320467,Kupac,2154,6728890809
 111222333,false,false,ivo,123,Ivo,Ivić,muski,0814108320467,Menadzer,111
-3db4c1db-e028-4af3-8dd7-26e4acebf01a,false,true,miki,123,Milivoje,Mikić,muski,0920108300000,Kupac,0,
+3db4c1db-e028-4af3-8dd7-26e4acebf01a,false,true,miki,123,Milivoje,Mikić,muski,920108300000,Kupac,0,
 0aedc6a1-4cb9-402f-ac70-e593f548886a,false,false,eee,123,Milivoje,Milivojević,muski,704108300000,Dostavljac,6728890809
 0aedc6a1-4cb9-402f-ac70-e593f000000g,false,false,admin,123,Mitar,Marketar,muski,324108000000,Administrator
 97198b5b-e681-4ab0-b92f-32066b3e8589,false,false,jova,123,Jovica,Jović,muski,642287580000,Menadzer,b31aa743-eb84-4633-b0fa-e3404c129b79
 a7528397-1d14-4c5d-8a49-d507f10b141e,false,false,mica,123,Milica,Miličić,zenski,922569560000,Menadzer,111
 3a972b7e-7ca2-4e07-bdcd-0c22d1b78f7b,false,true,nina,123,Nina,Kekić,zenski,622579220000,Menadzer,-1
 23e9b1cc-d9a7-49d5-a583-bdecd9b47063,false,false,luka,123,Luka,Lukić,muski,863685480000,Dostavljac
+467b5ebc-0e6c-4907-970c-87a976439eec,false,false,probni,123,Imenko,Prezimenić,muski,639070620000,Kupac,160,5270391983

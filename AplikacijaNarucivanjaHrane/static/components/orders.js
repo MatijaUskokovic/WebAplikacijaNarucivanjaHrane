@@ -123,7 +123,7 @@ Vue.component("orders", {
             <th>Datum porudžbine</th>
             <th>Restoran</th>
             <th>Tip restorana</th>
-            <th>Ukupno</th>
+            <th>Ukupno (din)</th>
         </tr>
         <tr v-for="order in ordersToShow">
             <td>{{order.id}}</td>

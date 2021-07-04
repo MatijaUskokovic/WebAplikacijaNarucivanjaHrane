@@ -158,24 +158,56 @@ public class UserFileRepository {
 	 */
 	public Customer changeCustomer(Customer customer) {
 		readUsers();
+		String id = customer.getId();
+		User user = users.get(customer.getUsername());
+		
+		// provera da li je korisnicko ime vec zauzeto a da to nije taj isti korisnik
+		if (user != null && users.containsKey(customer.getUsername()) && !id.equals(user.getId())) {
+			customer.setUsername("-1");	// ako je username zauzet vrati -1 u tom polju
+			return customer;
+		}
 		writeChangedUser(customer.getId(), customerToText(customer));
 		return customer;
 	}
 	
 	public Manager changeManager(Manager manager) {
 		readUsers();
+		String id = manager.getId();
+		User user = users.get(manager.getUsername());
+		
+		// provera da li je korisnicko ime vec zauzeto a da to nije taj isti korisnik
+		if (user != null && users.containsKey(manager.getUsername()) && !id.equals(user.getId())) {
+			manager.setUsername("-1");	// ako je username zauzet vrati -1 u tom polju
+			return manager;
+		}
 		writeChangedUser(manager.getId(), managerToText(manager));
 		return manager;
 	}
 	
 	public Deliverer changeDeliverer(Deliverer deliverer) {
 		readUsers();
+		String id = deliverer.getId();
+		User user = users.get(deliverer.getUsername());
+		
+		// provera da li je korisnicko ime vec zauzeto a da to nije taj isti korisnik
+		if (user != null && users.containsKey(deliverer.getUsername()) && !id.equals(user.getId())) {
+			deliverer.setUsername("-1");	// ako je username zauzet vrati -1 u tom polju
+			return deliverer;
+		}
 		writeChangedUser(deliverer.getId(), delivererToText(deliverer));
 		return deliverer;
 	}
 	
 	public Administrator changeAdministrator(Administrator administrator) {
 		readUsers();
+		String id = administrator.getId();
+		User user = users.get(administrator.getUsername());
+		
+		// provera da li je korisnicko ime vec zauzeto a da to nije taj isti korisnik
+		if (user != null && users.containsKey(administrator.getUsername()) && !id.equals(user.getId())) {
+			administrator.setUsername("-1");	// ako je username zauzet vrati -1 u tom polju
+			return administrator;
+		}
 		writeChangedUser(administrator.getId(), administratorToText(administrator));
 		return administrator;
 	}

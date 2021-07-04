@@ -56,7 +56,7 @@ var app = new Vue({
 					this.loggedUser = response.data;
 					this.userRole = this.loggedUser.role;
 				}else{
-					alert('Nije vam dozvoljena prijava, jer ste blokirani')
+					alert('Nije Vam dozvoljena prijava jer je Vaš nalog blokiran')
 				}
 			})
 		},
