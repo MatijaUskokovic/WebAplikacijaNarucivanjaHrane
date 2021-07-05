@@ -57,7 +57,7 @@ Vue.component("restaurantPage", {
 			</table>
 
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
-
+			<hr/>
 			<div>
 				<h3>Artikli restorana</h3>
 				<br/>
@@ -82,24 +82,28 @@ Vue.component("restaurantPage", {
 			</div>
 
 			<!--PRIKAZ KOMENTARA RESTORANA-->
-			<h3>Komentari restorana</h3>
-			<table border="1" v-if="restaurantComments.length != 0">
-				<tr>
-					<th>Ime korisnika</th>
-					<th>Korisničko ime</th>
-					<th>Ocena</th>
-					<th>Komentar</th>
-					<th v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">Odobren</th>
-				</tr>
-				<tr v-for="comment in restaurantComments">
-					<td>{{comment.customerOfComment.name}}</td>
-					<td>{{comment.customerOfComment.username}}</td>
-					<td>{{comment.grade}}</td>
-					<td>{{comment.text}}</td>
-					<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
-        		</tr>
-			</table>
-			<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
+			<hr/>
+
+			<div class="divForCommentsInRestaurantPage">
+				<h3>Komentari restorana</h3>
+				<table v-if="restaurantComments.length != 0">
+					<tr>
+						<th>Ime korisnika</th>
+						<th>Korisničko ime</th>
+						<th>Ocena</th>
+						<th>Komentar</th>
+						<th v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">Odobren</th>
+					</tr>
+					<tr v-for="comment in restaurantComments">
+						<td>{{comment.customerOfComment.name}}</td>
+						<td>{{comment.customerOfComment.username}}</td>
+						<td>{{comment.grade}}</td>
+						<td>{{comment.text}}</td>
+						<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
+					</tr>
+				</table>
+				<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
+			</div>
 		</div>
 
 		<!--DODAVANJE PROIZVODA-->

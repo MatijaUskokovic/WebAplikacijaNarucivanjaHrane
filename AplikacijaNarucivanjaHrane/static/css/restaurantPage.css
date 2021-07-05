@@ -1,0 +1,23 @@
+.divForCommentsInRestaurantPage{
+    margin: auto;
+    width: 40%;
+    text-align: center;
+}
+
+.divForCommentsInRestaurantPage table{
+    border-style: inset;
+    padding: 15px;
+}
+
+.divForCommentsInRestaurantPage table th{
+    background-color: darkgray;
+    width: 10%;
+}
+
+.divForCommentsInRestaurantPage table td{
+    width: 10%;
+}
+
+.divForCommentsInRestaurantPage tr:nth-child(even) {
+    background-color: lightgray;
+}

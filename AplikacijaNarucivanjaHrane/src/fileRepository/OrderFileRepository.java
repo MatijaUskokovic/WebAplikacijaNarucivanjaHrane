@@ -27,6 +27,7 @@ public class OrderFileRepository {
 	private String path = "./files/orders.txt";
 	private HashMap<String, Order> orders = new HashMap<String, Order>();
 	private Gson g = new Gson();
+	private static int MAX_NUM = 5; 
 
 	public OrderFileRepository() {
 
@@ -166,7 +167,7 @@ public class OrderFileRepository {
 					numOfCancle++;
 			}
 			
-			if(numOfCancle >= 1)
+			if(numOfCancle >= MAX_NUM)
 				customers.add(customer);
 		}
 		return customers;
