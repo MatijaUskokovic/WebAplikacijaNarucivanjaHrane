@@ -1,0 +1,11 @@
+.filterBar {
+    width:100%;
+    height:100%;
+    background-color:rgb(205, 213, 221);
+    border: 2px solid black;
+    border-radius: 7px;
+}
+
+.filterBar table {
+    margin: 10px;
+}

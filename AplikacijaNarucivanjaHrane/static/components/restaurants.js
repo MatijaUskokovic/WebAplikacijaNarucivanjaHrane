@@ -17,15 +17,11 @@ Vue.component("restaurants", {
 
 			<!--PRETRAGA-->
 
-			<div class='insideDiv'>
+			<div class='filterBar'>
 				<form @submit='search'>
-					<table bgcolor="gold">
+					<table>
 						<tr>
-							<th></th>
-							<th></th>
-							<th>Pretraga</th>
-						</tr>
-						<tr>
+							<td><b>Pretraga: </b></td>
 							<td><input type="text" placeholder="Naziv" v-model="name"></td>
 							<td>
 								<select v-model="type">
@@ -61,37 +57,30 @@ Vue.component("restaurants", {
 				</form>
 
 				<!--SORTIRANJE-->
-
-				<div class='insideDiv'>
-					<form>
-						<table bgcolor="gold">
-							<tr>
-								<th></th>
-								<th></th>
-								<th>Sortiranje</th>
-							</tr>
-							<tr>
-								<td>
-									<select v-model="sortMode" @change="sort">
-										<option value="rastuce">Rastuće</option>
-										<option value="opadajuce">Opadajuće</option>
-									</select>
-								</td>
-								<td>...............</td>
-								<td>
-									Kriterijum sortiranja:
-								</td>
-								<td>
-									<select v-model="sortParameter" @change="sort">
-										<option value="name">Naziv</option>
-										<option value="adress">Lokacija</option>
-										<option value="avgGrade">Prosečna ocena</option>
-									</select>
-								</td>
-							</tr>
-						</table>
-					</form>
-				</div>
+				<form>
+					<table>
+						<tr>
+						<td><b>Sortiranje: </b></td>
+							<td>
+								<select v-model="sortMode" @change="sort">
+									<option value="rastuce">Rastuće</option>
+									<option value="opadajuce">Opadajuće</option>
+								</select>
+							</td>
+							<td>...............</td>
+							<td>
+								Kriterijum sortiranja:
+							</td>
+							<td>
+								<select v-model="sortParameter" @change="sort">
+									<option value="name">Naziv</option>
+									<option value="adress">Lokacija</option>
+									<option value="avgGrade">Prosečna ocena</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+				</form>
 			</div>
 
 			<!--RESTORANI-->

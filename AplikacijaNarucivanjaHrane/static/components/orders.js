@@ -30,12 +30,14 @@ Vue.component("orders", {
 	template: ` 
 <div>
     <div class="mainDivForOrders">
-        <div class="divForSearchInOrders">
+        <h2>Prikaz porudžbina</h2>
+
+        <div class="filterBar">
             <!--PRETRAGA-->
-            <form @submit='search' style="margin: 0px">
-                <p style="margin: 0px"><strong>Pretraga</strong></p>
+            <form @submit='search'>
                 <table>
                     <tr>
+                        <td><b>Pretraga: </b></td>
                         <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Naziv restorana" v-model="restaurantName"></td>
                         <td><input type="number" placeholder="Od cene" v-model="fromThePrice"></td>
                         <td><input type="number" placeholder="Do cene" v-model="toThePrice"></td>
@@ -47,11 +49,11 @@ Vue.component("orders", {
             </form>
 
             <!--FILTRIRANJE-->
-            <div class="divForFilteringInOrders">
-                <form @submit='filter' style="margin: 0px">
-                    <p style="margin: 0px"><strong>Filtriranje</strong></p>
-                    <table style="margin: 0px">
+            <div>
+                <form @submit='filter'>
+                    <table>
                         <tr>
+                        <td><b>Filtriranje: </b></td>
                             <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Tip restorana" v-model="restaurantType"></td>
                             <td>
                                 <select v-model="orderStatus">
@@ -71,11 +73,11 @@ Vue.component("orders", {
             </div>
 
                 <!--SORTIRANJE-->
-                <div class="divForSortInOrders">
-                    <form style="margin: 0px">
-                        <p style="margin: 0px"><strong>Sortiranje</strong></p>
-                        <table style="margin: 0px">
+                <div>
+                    <form>
+                        <table>
                             <tr>
+                                <td><b>Sortiranje: </b></td>
                                 <td>
                                     <select v-model="sortMode" @change="sort">
                                         <option value="rastuce">Rastuće</option>
@@ -98,26 +100,27 @@ Vue.component("orders", {
                     </form>
                 </div>
 
-                <!-- Selektovanje prikaza samo neisporučenih -->
-                <div v-if="loggedUser.role == 'Kupac' || loggedUser.role == 'Dostavljac'">
-                    <table>
-                        <tr>
-                            <td><b>Prikaz</b></td>
-                            <td>
-                                <select v-model="view" @change="changeView">
-                                    <option value=""></option>
-                                    <option value="svih">Svih</option>
-                                    <option value="nedostavljene">Nedostavljenih</option>
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
         </div>
 
+        <br/>
+        <br/>
         <!--PORUDZBINE-->
         <div class="divForTableInOrders">
-            <h3>Prikaz porudžbina</h3>
+
+            <table v-if="loggedUser.role == 'Kupac' || loggedUser.role == 'Dostavljac'">
+                <tr>            
+                    <td><b>Prikaz</b></td>
+                    <!-- Selektovanje prikaza samo neisporučenih -->
+                    <td>
+                        <select v-model="view" @change="changeView">
+                            <option value=""></option>
+                            <option value="svih">Svih</option>
+                            <option value="nedostavljene">Nedostavljenih</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
             <div v-bind:hidden="loggedUser.role !== 'Dostavljac'">
                 <table>
                     <tr>
@@ -128,7 +131,7 @@ Vue.component("orders", {
             </div>
 
             <table border="1">
-                <tr bgcolor="lightgray">
+                <tr bgcolor="whitesmoke">
                     <th>Šifra porudžbine</th>
                     <th>Status porudžbine</th>
                     <th>Datum porudžbine</th>

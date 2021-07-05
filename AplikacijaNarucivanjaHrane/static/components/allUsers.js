@@ -25,18 +25,14 @@ Vue.component("allUsers", {
 	},
 	template: ` 
     <div class="mainDivForUsers">
-        <h3>Prikaz svih korisnika sistema</h3>
+        <h2>Prikaz svih korisnika sistema</h2>
 
         <!--PRETRAGA-->
-        <div class="insideDivForSearchInAllUsers">
+        <div class="filterBar">
             <form @submit='search'>
-                <table bgcolor="gold">
+                <table>
                     <tr>
-                        <th></th>
-                        <th></th>
-                        <th>Pretraga</th>
-                    </tr>
-                    <tr>
+                        <td><b>Pretraga: </b></td>
                         <td><input type="text" placeholder="Ime" v-model="name"></td>
                         <td><input type="text" placeholder="Prezime" v-model="surname"></td>
                         <td><input type="text" placeholder="Korisničko ime" v-model="username"></td>
@@ -64,15 +60,11 @@ Vue.component("allUsers", {
         
 
             <!--SORTIRANJE-->
-            <div class="insideDivForSortInAllUsers">
+            <div>
                 <form>
-                    <table bgcolor="gold">
+                    <table>
                         <tr>
-                            <th></th>
-                            <th></th>
-                            <th>Sortiranje</th>
-                        </tr>
-                        <tr>
+                            <td><b>Sortiranje: </b></td>
                             <td>
                                 <select v-model="sortMode" @change="sort">
                                     <option value="rastuce">Rastuće</option>
@@ -97,6 +89,8 @@ Vue.component("allUsers", {
             </div>
         </div>
 
+        <br/>
+        <br/>
         <!--PRIKAZ KORISNIKA-->
         <div class="insideDivWithAllUsers">
             <table>
@@ -107,7 +101,7 @@ Vue.component("allUsers", {
             </table>
 
             <table class="tableWithUsers">
-                <tr bgcolor="grey">
+                <tr bgcolor="whitesmoke">
                     <th>Korisničko ime</th>
                     <th>Ime</th>
                     <th>Prezime</th>
@@ -120,9 +114,9 @@ Vue.component("allUsers", {
                     <td>{{user.username}}</td>
                     <td>{{user.name}}</td>
                     <td>{{user.surname}}</td>
-                    <td>{{user.gender}}</td>
+                    <td>{{user.gender | genderFormat}}</td>
                     <td>{{user.dateOfBirth | dateFormat('DD.MM.YYYY')}}</td>
-                    <td>{{user.role}}</td>
+                    <td>{{user.role | roleFormat}}</td>
                     <td>{{user.pointsCollected}}</td>
                     <td v-if="user.role != 'Administrator' && !user.blocked"><button @click="blockUser(user)">Blokiraj</button></td>
                     <td v-else-if="user.role != 'Administrator' && user.blocked"><button @click="unblockUser(user)">Odblokiraj</button></td>
@@ -284,6 +278,25 @@ Vue.component("allUsers", {
     	dateFormat: function (value, format) {
     		var parsed = moment(value);
     		return parsed.format(format);
-    	}
+    	},
+        genderFormat: function (value) {
+            if (value == 'muski') {
+                return 'muški';
+            }
+            else {
+                return 'ženski';
+            }
+        },
+        roleFormat : function (value) {
+            if (value == 'Dostavljac') {
+                return 'Dostavljač';
+            }
+            else if (value == 'Menadzer') {
+                return 'Menadžer';
+            }
+            else {
+                return value;
+            }
+        }
    	}
 });
