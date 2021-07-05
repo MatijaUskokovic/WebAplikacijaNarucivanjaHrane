@@ -7,54 +7,66 @@ Vue.component("changeRestaurant", {
 		    }
 	},
 	template: ` 
-<div v-if="restaurantForChange">
-    <form @submit="updateRestaurant">
-        <table border="1">
-            <tr>
-                <td colspan="2">Naziv</td>
-                <td><input type="text" v-model="restaurantForChange.name"></td>
-            </tr>
-            <tr>
-                <td colspan="2">Tip</td>
-                <td><select v-model="restaurantForChange.type">
-                        <option value="Italijanski">Italijanski</option>
-                        <option value="Kineski">Kineski</option>
-                        <option value="Rostilj">Roštilj</option>
-                        <option value="Meksicki">Meksički</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">Lokacija</td>
-                <td><div id="map" class="map" @click="refreshLocation"></div></td>
-            </tr>
-            <tr>
-                <td colspan="2">Koordinate (možete odabrati novu na mapi)</td>
-                <td>{{restaurantForChange.location.longitude}}, {{restaurantForChange.location.latitude}}</td>
-            </tr>
-            <tr>
-                <td>Grad</td>
-                <td><input type="text" placeholder="Grad" v-model="restaurantForChange.location.adress.city"/></td>
-                <td><input type="text" placeholder="Poštanski broj" v-model="restaurantForChange.location.adress.postalCode"/></td>
-            </tr>
-            <tr>
-                <td>Adresa</td>
-                <td><input type="text" placeholder="Ulica" v-model="restaurantForChange.location.adress.street" /></td>
-                <td><input type="text" placeholder="Broj" id="streetNum" v-model="restaurantForChange.location.adress.streetNum"/></td>  
-            </tr>
+<div class="column-container">
 
-            <!-- ZA SADA SE JOS NE MOGU MENJATI SLIKE
-            <tr>
-                <td colspan="2">Logo</td>
-                <td><input type="file" @change="handleFileUpload" accept="image/*"></td>
-            </tr>
-            -->
+    <div class="column1">
+    </div>
+    <div class="columnSpace">
+	</div>
 
-            <tr>
-                <td><input type="submit" value="Ažuriraj podatke"></td>
-            </tr>
-        </table>
-    </form>
+    <div class="column2" v-if="restaurantForChange">
+        <button @click="switchToRestaurantPage()">Prikaz restorana</button>
+        <form @submit="updateRestaurant">
+            <table border="1">
+                <tr>
+                    <td colspan="2">Naziv</td>
+                    <td><input type="text" v-model="restaurantForChange.name"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Tip</td>
+                    <td><select v-model="restaurantForChange.type">
+                            <option value="Italijanski">Italijanski</option>
+                            <option value="Kineski">Kineski</option>
+                            <option value="Rostilj">Roštilj</option>
+                            <option value="Meksicki">Meksički</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">Lokacija</td>
+                    <td><div id="map" class="map" @click="refreshLocation"></div></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Koordinate (možete odabrati novu na mapi)</td>
+                    <td>{{restaurantForChange.location.longitude}}, {{restaurantForChange.location.latitude}}</td>
+                </tr>
+                <tr>
+                    <td>Grad</td>
+                    <td><input type="text" placeholder="Grad" v-model="restaurantForChange.location.adress.city"/></td>
+                    <td><input type="text" placeholder="Poštanski broj" v-model="restaurantForChange.location.adress.postalCode"/></td>
+                </tr>
+                <tr>
+                    <td>Adresa</td>
+                    <td><input type="text" placeholder="Ulica" v-model="restaurantForChange.location.adress.street" /></td>
+                    <td><input type="text" placeholder="Broj" id="streetNum" v-model="restaurantForChange.location.adress.streetNum"/></td>  
+                </tr>
+
+                <!-- ZA SADA SE JOS NE MOGU MENJATI SLIKE
+                <tr>
+                    <td colspan="2">Logo</td>
+                    <td><input type="file" @change="handleFileUpload" accept="image/*"></td>
+                </tr>
+                -->
+
+                <tr>
+                    <td><input type="submit" value="Ažuriraj podatke"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div class="column3">
+    </div>
 </div>
 `
 	, 
@@ -181,6 +193,9 @@ Vue.component("changeRestaurant", {
         refreshLocation : function() {
             this.restaurantForChange.location.longitude = app.location.longitude;
             this.restaurantForChange.location.latitude = app.location.latitude;
+        },
+        switchToRestaurantPage: function() {
+            router.push('/restaurantPage');
         }
 	}
 });

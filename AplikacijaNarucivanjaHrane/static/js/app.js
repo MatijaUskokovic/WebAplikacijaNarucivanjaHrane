@@ -31,7 +31,12 @@ const router = new VueRouter({
 		{ path: '/managerRestaurant', name: 'restoranMenadzera', component: ManagerRestaurant},
 		{ path: '/commentsRequests', name: 'zahteviZaKomentare', component: CommentsRequests},
 		{ path: '/changeRestaurant', name: 'izmenaRestorana', component: ChangeRestaurant},
-		{ path: '/orderView', name: 'prikazPorudzbine', component: OrderView}
+		{ path: '/orderView', name: 'prikazPorudzbine', component: OrderView},
+		
+		// u slucaju da se refresuje stranica sa prikazom restorana prilikom koriscenja linkova za skrolovanje stranice
+		{ path: '/commentsOfRestaurant', name: '', component: RestaurantPage},
+		{ path: '/itemsOfRestaurant', name: '', component: RestaurantPage},
+		{ path: '/restaurantView', name: '', component: RestaurantPage}
 	  ]
 });
 

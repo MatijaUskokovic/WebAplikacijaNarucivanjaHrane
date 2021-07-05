@@ -20,7 +20,19 @@ Vue.component("managerRestaurant", {
 	},
 	template: `
 
-	<div style="margin: 10px;">
+	<div class="column-container">
+	<div class="column1">
+		<ul id="stickyUl" v-if="mode === 'PRETRAGA'">
+			<li><a href="#restaurantView">Prikaz</a></li>
+			<li><a href="#itemsOfRestaurant">Artikli</a></li>
+			<li><a href="#commentsOfRestaurant">Komentari i ocene</a></li>
+		</ul>
+	</div>
+
+	<div class="columnSpace">
+	</div>
+
+	<div class="column2">
 		<div v-if="mode === 'PRETRAGA'">
 			<table>
 				<tr>
@@ -30,42 +42,55 @@ Vue.component("managerRestaurant", {
 			</table>
 
 			<!--PRIKAZ INFORMACIJA O RESTORANU-->
-			<table>
-				<tr>
-					<td>Ime restorana</td>
-					<td>{{restaurant.name}}</td>
-				</tr>
-				<tr>
-					<td>Tip restorana</td>
-					<td>{{restaurant.type}}</td>
-				</tr>
-				<tr>
-					<td>Status restorana</td>
-					<td>{{restaurant.status}}</td>
-				</tr>
-				<tr>
-					<td>Adresa</td>
-					<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
-				</tr>
-				<tr>
-					<td>Lokacija</td>
-					<td><div id="map" class="map"></div></td>
-				</tr>
-			</table>
+			<div id="restaurantView">
+				<table>
+					<tr>
+						<td colspan="2"><img :src="restaurant.logo" width="200" height="120"></td>
+						<td>
+							<table>
+								<tr>
+									<td><b>Ime restorana:</b></td>
+									<td>{{restaurant.name}}</td>
+								</tr>
+								<tr>
+									<td><b>Tip restorana:</b></td>
+									<td>{{restaurant.type}}</td>
+								</tr>
+								<tr>
+									<td><b>Status restorana:</b></td>
+									<td>{{restaurant.status}}</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><b>Adresa:</b></td>
+						<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
+					</tr>
+					<tr>
+						<td colspan="2"><b>Lokacija:</b></td>
+					</tr>
+					<tr>
+						<td colspan="2"><div id="map" class="map"></div></td>
+					</tr>
+				</table>
+			</div>
 
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
-
-			<div>
+			<hr/>
+			<div class="divForContentRestaurantPage" id="itemsOfRestaurant">
 				<h3>Artikli restorana</h3>
+				<br/>
 				<div>
-					<table border="1px">
-						<th>Slika</th><th>Naziv proizvoda</th><th>Cena</th><th>Tip</th><th>Količina</th><th>Opis</th>
+					<table style="text-align: center;">
+						<th></th><th>Naziv proizvoda</th><th style="width: 100px">Cena</th><th style="width: 100px">Tip</th><th>Količina</th><th>Opis</th>
 						<tr v-for="item in restaurant.items">
 							<td><img :src="item.image" width="100" height="100"></td>
 							<td>{{item.name}}</td>
 							<td>{{item.price}}</td>
 							<td>{{item.type | itemTypeFormat}}</td>
-							<td>{{item.quantity}}</td>
+							<td v-if="item.type === 'jelo'">{{item.quantity}} (g)</td>
+							<td v-else>{{item.quantity}} (ml)</td>
 							<td>{{item.description}}</td>
 							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count" v-bind:disabled="restaurant.status != 'Radi'"></td>
 							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)" v-bind:disabled="restaurant.status != 'Radi'">Dodaj u korpu</button></td>
@@ -77,24 +102,28 @@ Vue.component("managerRestaurant", {
 			</div>
 
 			<!--PRIKAZ KOMENTARA RESTORANA-->
-			<h3>Komentari restorana</h3>
-			<table border="1" v-if="restaurantComments.length != 0">
-				<tr>
-					<th>Ime korisnika</th>
-					<th>Korisničko ime</th>
-					<th>Ocena</th>
-					<th>Komentar</th>
-					<th v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">Odobren</th>
-				</tr>
-				<tr v-for="comment in restaurantComments">
-					<td>{{comment.customerOfComment.name}}</td>
-					<td>{{comment.customerOfComment.username}}</td>
-					<td>{{comment.grade}}</td>
-					<td>{{comment.text}}</td>
-					<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
-				</tr>
-			</table>
-			<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
+			<hr/>
+
+			<div class="divForCommentsInRestaurantPage" id="commentsOfRestaurant">
+				<h3>Komentari restorana</h3>
+				<table v-if="restaurantComments.length != 0">
+					<tr>
+						<th>Ime korisnika</th>
+						<th>Korisničko ime</th>
+						<th>Ocena</th>
+						<th>Komentar</th>
+						<th v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">Odobren</th>
+					</tr>
+					<tr v-for="comment in restaurantComments">
+						<td>{{comment.customerOfComment.name}}</td>
+						<td>{{comment.customerOfComment.username}}</td>
+						<td>{{comment.grade}}</td>
+						<td>{{comment.text}}</td>
+						<td v-if="(loggedUser.role == 'Menadzer' && loggedUser.restaurant.id == restaurant.id) || loggedUser.role == 'Administrator'">{{comment.approved | approvedFilter}}</td>
+					</tr>
+				</table>
+				<p v-if="restaurantComments.length == 0"><b>Trenutno ne postoji ni jedan komentar</b></p>
+			</div>
 		</div>
 
 		<!--DODAVANJE PROIZVODA-->
@@ -108,12 +137,12 @@ Vue.component("managerRestaurant", {
 
 			<form @submit="addItem">
 				<table>
-					<tr><td>Ime proizvoda</td><td><input type="text" v-model="newItem.name"></td></tr>
-					<tr><td>Cena proizvoda</td><td><input type="number" v-model="newItem.price"></td></tr>
+					<tr><td>Ime proizvoda*</td><td><input type="text" v-model="newItem.name"></td></tr>
+					<tr><td>Cena proizvoda*</td><td><input type="number" v-model="newItem.price"></td></tr>
 					<tr><td>Količina proizvoda</td><td><input type="number" v-model="newItem.quantity"></td></tr>
 					<tr><td>Opis proizvoda</td><td><input type="text" v-model="newItem.description"></td></tr>
 					<tr>
-					<td>Tip proizvoda</td>
+					<td>Tip proizvoda*</td>
 						<td>
 							<select v-model="newItem.type">
 								<option value="jelo">Jelo</option>
@@ -122,7 +151,7 @@ Vue.component("managerRestaurant", {
 						</td>
 					</tr>
 					
-					<tr><td>Slika</td><td><input type="file" @change="handleFileUpload" accept="image/*"></td></tr>
+					<tr><td>Slika*</td><td><input type="file" @change="handleFileUpload" accept="image/*"></td></tr>
 					
 					<tr><td><input type="submit" value="Kreiraj proizvod"></td></tr>
 				</table>
@@ -140,12 +169,12 @@ Vue.component("managerRestaurant", {
 
 			<form @submit="updateItem">
 				<table>
-					<tr><td>Ime proizvoda</td><td><input type="text" v-model="itemForChange.name"></td></tr>
-					<tr><td>Cena proizvoda</td><td><input type="number" v-model="itemForChange.price"></td></tr>
+					<tr><td>Ime proizvoda*</td><td><input type="text" v-model="itemForChange.name"></td></tr>
+					<tr><td>Cena proizvoda*</td><td><input type="number" v-model="itemForChange.price"></td></tr>
 					<tr><td>Količina proizvoda</td><td><input type="number" v-model="itemForChange.quantity"></td></tr>
 					<tr><td>Opis proizvoda</td><td><input type="text" v-model="itemForChange.description"></td></tr>
 					<tr>
-					<td>Tip proizvoda</td>
+					<td>Tip proizvoda*</td>
 						<td>
 							<select v-model="itemForChange.type">
 								<option value="jelo">Jelo</option>
@@ -158,6 +187,10 @@ Vue.component("managerRestaurant", {
 			</form>
 		</div>
 	</div>
+
+	<div class="column3">
+	</div>
+</div>
 	`
 	, 
 	mounted () {

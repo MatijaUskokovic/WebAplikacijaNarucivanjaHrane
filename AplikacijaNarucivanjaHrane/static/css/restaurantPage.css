@@ -1,6 +1,12 @@
+.divForContentRestaurantPage {
+    margin: auto;
+    width: 100%;
+    text-align: center;
+}
+
 .divForCommentsInRestaurantPage{
     margin: auto;
-    width: 40%;
+    width: 100%;
     text-align: center;
 }
 
@@ -20,4 +26,56 @@
 
 .divForCommentsInRestaurantPage tr:nth-child(even) {
     background-color: lightgray;
+}
+
+.column-container{
+    display: table;
+    width: 100%;
+}
+
+.column1 {
+    display: table-cell;
+    width: 13%;
+}
+
+.columnSpace {
+    display: table-cell;
+    width: 2%;
+}
+
+.column2 {
+    display: table-cell;
+    width: 70%;
+    background-color: whitesmoke;
+}
+
+.column3 {
+    display: table-cell;
+    width: 15%;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.column1 ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: whitesmoke;
+}
+
+.column1 li a {
+    display: block;
+    color: black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+}
+
+.column1 li a:hover {
+    background-color: blanchedalmond;
 }

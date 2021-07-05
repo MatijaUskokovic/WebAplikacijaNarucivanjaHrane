@@ -19,8 +19,19 @@ Vue.component("restaurantPage", {
 		    }
 	},
 	template: `
-	
-	<div style="margin: 10px;">
+<div class="column-container">
+	<div class="column1">
+		<ul id="stickyUl" v-if="mode === 'PRETRAGA'">
+			<li><a href="#restaurantView">Prikaz</a></li>
+			<li><a href="#itemsOfRestaurant">Artikli</a></li>
+			<li><a href="#commentsOfRestaurant">Komentari i ocene</a></li>
+		</ul>
+	</div>
+
+	<div class="columnSpace">
+	</div>
+
+	<div class="column2">
 		<div v-if="mode === 'PRETRAGA'">
 			<table>
 				<tr>
@@ -28,37 +39,45 @@ Vue.component("restaurantPage", {
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeModeFromAddItem()">Dodaj proizvod</button></td>
 				</tr>
 			</table>
-	
+
 			<!--PRIKAZ INFORMACIJA O RESTORANU-->
-			<table>
-				<tr>
-					<td colspan="2"><img :src="restaurant.logo" width="200" height="120"></td>
-				</tr>
-				<tr>
-					<td>Ime restorana</td>
-					<td>{{restaurant.name}}</td>
-				</tr>
-				<tr>
-					<td>Tip restorana</td>
-					<td>{{restaurant.type}}</td>
-				</tr>
-				<tr>
-					<td>Status restorana</td>
-					<td>{{restaurant.status}}</td>
-				</tr>
-				<tr>
-					<td>Adresa</td>
-					<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
-				</tr>
-				<tr>
-					<td>Lokacija</td>
-					<td><div id="map" class="map"></div></td>
-				</tr>
-			</table>
+			<div id="restaurantView">
+				<table>
+					<tr>
+						<td colspan="2"><img :src="restaurant.logo" width="200" height="120"></td>
+						<td>
+							<table>
+								<tr>
+									<td><b>Ime restorana:</b></td>
+									<td>{{restaurant.name}}</td>
+								</tr>
+								<tr>
+									<td><b>Tip restorana:</b></td>
+									<td>{{restaurant.type}}</td>
+								</tr>
+								<tr>
+									<td><b>Status restorana:</b></td>
+									<td>{{restaurant.status}}</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><b>Adresa:</b></td>
+						<td>{{restaurant.location.adress.street}} {{restaurant.location.adress.streetNum}}, {{restaurant.location.adress.city}}, {{restaurant.location.adress.postalCode}}</td>
+					</tr>
+					<tr>
+						<td colspan="2"><b>Lokacija:</b></td>
+					</tr>
+					<tr>
+						<td colspan="2"><div id="map" class="map"></div></td>
+					</tr>
+				</table>
+			</div>
 
 			<!--PRIKAZ ARTIKALA U RESTORANU-->
 			<hr/>
-			<div>
+			<div class="divForContentRestaurantPage" id="itemsOfRestaurant">
 				<h3>Artikli restorana</h3>
 				<br/>
 				<div>
@@ -84,7 +103,7 @@ Vue.component("restaurantPage", {
 			<!--PRIKAZ KOMENTARA RESTORANA-->
 			<hr/>
 
-			<div class="divForCommentsInRestaurantPage">
+			<div class="divForCommentsInRestaurantPage" id="commentsOfRestaurant">
 				<h3>Komentari restorana</h3>
 				<table v-if="restaurantComments.length != 0">
 					<tr>
@@ -111,7 +130,7 @@ Vue.component("restaurantPage", {
 		<div v-if="mode === 'DODAVANJEPROIZVODA'">
 			<table>
 				<tr>
-					<td><button @click="changeModeFromAddItem()">Prikaz proizvoda</button></td>
+					<td><button @click="changeModeFromAddItem()">Prikaz restorana</button></td>
 				</tr>
 			</table>
 
@@ -167,12 +186,17 @@ Vue.component("restaurantPage", {
 			</form>
 		</div>
 	</div>
+
+	<div class="column3">
+	</div>
+</div>
 `
 	, 
 	mounted () {
 		this.getSelectedRestaurant();
 		this.addCountAttributeForItems();	// dodavanje polja za broj artikala u listi artikala restorana
 		this.getLoggedUser();
+		var sticky = new Sticky('#stickyUl');
     },
 	methods:{
 		getLoggedUser : function() {
