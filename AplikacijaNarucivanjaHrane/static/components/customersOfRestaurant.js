@@ -94,7 +94,7 @@ Vue.component("customersOfRestaurant", {
                 <td>{{user.username}}</td>
                 <td>{{user.name}}</td>
                 <td>{{user.surname}}</td>
-                <td>{{user.gender}}</td>
+                <td>{{user.gender | genderFormat}}</td>
                 <td>{{user.dateOfBirth | dateFormat('DD.MM.YYYY')}}</td>
                 <td>{{user.role}}</td>
                 <td>{{user.pointsCollected}}</td>
@@ -172,6 +172,14 @@ Vue.component("customersOfRestaurant", {
     	dateFormat: function (value, format) {
     		var parsed = moment(value);
     		return parsed.format(format);
-    	}
+    	},
+        genderFormat: function(value) {
+            if (value == 'muski') {
+                return 'muški';
+            }
+            else {
+                return 'ženski';
+            }
+        }
    	}
 });

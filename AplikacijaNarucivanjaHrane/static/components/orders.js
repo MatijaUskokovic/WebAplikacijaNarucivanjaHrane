@@ -97,6 +97,22 @@ Vue.component("orders", {
                         </table>
                     </form>
                 </div>
+
+                <!-- Selektovanje prikaza samo neisporučenih -->
+                <div v-if="loggedUser.role == 'Kupac' || loggedUser.role == 'Dostavljac'">
+                    <table>
+                        <tr>
+                            <td><b>Prikaz</b></td>
+                            <td>
+                                <select v-model="view" @change="changeView">
+                                    <option value=""></option>
+                                    <option value="svih">Svih</option>
+                                    <option value="nedostavljene">Nedostavljenih</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
         </div>
 
         <!--PORUDZBINE-->
@@ -182,17 +198,24 @@ Vue.component("orders", {
             // Kupac ima prikaz svih svojih porudzbina
             if (this.loggedUser.role == 'Kupac'){
                 this.allOrders = this.loggedUser.allOrders;
-                this.ordersToShow = this.allOrders;
+                this.ordersToShow = [];
+                for (let order of this.allOrders){
+                    this.ordersToShow.push(order);
+                }
             }
-            // Dostavljac ima prikaz svih porudzbina koje su u statutu "Ceka_dostavljaca" i prikaz svih za koje je on zaduzen
-            else if (this.loggedUser.role == 'Dostavljac'){
+             // Dostavljac ima prikaz svih porudzbina koje su u statutu "Ceka_dostavljaca" i prikaz svih za koje je on zaduzen
+             else if (this.loggedUser.role == 'Dostavljac'){
                 axios
                 .get('rest/orders/Ceka_dostavljaca')
                 .then(response => {
                     // allorders ce da predstavlja sve porudzbine koje su u statusu "Ceka_dostavljaca", a u samom dostavljacu se nalaze
                     // porudzbine za koje je on zaduzen
                     this.allOrders = response.data;
-                    this.ordersToShow = this.allOrders; // prvo ce se prikazivati porudzbine u statusu "Ceka_dostavljaca"
+                    this.ordersToShow = [];
+                    // prvo ce se prikazivati porudzbine u statusu "Ceka_dostavljaca"
+                    for (let order of this.allOrders){
+                        this.ordersToShow.push(order);
+                    }
                 })
             }
             // Menadzer ima prikaz svih porudzbina koje su vezane za njegov restoran
@@ -216,10 +239,20 @@ Vue.component("orders", {
             })
         },
         setOrdersAwaitingDelivery : function() {
-            this.ordersToShow = this.allOrders;
+            this.ordersToShow = [];
+            this.allOrders = [];
+            for (let order of this.allOrders){
+                this.ordersToShow.push(order);
+                this.allOrders.push(order);
+            }
         },
         setOrdersOfDeliverer : function() {
-            this.ordersToShow = this.loggedUser.ordersToDeliver;
+            this.ordersToShow = [];
+            this.allOrders = [];
+            for (let order of this.loggedUser.ordersToDeliver){
+                this.ordersToShow.push(order);
+                this.allOrders.push(order);
+            }
         },
         alreadyRated : function(order) {
             for (let rate of this.userRates){
@@ -383,6 +416,26 @@ Vue.component("orders", {
         showOrder : function(order) {
             app.selectedOrder = order;
             router.push('/orderView');
+        },
+        changeView : function() {
+            if (this.view == 'svih'){
+                let toShow = [];
+                for (order of this.allOrders) {
+                    toShow.push(order);
+                }
+                        
+                this.ordersToShow = toShow; 
+            }
+            else if (this.view == 'nedostavljene'){
+                let toShow = [];
+                for (order of this.allOrders){
+                    if (order.status != 'Dostavljena') {
+                        toShow.push(order);
+                    }
+                }
+
+                this.ordersToShow = toShow;
+            }
         }
 	},
     filters: {

@@ -68,7 +68,7 @@ Vue.component("restaurantPage", {
 							<td><img :src="item.image" width="100" height="100"></td>
 							<td>{{item.name}}</td>
 							<td>{{item.price}}</td>
-							<td>{{item.type}}</td>
+							<td>{{item.type | itemTypeFormat}}</td>
 							<td v-if="item.type === 'jelo'">{{item.quantity}} (g)</td>
 							<td v-else>{{item.quantity}} (ml)</td>
 							<td>{{item.description}}</td>
@@ -444,6 +444,14 @@ Vue.component("restaurantPage", {
 				return 'da';
 			}
     		return 'ne';
-    	}
+    	},
+		itemTypeFormat: function (value) {
+			if (value == 'pice') {
+				return 'piće';
+			}
+			else {
+				return 'jelo';
+			}
+		}
    	}
 });

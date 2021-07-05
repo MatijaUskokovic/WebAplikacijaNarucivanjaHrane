@@ -64,7 +64,7 @@ Vue.component("managerRestaurant", {
 							<td><img :src="item.image" width="100" height="100"></td>
 							<td>{{item.name}}</td>
 							<td>{{item.price}}</td>
-							<td>{{item.type}}</td>
+							<td>{{item.type | itemTypeFormat}}</td>
 							<td>{{item.quantity}}</td>
 							<td>{{item.description}}</td>
 							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count" v-bind:disabled="restaurant.status != 'Radi'"></td>
@@ -402,6 +402,14 @@ Vue.component("managerRestaurant", {
 				return 'da';
 			}
 			return 'ne';
+		},
+		itemTypeFormat: function (value) {
+			if (value == 'pice') {
+				return 'piće';
+			}
+			else {
+				return 'jelo';
+			}
 		}
 	}
 });

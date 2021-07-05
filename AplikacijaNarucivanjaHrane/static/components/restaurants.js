@@ -129,7 +129,7 @@ Vue.component("restaurants", {
 													</tr>
 													<tr>
 														<td><strong>Status:</strong></td>
-														<td>{{r.status}}</td>
+														<td>{{r.status | statusFilter}}</td>
 													</tr>
 												</table>
 											</td>
@@ -196,5 +196,15 @@ Vue.component("restaurants", {
                 }
             }
         }
+	},
+	filters: {
+		statusFilter : function(value) {
+			if (value == 'Ne_radi') {
+				return 'Ne radi';
+			}
+			else {
+				return 'Radi';
+			}
+		}
 	}
 });
