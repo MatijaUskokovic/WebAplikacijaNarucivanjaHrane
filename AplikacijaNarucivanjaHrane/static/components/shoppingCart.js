@@ -8,14 +8,14 @@ Vue.component("shoppingCart", {
 	},
 	template: ` 
 <div>
-    <h3>Korpa</h3>
+    <h2>Korpa</h2>
     <hr/>
-    <table border="1" v-bind:hidden="customer.shoppingCart.items.length == 0">
-        <tr bgcolor="lightgray">
+    <table class="shoppingCartTable" border="5" v-bind:hidden="customer.shoppingCart.items.length == 0">
+        <tr bgcolor="whitesmoke">
             <th colspan="2">Artikl</th>
             <th>Cena</th>
             <th>Količina</th>
-            <th>Ukupno</th>
+            <th>Ukupno (din)</th>
         </tr>
         <tr v-for="cartItem in customer.shoppingCart.items">
             <td><img :src="cartItem.item.image" width="100" height="70"></td>

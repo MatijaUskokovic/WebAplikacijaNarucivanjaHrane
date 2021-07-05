@@ -15,7 +15,7 @@ Vue.component("createRestaurant", {
     <div class='child flex-child'>
         <h3>Napravite novi restoran</h3>
         <form @submit='create'>
-            <table border="1">
+            <table class="collapsedTable" border="2">
                 <tr>
                     <td colspan="2">Naziv</td>
                     <td><input type="text" v-model="newRestaurant.name"></td>
@@ -61,8 +61,8 @@ Vue.component("createRestaurant", {
 
     <div class='child flex-child' v-bind:hidden="freeManagers.length == 0">
         <h3>Slobodni menadžeri - izaberite jednog od ponuđenih</h3>
-        <table border="1">
-            <tr bgcolor="lightgrey">
+        <table class="freeManagersTable" border="5">
+            <tr bgcolor="whitesmoke">
                 <th>Korisničko ime</th>
                 <th>Ime</th>
                 <th>Prezime</th>

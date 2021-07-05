@@ -6,7 +6,7 @@ Vue.component("profile", {
 	},
 	template: ` 
 <div v-if="changedUser">
-    <h3>Vaš profil</h3>
+    <h2>Vaš profil</h2>
     <p>Ažurirajte lične podatke</p>
     <form @submit='updateInfo'>
         <table>

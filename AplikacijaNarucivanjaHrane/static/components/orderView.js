@@ -8,15 +8,16 @@ Vue.component("orderView", {
 	template: ` 
 <div v-if="order">
     <h3>Porudžbina broj: {{order.id}}</h3>
-    <p>Kupac: {{order.customer.name}} {{order.customer.surname}}</p>
-    <p>Datum porudzbine: {{order.dateOfOrder | dateFormat('DD.MM.YYYY')}}</p>
+    <p><b>Status: {{order.status}}</b></p>
+    <p><b>Kupac: {{order.customer.name}} {{order.customer.surname}}</b></p>
+    <p><b>Datum porudzbine: {{order.dateOfOrder | dateFormat('DD.MM.YYYY')}}</b></p>
     <hr/>
-    <table border="1">
-        <tr bgcolor="lightgray">
+    <table class="shoppingCartTable" border="5">
+        <tr bgcolor="whitesmoke">
             <th colspan="2">Artikl</th>
             <th>Cena</th>
             <th>Količina</th>
-            <th>Ukupno</th>
+            <th>Ukupno (din)</th>
         </tr>
         <tr v-for="cartItem in order.orderedItems">
             <td><img :src="cartItem.item.image" width="100" height="70"></td>

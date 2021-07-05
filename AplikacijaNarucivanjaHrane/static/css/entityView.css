@@ -1,3 +1,26 @@
 tr.selected {
     background-color: #8bce0e;
 }
+
+.shoppingCartTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.shoppingCartTable button {
+    width: 100%;
+}
+
+.collapsedTable {
+    border-collapse: collapse;
+}
+
+.freeManagersTable {
+    margin: 10px;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+.freeManagersTable td {
+    width: 5%;
+}
