@@ -1,0 +1,33 @@
+.mainDivForOrders {
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+}
+
+.divForSearchInOrders{
+    margin: auto;
+    width: 70%;
+    padding: 10px;
+    background-color: gold;
+}
+
+.divForFilteringInOrders{
+    margin: auto;
+    width: 30%;
+    padding: 10px;
+}
+
+.divForSortInOrders{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
+.divForTableInOrders{
+    margin: auto;
+    width: 80%;
+    padding: 15px;
+}
+
+

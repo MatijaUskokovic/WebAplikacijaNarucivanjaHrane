@@ -29,120 +29,117 @@ Vue.component("orders", {
 	},
 	template: ` 
 <div>
+    <div class="mainDivForOrders">
+        <div class="divForSearchInOrders">
+            <!--PRETRAGA-->
+            <form @submit='search' style="margin: 0px">
+                <p style="margin: 0px"><strong>Pretraga</strong></p>
+                <table>
+                    <tr>
+                        <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Naziv restorana" v-model="restaurantName"></td>
+                        <td><input type="number" placeholder="Od cene" v-model="fromThePrice"></td>
+                        <td><input type="number" placeholder="Do cene" v-model="toThePrice"></td>
+                        <td><input type="date" placeholder="Od datuma" v-model="fromTheDate"></td>
+                        <td><input type="date" placeholder="Do datuma" v-model="toTheDate"></td>
+                        <td><input type="submit" value="Pretraži"></td>
+                    </tr>
+                </table>
+            </form>
 
-    <form @submit='search'>
-        <table bgcolor="lightblue">
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Pretraga</th>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Naziv restorana" v-model="restaurantName"></td>
-                <td><input type="number" placeholder="Od cene" v-model="fromThePrice"></td>
-                <td><input type="number" placeholder="Do cene" v-model="toThePrice"></td>
-                <td><input type="date" placeholder="Od datuma" v-model="fromTheDate"></td>
-                <td><input type="date" placeholder="Do datuma" v-model="toTheDate"></td>
-                <td><input type="submit" value="Pretraži"></td>
-            </tr>
-        </table>
-    </form>
+            <!--FILTRIRANJE-->
+            <div class="divForFilteringInOrders">
+                <form @submit='filter' style="margin: 0px">
+                    <p style="margin: 0px"><strong>Filtriranje</strong></p>
+                    <table style="margin: 0px">
+                        <tr>
+                            <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Tip restorana" v-model="restaurantType"></td>
+                            <td>
+                                <select v-model="orderStatus">
+                                    <option value="">Status porudžbine</option>
+                                    <option value="Obrada">Obrada</option>
+                                    <option value="U_pripremi">U pripremi</option>
+                                    <option value="Ceka_dostavljaca">Ceka dostavljaca</option>
+                                    <option value="U_transportu">U transportu</option>
+                                    <option value="Dostavljena">Dostavljena</option>
+                                    <option value="Otkazana">Otkazana</option>	
+                                </select>
+                            </td>
+                            <td><input type="submit" value="Filtriraj"></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
 
-    <form @submit='filter'>
-        <table bgcolor="lightgray">
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Filtriranje</th>
-            </tr>
-            <tr>
-                <td><input v-if="(loggedUser.role != 'Menadzer')" type="text" placeholder="Tip restorana" v-model="restaurantType"></td>
-                <td>
-                    <select v-model="orderStatus">
-                        <option value="">Status porudzbine</option>
-                        <option value="Obrada">Obrada</option>
-                        <option value="U_pripremi">U pripremi</option>
-                        <option value="Ceka_dostavljaca">Ceka dostavljaca</option>
-                        <option value="U_transportu">U transportu</option>
-	                    <option value="Dostavljena">Dostavljena</option>
-                        <option value="Otkazana">Otkazana</option>	
-                    </select>
-                </td>
-                <td><input type="submit" value="Filtriraj"></td>
-            </tr>
-        </table>
-    </form>
+                <!--SORTIRANJE-->
+                <div class="divForSortInOrders">
+                    <form style="margin: 0px">
+                        <p style="margin: 0px"><strong>Sortiranje</strong></p>
+                        <table style="margin: 0px">
+                            <tr>
+                                <td>
+                                    <select v-model="sortMode" @change="sort">
+                                        <option value="rastuce">Rastuće</option>
+                                        <option value="opadajuce">Opadajuće</option>
+                                    </select>
+                                </td>
+                                <td>...............</td>
+                                <td>
+                                    Kriterijum sortiranja:
+                                </td>
+                                <td>
+                                    <select v-model="sortParameter" @change="sort">
+                                        <option v-if="(loggedUser.role != 'Menadzer')" value="restaurantName">Ime restorana</option>
+                                        <option value="price">Cena</option>
+                                        <option value="date">Datum</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+        </div>
 
-    <form>
-        <table bgcolor="lightgreen">
-            <tr>
-                <th></th>
-                <th></th>
-                <th>Sortiranje</th>
-                <td></td>
-            </tr>
-            <tr>
-                <td>
-                    <select v-model="sortMode" @change="sort">
-                        <option value="rastuce">Rastuće</option>
-                        <option value="opadajuce">Opadajuće</option>
-                    </select>
-                </td>
-                <td>...............</td>
-                <td>
-                    Kriterijum sortiranja:
-                </td>
-                <td>
-                    <select v-model="sortParameter" @change="sort">
-                        <option v-if="(loggedUser.role != 'Menadzer')" value="restaurantName">Ime restorana</option>
-                        <option value="price">Cena</option>
-                        <option value="date">Datum</option>
-                    </select>
-                </td>
-            </tr>
-        </table>
-    </form>
+        <!--PORUDZBINE-->
+        <div class="divForTableInOrders">
+            <h3>Prikaz porudžbina</h3>
+            <div v-bind:hidden="loggedUser.role !== 'Dostavljac'">
+                <table>
+                    <tr>
+                        <td><button @click="setOrdersAwaitingDelivery()">Porudžbine koje čekaju dostavljača</button></td>
+                        <td><button @click="setOrdersOfDeliverer()">Porudžbine za koje ste zaduženi</button></td>
+                    </tr>
+                </tale>
+            </div>
 
-    <h3>Prikaz porudžbina</h3>
-    <div v-bind:hidden="loggedUser.role !== 'Dostavljac'">
-        <table>
-            <tr>
-                <td><button @click="setOrdersAwaitingDelivery()">Porudžbine koje čekaju dostavljača</button></td>
-                <td><button @click="setOrdersOfDeliverer()">Porudžbine za koje ste zaduženi</button></td>
-            </tr>
-        </tale>
+            <table border="1">
+                <tr bgcolor="lightgray">
+                    <th>Šifra porudžbine</th>
+                    <th>Status porudžbine</th>
+                    <th>Datum porudžbine</th>
+                    <th>Restoran</th>
+                    <th>Tip restorana</th>
+                    <th>Ukupno (din)</th>
+                </tr>
+                <tr v-for="order in ordersToShow">
+                    <td>{{order.id}}</td>
+                    <td>{{order.status}}</td>
+                    <td>{{order.dateOfOrder | dateFormat('DD.MM.YYYY')}}</td>
+                    <td>{{order.restaurantOfOrder.name}}</td>
+                    <td>{{order.restaurantOfOrder.type}}</td>
+                    <td>{{order.price}}</td>
+                    <td><button @click="showOrder(order)">Prikaži</button></td>
+                    <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'Obrada')"><button @click="startPreparation(order)">Pokreni pripremu</button></td>
+                    <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'U_pripremi')"><button @click="orderForDeliverer(order)">Spremno za dostavljača</button></td>
+                    <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Obrada')"><button @click="cancelOrder(order)">Otkaži</button></td>
+                    <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'Ceka_dostavljaca')"><button @click="sendDeliverRequest(order)">Pošalji zahtev</button></td>
+                    <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'U_transportu')"><button @click="deliverOrder(order)">Dostavljena</button></td>
+                    <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Dostavljena') && !alreadyRated(order)">
+                        <button @click="openForm(order)" class="open-button" >Oceni restoran</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-
-    <table border="1">
-        <tr bgcolor="lightgray">
-            <th>Šifra porudžbine</th>
-            <th>Status porudžbine</th>
-            <th>Datum porudžbine</th>
-            <th>Restoran</th>
-            <th>Tip restorana</th>
-            <th>Ukupno (din)</th>
-        </tr>
-        <tr v-for="order in ordersToShow">
-            <td>{{order.id}}</td>
-            <td>{{order.status}}</td>
-            <td>{{order.dateOfOrder | dateFormat('DD.MM.YYYY')}}</td>
-            <td>{{order.restaurantOfOrder.name}}</td>
-            <td>{{order.restaurantOfOrder.type}}</td>
-            <td>{{order.price}}</td>
-            <td><button @click="showOrder(order)">Prikaži</button></td>
-            <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'Obrada')"><button @click="startPreparation(order)">Pokreni pripremu</button></td>
-            <td v-if="(loggedUser.role === 'Menadzer') && (order.status === 'U_pripremi')"><button @click="orderForDeliverer(order)">Spremno za dostavljača</button></td>
-            <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Obrada')"><button @click="cancelOrder(order)">Otkaži</button></td>
-            <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'Ceka_dostavljaca')"><button @click="sendDeliverRequest(order)">Pošalji zahtev</button></td>
-            <td v-if="(loggedUser.role === 'Dostavljac') && (order.status === 'U_transportu')"><button @click="deliverOrder(order)">Dostavljena</button></td>
-            <td v-if="(loggedUser.role === 'Kupac') && (order.status === 'Dostavljena') && !alreadyRated(order)">
-                <button @click="openForm(order)" class="open-button" >Oceni restoran</button>
-            </td>
-        </tr>
-    </table>
 
     <div class="form-popup" id="myForm">
         <form class="form-container" @submit="rateRestaurant">
