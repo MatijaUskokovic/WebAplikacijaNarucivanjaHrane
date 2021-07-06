@@ -24,7 +24,9 @@ Vue.component("orders", {
               fromTheDate: '',
               toTheDate: '',
               restaurantType: '',
-              orderStatus: ''
+              orderStatus: '',
+              view: '',
+              whatOrdersOfDeliverer: '' // "ceka" ako su porudzbine koje cekaju dostavljaca, "njegove" ako su porudzbine za koje je zaduzen
 		    }
 	},
 	template: ` 
@@ -216,6 +218,7 @@ Vue.component("orders", {
                     this.allOrders = response.data;
                     this.ordersToShow = [];
                     // prvo ce se prikazivati porudzbine u statusu "Ceka_dostavljaca"
+                    this.whatOrdersOfDeliverer = 'ceka';
                     for (let order of this.allOrders){
                         this.ordersToShow.push(order);
                     }
@@ -242,19 +245,17 @@ Vue.component("orders", {
             })
         },
         setOrdersAwaitingDelivery : function() {
+            this.whatOrdersOfDeliverer = "ceka";
             this.ordersToShow = [];
-            this.allOrders = [];
             for (let order of this.allOrders){
                 this.ordersToShow.push(order);
-                this.allOrders.push(order);
             }
         },
         setOrdersOfDeliverer : function() {
+            this.whatOrdersOfDeliverer = "njegove";
             this.ordersToShow = [];
-            this.allOrders = [];
             for (let order of this.loggedUser.ordersToDeliver){
                 this.ordersToShow.push(order);
-                this.allOrders.push(order);
             }
         },
         alreadyRated : function(order) {
@@ -421,9 +422,17 @@ Vue.component("orders", {
             router.push('/orderView');
         },
         changeView : function() {
-            if (this.view == 'svih'){
+            if (this.view == 'svih' || this.view == ''){
                 let toShow = [];
-                for (order of this.allOrders) {
+                let allAppropriateOrders = [];
+                if (this.whatOrdersOfDeliverer == 'ceka' || this.whatOrdersOfDeliverer == '') {
+                    allAppropriateOrders = this.allOrders;
+                }
+                else {
+                    allAppropriateOrders = this.loggedUser.ordersToDeliver;
+                }
+
+                for (order of allAppropriateOrders) {
                     toShow.push(order);
                 }
                         
@@ -431,7 +440,7 @@ Vue.component("orders", {
             }
             else if (this.view == 'nedostavljene'){
                 let toShow = [];
-                for (order of this.allOrders){
+                for (order of this.ordersToShow){
                     if (order.status != 'Dostavljena') {
                         toShow.push(order);
                     }

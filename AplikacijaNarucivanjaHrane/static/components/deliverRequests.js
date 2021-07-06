@@ -6,16 +6,18 @@ Vue.component("deliverRequests", {
 		    }
 	},
 	template: ` 
-<div>
-    <h3>Zahtevi za preuzimanje porudžbine</h3>
+<div class="mainDivOrderRequests">
+    <h2>Zahtevi za preuzimanje porudžbine</h2>
     <p v-if="loggedUser.restaurant.id == '-1'">Trenutno niste zaduženi ni za jedan restoran</p>
     <p v-if="deliverRequests.length == 0">Trenutno ne postoji ni jedan zahtev za preuzimanje porudžbine</p>
     <div v-if="loggedUser.restaurant.id != '-1' && deliverRequests.length != 0">
-        <table border="1">
-            <tr bgcolor="lightgray">
+        <table class="tableWithOrderRequests">
+            <tr bgcolor="whitesmoke">
                 <th>Ime dostavljača</th>
                 <th>Šifra porudžbine</th>
                 <th>Ukupno (din)</th>
+                <th></th>
+                <th></th>
             </tr>
             <tr v-for="request in deliverRequests">
                 <td>{{request.deliverer.name}}</td>

@@ -6,17 +6,19 @@ Vue.component("commentsRequests", {
 		    }
 	},
 	template: ` 
-<div>
-    <h3>Zahtevi za preuzimanje porudžbine</h3>
+<div class="mainDivCommentRequests">
+    <h2>Zahtevi za postavljanje komentara na Vaš restoran</h2>
     <p v-if="loggedUser.restaurant.id == '-1'">Trenutno niste zaduženi ni za jedan restoran</p>
     <p v-if="commentsRequests.length == 0">Trenutno ne postoji ni jedan zahtev za komentar na vaš restoran</p>
     <div v-if="loggedUser.restaurant.id != '-1' && commentsRequests.length != 0">
-        <table border="1">
-            <tr bgcolor="lightgray">
+        <table class="tableWithCommentRequests">
+            <tr bgcolor="whitesmoke">
                 <th>Ime kupca</th>
                 <th>Korisničko ime kupca</th>
                 <th>Ocena</th>
                 <th>Komentar</th>
+                <th></th>
+                <th></th>
             </tr>
             <tr v-for="comment in commentsRequests">
                 <td>{{comment.customerOfComment.name}}</td>

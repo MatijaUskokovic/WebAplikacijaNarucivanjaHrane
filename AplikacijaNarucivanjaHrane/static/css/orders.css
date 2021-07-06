@@ -18,3 +18,51 @@
 .divForTableInOrders table tr:nth-child(even) {
     background-color: lightgray;
 }
+
+
+
+
+.mainDivOrderRequests {
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+}
+
+.tableWithOrderRequests {
+    margin: 10px;
+    border-style: inset;
+    padding: 10px;
+}
+
+.tableWithOrderRequests tr:nth-child(even) {
+    background-color: lightgray;
+}
+
+.tableWithOrderRequests td {
+    width: 5%;
+}
+
+
+
+
+.mainDivCommentRequests {
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+    text-align: center;
+}
+
+.tableWithCommentRequests {
+    margin: 10px;
+    border-style: inset;
+    padding: 10px;
+}
+
+.tableWithCommentRequests tr:nth-child(even) {
+    background-color: lightgray;
+}
+
+.tableWithCommentRequests td {
+    width: 5%;
+}
