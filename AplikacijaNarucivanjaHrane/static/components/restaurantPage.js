@@ -38,6 +38,7 @@ Vue.component("restaurantPage", {
 				<tr>
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeRestaurant()">Uredi restoran</button></td>
 					<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeModeFromAddItem()">Dodaj proizvod</button></td>
+					<td v-if="loggedUser.role === 'Administrator'"><button @click="deleteRestaurant()">Obriši restoran</button></td>
 				</tr>
 			</table>
 
@@ -58,7 +59,7 @@ Vue.component("restaurantPage", {
 								</tr>
 								<tr>
 									<td><b>Status restorana:</b></td>
-									<td>{{restaurant.status}}</td>
+									<td>{{restaurant.status | restaurantStatusFormat}}</td>
 								</tr>
 							</table>
 						</td>
@@ -485,6 +486,22 @@ Vue.component("restaurantPage", {
 			reader.onerror = function (error) {
 				console.log('Error: ', error)
 			}
+		},
+		deleteRestaurant : function() {
+			var restaurantName = this.restaurant.name;
+			if (confirm("Da li ste sigurni da želite da obrišete restoran?")) {
+				axios
+				.delete('rest/restaurants/' + this.restaurant.id)
+				.then(response => {
+					alert("Uspešno obrisan restoran " + restaurantName);
+					router.push('/');
+				})
+				.catch(err => {
+					alert("Neuspešno brisanje restorana");
+				})
+			} else {
+				return;
+			}
 		}
 	},
     filters: {
@@ -501,6 +518,16 @@ Vue.component("restaurantPage", {
 			else {
 				return 'jelo';
 			}
+		},
+		restaurantStatusFormat: function (value) {
+			if (value == 'Radi') {
+				return 'Radi';
+			}
+			else if (value == 'Ne_radi') {
+				return 'Ne radi';
+			}
+
+			return value;
 		}
    	}
 });

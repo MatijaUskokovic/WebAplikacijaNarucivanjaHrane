@@ -109,6 +109,14 @@ public class UserService {
 		userRepository.deleteUser(username);
 	}
 	
-	// BLOKIRANJE USERA
+	public void fireManagerOfRestaurant(String idOfRestaurant) {
+		for (Manager manager : getAllManagers()) {
+			if (manager.getRestaurant().getId().equals(idOfRestaurant)) {
+				manager.getRestaurant().setId("-1");
+				userRepository.changeManager(manager);
+				break;
+			}
+		}
+	}
 	
 }

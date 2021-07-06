@@ -17,11 +17,11 @@ Vue.component("createRestaurant", {
         <form @submit='create'>
             <table class="collapsedTable" border="2">
                 <tr>
-                    <td colspan="2">Naziv</td>
+                    <td colspan="2"><b>Naziv*</b></td>
                     <td><input type="text" v-model="newRestaurant.name"></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Tip</td>
+                    <td colspan="2"><b>Tip*</b></td>
                     <td><select v-model="newRestaurant.type">
                             <option value="Italijanski">Italijanski</option>
                             <option value="Kineski">Kineski</option>
@@ -31,25 +31,25 @@ Vue.component("createRestaurant", {
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2">Lokacija</td>
+                    <td colspan="2"><b>Lokacija*</b></td>
                     <td><div id="map" class="map" @click="refreshLocation"></div></td>
                 </tr>
                 <tr>
-                    <td colspan="2">Koordinate (odaberite na mapi)</td>
+                    <td colspan="2"><b>Koordinate* (odaberite na mapi)</b></td>
                     <td>{{longitude}}, {{latitude}}</td>
                 </tr>
                 <tr>
-                    <td>Grad</td>
+                    <td><b>Grad*</b></td>
                     <td><input type="text" placeholder="Grad" v-model="newRestaurant.location.adress.city"/></td>
                     <td><input type="text" placeholder="Poštanski broj" v-model="newRestaurant.location.adress.postalCode"/></td>
                 </tr>
                 <tr>
-                    <td>Adresa</td>
+                    <td><b>Adresa*</b></td>
                     <td><input type="text" placeholder="Ulica" v-model="newRestaurant.location.adress.street" /></td>
                     <td><input type="text" placeholder="Broj" id="streetNum" v-model="newRestaurant.location.adress.streetNum"/></td>  
                 </tr>
                 <tr>
-                    <td colspan="2">Logo</td>
+                    <td colspan="2"><b>Logo*</b></td>
                     <td><input type="file" @change="handleFileUpload" accept="image/*"></td>
                 </tr>
                 <tr>
@@ -258,6 +258,7 @@ Vue.component("createRestaurant", {
 			.put("rest/managers/" + this.selectedManager.id, manager)
 			.then(response => {
 				alert('Uspešno kreiran restoran i postavljen selektovani menadžer')
+                router.push('/');
 			})
 			.catch(function(error){
 				alert('Neuspešno postavljanje menadžera')

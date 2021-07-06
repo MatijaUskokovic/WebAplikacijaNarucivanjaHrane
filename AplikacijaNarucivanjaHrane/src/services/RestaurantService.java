@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import beans.Customer;
-import beans.Item;
 import beans.Order;
 import beans.Restaurant;
 import fileRepository.ImageFileRepository;
@@ -90,6 +89,8 @@ public class RestaurantService {
 	}
 	
 	public Restaurant deleteRestaurant(String id) {
+		UserService userService = new UserService();
+		userService.fireManagerOfRestaurant(id);
 		return rfr.deleteRestaurant(id);
 	}
 	
