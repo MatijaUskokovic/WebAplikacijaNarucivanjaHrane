@@ -3,7 +3,8 @@ Vue.component("changeRestaurant", {
 		    return {
                 restaurantForChange: {location: {adress: {}}},
                 loggedUser: {},
-                map: {}
+                map: {},
+                newImageForRestaurant: ''
 		    }
 	},
 	template: ` 
@@ -51,12 +52,10 @@ Vue.component("changeRestaurant", {
                     <td><input type="text" placeholder="Broj" id="streetNum" v-model="restaurantForChange.location.adress.streetNum"/></td>  
                 </tr>
 
-                <!-- ZA SADA SE JOS NE MOGU MENJATI SLIKE
                 <tr>
                     <td colspan="2">Logo</td>
                     <td><input type="file" @change="handleFileUpload" accept="image/*"></td>
                 </tr>
-                -->
 
                 <tr>
                     <td><input type="submit" value="Ažuriraj podatke"></td>
@@ -85,6 +84,11 @@ Vue.component("changeRestaurant", {
             if (isNaN(this.restaurantForChange.location.adress.postalCode)){
                 alert('Poštanski broj se mora sasatojati samo od cifara');
                 return;
+            }
+
+            if(this.newImageForRestaurant != ''){
+                this.restaurantForChange.logo = this.newImageForRestaurant;
+                this.newImageForRestaurant = '';
             }
 
 			var changedRestaurant = JSON.stringify(this.restaurantForChange);
@@ -196,6 +200,19 @@ Vue.component("changeRestaurant", {
         },
         switchToRestaurantPage: function() {
             router.push('/restaurantPage');
+        },
+        handleFileUpload : function(event){
+            var file = event.target.files[0];
+			var reader = new FileReader();
+
+			reader.readAsDataURL(file);
+
+			reader.onload = () => {
+				this.newImageForRestaurant = reader.result
+			}
+			reader.onerror = function (error) {
+				console.log('Error: ', error)
+			}
         }
 	}
 });

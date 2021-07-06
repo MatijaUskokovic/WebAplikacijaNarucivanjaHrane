@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import beans.Customer;
+import beans.Item;
 import beans.Order;
 import beans.Restaurant;
+import fileRepository.ImageFileRepository;
 import fileRepository.RestaurantFileRepository;
 
 public class RestaurantService {
@@ -93,6 +95,12 @@ public class RestaurantService {
 	
 	public Restaurant changeRestaurant(String id, Restaurant newRestaurant) {
 		newRestaurant.setDeleted(false);
+		Restaurant oldRestaurant = this.findRestaurantById(id);
+		if(!newRestaurant.getLogo().equals(oldRestaurant.getLogo())) {
+			ImageFileRepository imgFileRepo = new ImageFileRepository();
+			String newLogo = imgFileRepo.saveImage(newRestaurant.getLogo());
+			newRestaurant.setLogo(newLogo);
+		}
 		return rfr.changeRestaurant(id, newRestaurant);
 	}
 }

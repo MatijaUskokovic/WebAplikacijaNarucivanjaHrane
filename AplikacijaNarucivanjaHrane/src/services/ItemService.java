@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import beans.Item;
+import fileRepository.ImageFileRepository;
 import fileRepository.ItemsFileRepository;
 
 public class ItemService {
@@ -40,7 +41,13 @@ public class ItemService {
 	}
 	
 	public Item changeItem(String id, Item newItem) {
-		newItem.setDeleted(false);
+		//LOGIKA ZA CUVANJE SLIKE UKOLIKO SE PROMENI
+		Item oldItem = this.findItemById(id);
+		if(!newItem.getImage().equals(oldItem.getImage())) {
+			ImageFileRepository imgFileRepo = new ImageFileRepository();
+			String newImage = imgFileRepo.saveImage(newItem.getImage());
+			newItem.setImage(newImage);
+		}
 		return ifr.changeItem(id, newItem);
 	}
 	

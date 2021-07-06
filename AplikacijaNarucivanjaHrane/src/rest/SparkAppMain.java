@@ -237,7 +237,7 @@ public class SparkAppMain {
 			res.type("application/json");
 			Item newItem = g.fromJson(req.body(), Item.class);
 			String id = newItem.getId();
-
+			
 			if (itemService.isNameOfItemFree(newItem)) {
 				return g.toJson(restaurantService
 						.findRestaurantById(itemService.changeItem(id, newItem).getRestaurant().getId()));

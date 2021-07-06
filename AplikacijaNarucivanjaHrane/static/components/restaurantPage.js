@@ -15,7 +15,8 @@ Vue.component("restaurantPage", {
 					"description": "",
 					"image": ''
 				},
-				restaurantComments: []
+				restaurantComments: [],
+				changedImageForItem: ''
 		    }
 	},
 	template: `
@@ -181,7 +182,8 @@ Vue.component("restaurantPage", {
 							</select>
 						</td>
 					</tr>
-					<tr><td><input type="submit" value="Izmeni proizvod"></td></tr>
+					<tr><td>Slika</td><td><input type="file" @change="addNewImageInChangedItem" accept="image/*"></td></tr>
+					<tr><td><input type="submit" value="Kreiraj proizvod"></td></tr>
 				</table>
 			</form>
 		</div>
@@ -348,6 +350,11 @@ Vue.component("restaurantPage", {
 				if(this.itemForChange.description.trim() === ""){
 					this.itemForChange.description = '#';
 				}
+				//provera da li se menja i slika
+				if(this.changedImageForItem != ''){
+					this.itemForChange.image = this.changedImageForItem;
+					this.changedImageForItem = '';
+				}
 				var item = JSON.stringify(this.itemForChange);
 				axios.put('rest/items',item)
 				.then(res => {
@@ -460,6 +467,20 @@ Vue.component("restaurantPage", {
 				//alert('RESULT: ' + reader.result)
 				this.newItem.image = reader.result
 				//alert(this.newItem.image)
+			}
+			reader.onerror = function (error) {
+				console.log('Error: ', error)
+			}
+		},
+		//IZMENA SLIKE PROIZVODA
+		addNewImageInChangedItem : function(event){
+			var file = event.target.files[0];
+			var reader = new FileReader();
+
+			reader.readAsDataURL(file);
+
+			reader.onload = () => {
+				this.changedImageForItem = reader.result
 			}
 			reader.onerror = function (error) {
 				console.log('Error: ', error)
