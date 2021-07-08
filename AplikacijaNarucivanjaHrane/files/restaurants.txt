@@ -1,5 +1,0 @@
-111,false,Bob,Rostilj,Radi,19.838933602434352,45.24888472418533,Bulevar Evrope,BB,Novi Sad,21102,components/images/e323d55f-b1d9-40c0-854f-c3f49d6f88d6.jpeg
-333,true,Azuri,Italijanski,Ne_radi,50.0,50.0,Djure Jaksica,11,Zrenjanin,21111,components/images/9a23962d-6b97-40d0-92a4-662b60ea7fc4.png
-693d9344-ace4-4209-9ea3-c66d013f4666,true,Dobar naziv,Kineski,Radi,20.35634553160769,43.88298491897015,Sumadijski Rokrol,33,Cacak,23312,components/images/61e795e5-5d9b-4063-b621-5c8f9e817598.png
-b31aa743-eb84-4633-b0fa-e3404c129b79,false,Restoran,Italijanski,Radi,50.0,50.0,Neka adresa,11,Vršac,11111,components/images/3e012030-6489-42a6-8d5e-eb66f4421fa5.png
-a52b614b-fa5c-4227-875c-65764867341f,true,Dobro ime,Kineski,Radi,19.889760721443697,44.26676337447947,Ulicica,22,Valjevo,21111,components/images/1581d2fb-9f28-42c7-892b-a41f476db2d5.png

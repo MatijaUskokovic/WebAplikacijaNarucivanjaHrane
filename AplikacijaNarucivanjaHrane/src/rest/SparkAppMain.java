@@ -53,30 +53,28 @@ public class SparkAppMain {
 
 		staticFiles.externalLocation(new File("./static").getCanonicalPath());
 
-		get("rest/test", (req, res) -> {
-			return "Works";
-		});
-
-		// DOBABLJANJE SVIH KORISNIKA
+		// KORISNICI
+		
+		// dobavljanje svih korisnika
 		get("rest/users", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(userService.getAllUsers());
 		});
 		
-		// DOBAVLJANJE SVIH MENADZERA
+		// dobavljanje svih menadzera
 		get("rest/managers", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(userService.getAllManagers());
 		});
 
-		// DOPAVLJANJE ODREDJENOG KORISNIKA
+		// dobavljanje odredjenog korisnika
 		get("rest/users/:username", (req, res) -> {
 			res.type("application/json");
 			String username = req.params("username");
 			return g.toJson(userService.getUserByUsername(username));
 		});
 
-		// REGISTRACIJA KORISNIKA
+		// Registracija korisnika
 		post("rest/customers", (req, res) -> {
 			res.type("application/json");
 			String registrationParams = req.body();
@@ -110,7 +108,7 @@ public class SparkAppMain {
 			return g.toJson(deliverer);
 		});
 
-		// IZMENA KORISNIKA
+		// Izmena korisnika
 		put("rest/customers/:id", (req, res) -> {
 			res.type("application/json");
 			Customer customer = g.fromJson(req.body(), Customer.class);
@@ -163,7 +161,7 @@ public class SparkAppMain {
 			return g.toJson(administrator);
 		});
 
-		// BRISANJE KORISNIKA
+		// Brisanje korisnika
 		delete("rest/users/:id", (req, res) -> {
 			res.type("application/json");
 			User user = g.fromJson(req.body(), User.class);
@@ -211,6 +209,11 @@ public class SparkAppMain {
 		});
 
 		// ITEMS
+		get("rest/items", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(itemService.getAllItems());
+		});
+		
 		post("rest/items", (req, res) -> {
 			res.type("application/json");
 			Item item = g.fromJson(req.body(), Item.class);
@@ -220,19 +223,7 @@ public class SparkAppMain {
 			} else
 				return null;
 		});
-
-		get("rest/items", (req, res) -> {
-			res.type("application/json");
-			return g.toJson(itemService.getAllItems());
-		});
-
-		delete("rest/items/:id", (req, res) -> {
-			res.type("application/json");
-			String itemId = req.params(":id");
-			Item item = itemService.deleteItem(itemId);
-			return g.toJson(restaurantService.findRestaurantById(item.getRestaurant().getId()));
-		});
-
+		
 		put("rest/items", (req, res) -> {
 			res.type("application/json");
 			Item newItem = g.fromJson(req.body(), Item.class);
@@ -245,13 +236,14 @@ public class SparkAppMain {
 				return null;
 		});
 
-		// RESTORANTS
-		post("rest/restaurants", (req, res) -> {
+		delete("rest/items/:id", (req, res) -> {
 			res.type("application/json");
-			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
-			return g.toJson(restaurantService.saveRestaurant(restaurant));
+			String itemId = req.params(":id");
+			Item item = itemService.deleteItem(itemId);
+			return g.toJson(restaurantService.findRestaurantById(item.getRestaurant().getId()));
 		});
 
+		// RESTORANTS
 		get("rest/restaurants", (req, res) -> {
 			res.type("application/json");
 			return g.toJson(restaurantService.getAllRestaurants());
@@ -267,18 +259,25 @@ public class SparkAppMain {
 			String id = req.params(":id");
 			return g.toJson(restaurantService.getCustomersOfRestaurant(id));
 		});
-
-		delete("rest/restaurants/:id", (req, res) -> {
+		
+		post("rest/restaurants", (req, res) -> {
 			res.type("application/json");
-			return g.toJson(restaurantService.deleteRestaurant(req.params(":id")));
+			Restaurant restaurant = g.fromJson(req.body(), Restaurant.class);
+			return g.toJson(restaurantService.saveRestaurant(restaurant));
 		});
-
+		
 		put("rest/restaurants", (req, res) -> {
 			res.type("application/json");
 			Restaurant newRestaurant = g.fromJson(req.body(), Restaurant.class);
 			String id = newRestaurant.getId();
 			return g.toJson(restaurantService.changeRestaurant(id, newRestaurant));
 		});
+
+		delete("rest/restaurants/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(restaurantService.deleteRestaurant(req.params(":id")));
+		});
+
 
 		// COMMENTS
 		get("rest/comments", (req, res) -> {
@@ -316,6 +315,18 @@ public class SparkAppMain {
 		});
 		
 		// PORUDZBINE
+		// sve porudzbine odredjenog statusa
+		get("rest/orders/:status", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(orderService.getOrdersWithSpecificStatus(req.params(":status")));
+		});
+		
+		// sve porudzbine odredjenog restorana
+		get("rest/ordersOfRestaurant/:id", (req, res) -> {
+			res.type("application/json");
+			return g.toJson(orderService.getOrdersOfRestaurant(req.params(":id")));
+		});
+		
 		// nova
 		post("rest/orders", (req, res) -> {
 			res.type("application/json");
@@ -340,18 +351,6 @@ public class SparkAppMain {
 			Order order = g.fromJson(req.body(), Order.class);
 			orderService.deleteOrder(order.getId());
 			return "SUCCESS";
-		});
-		
-		// sve porudzbine odredjenog statusa
-		get("rest/orders/:status", (req, res) -> {
-			res.type("application/json");
-			return g.toJson(orderService.getOrdersWithSpecificStatus(req.params(":status")));
-		});
-		
-		// sve porudzbine odredjenog restorana
-		get("rest/ordersOfRestaurant/:id", (req, res) -> {
-			res.type("application/json");
-			return g.toJson(orderService.getOrdersOfRestaurant(req.params(":id")));
 		});
 		
 		// ZAHTEVI ZA PREUZIMANJE PORUDZBINE
