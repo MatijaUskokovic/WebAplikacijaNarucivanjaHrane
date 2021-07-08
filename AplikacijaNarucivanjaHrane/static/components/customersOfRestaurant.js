@@ -24,7 +24,6 @@ Vue.component("customersOfRestaurant", {
 <div>
     <div class="mainDivForUsers">
         <p v-if="loggedUser.restaurant.id == '-1'">Trenutno niste zaduženi ni za jedan restoran</p>
-        <p v-if="allUsers.length == 0 && loggedUser.restaurant.id != '-1'">Ne postoji ni jedan kupac koji je naručio iz Vašeg restorana</p>
         <div v-if="loggedUser.restaurant.id != '-1'">
             <h2>Prikaz svih kupaca koji su poručili iz vašeg restorana</h2>
 
@@ -79,7 +78,8 @@ Vue.component("customersOfRestaurant", {
             <br/>
             <br/>
             <!--PRIKAZ KORISNIKA-->
-            <div class="insideDivWithAllUsers">
+            <p v-if="allUsers.length == 0 && loggedUser.restaurant.id != '-1'">Ne postoji ni jedan kupac koji je naručio iz Vašeg restorana</p>
+            <div class="insideDivWithAllUsers" v-else>
                 <table class="tableWithUsers">
                     <tr bgcolor="whitesmoke">
                         <th>Korisničko ime</th>

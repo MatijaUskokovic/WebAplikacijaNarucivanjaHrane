@@ -1,0 +1,3 @@
+259b8184-cc52-4cd3-820f-c1a307e212fd,false,Lorenzo,Italijanski,Ne_radi,19.65475530430116,45.56954513218915,Ise Sekickog,35,Vrbas,21460,components/images/796e7e12-3c27-4d06-980c-42a34be518b0.jpeg
+0e5f8646-2a16-4e7c-966e-e8e36e9a7096,false,Bob,Rostilj,Radi,20.404142616489956,45.39592555196833,Šestog maja,67,Zrenjanin,23000,components/images/ad53422d-08ef-4b08-9a50-52ba125a440c.jpeg
+09219814-cf37-4c00-b9b8-f10bb44b9d47,false,Kineski restoran,Kineski,Radi,20.754760873115256,45.26687511034149,Đure Jakšića,5,Jarkovac,23250,components/images/55d17638-4efb-4650-be9a-9a6aeb185f05.jpeg

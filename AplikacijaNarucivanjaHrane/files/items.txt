@@ -1,0 +1,8 @@
+5890456b-6f9a-42c4-8261-240891a1cce8,false,Coca-cola,150.0,pice,259b8184-cc52-4cd3-820f-c1a307e212fd,220.0,#,components/images/bd2324aa-4bc1-4470-bd8b-42d5bdd7dca0.jpeg
+311fa062-fc1c-456b-9460-b73f265342d9,false,Classic pizza,600.0,jelo,259b8184-cc52-4cd3-820f-c1a307e212fd,0.0,Mozzarela sir,components/images/c955daf5-3caf-4d12-a36d-a7a6e732b517.jpeg
+48992533-21e7-4f2b-86b7-d10d87b91aab,false,Pljeskavica,200.0,jelo,0e5f8646-2a16-4e7c-966e-e8e36e9a7096,150.0,#,components/images/40bbfb98-cb7a-427e-9b1f-0b9321cbf9f3.jpeg
+dea32d5e-7634-4c97-81fb-38f911e408bd,false,Ćevapi,170.0,jelo,0e5f8646-2a16-4e7c-966e-e8e36e9a7096,200.0,5 komada,components/images/7cd18fca-d849-4246-b361-8678a2538a1a.jpeg
+deee6d10-62aa-4407-8680-cb37eb44b609,false,Coca-cola,130.0,pice,0e5f8646-2a16-4e7c-966e-e8e36e9a7096,500.0,#,components/images/c7fda3c0-900c-4628-aa2b-64c80d665c79.png
+f3d209fe-317b-4746-91e4-ffc371729901,false,Špagete bolonjeze,500.0,jelo,259b8184-cc52-4cd3-820f-c1a307e212fd,300.0,Domaće testenine,components/images/e158c93d-1bc1-4b1a-8bcd-3d6f63d5a570.jpeg
+a629c6ea-ea2c-4cce-99e7-38a050712f9f,false,Prasetina,1200.0,jelo,0e5f8646-2a16-4e7c-966e-e8e36e9a7096,1000.0,Prasetina na žaru,components/images/1e02f3a4-3691-469b-8fdc-0ecf8a8bfdca.jpeg
+a3d9bf13-d220-4edc-a63c-1cb5b8dd6f23,false,Slatko ljuta piletina,600.0,jelo,09219814-cf37-4c00-b9b8-f10bb44b9d47,400.0,#,components/images/d2c0ec66-7b6a-4062-825d-521b236bf8f4.jpeg

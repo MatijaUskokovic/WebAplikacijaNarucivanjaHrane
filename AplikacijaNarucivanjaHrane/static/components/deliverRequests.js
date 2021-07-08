@@ -18,11 +18,13 @@ Vue.component("deliverRequests", {
                 <th>Ukupno (din)</th>
                 <th></th>
                 <th></th>
+                <th></th>
             </tr>
             <tr v-for="request in deliverRequests">
                 <td>{{request.deliverer.name}}</td>
                 <td>{{request.order.id}}</td>
                 <td>{{request.order.price}}</td>
+                <td><button @click="showOrder(request.order)">Prikaži</button></td>
                 <td><button @click="approveRequest(request)">Odobri zahtev</button></td>
                 <td><button @click="rejectRequest(request)">Odbij zahtev</button></td>
             </tr>
@@ -107,6 +109,10 @@ Vue.component("deliverRequests", {
 			.catch(function(error){
 				alert('Neuspešno odbijanje zahteva')
 			})
+        },
+        showOrder : function(order) {
+            app.selectedOrder = order;
+            router.push('/orderView');
         }
 	}
 });

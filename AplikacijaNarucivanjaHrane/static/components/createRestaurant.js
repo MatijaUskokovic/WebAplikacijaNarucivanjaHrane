@@ -154,7 +154,9 @@ Vue.component("createRestaurant", {
 				}
                 else {
                     this.newManager = {username: '', password: '', name: '', surname: '', gender: '', dateOfBirth: ''};
-                    this.freeManagers.push(response.data);
+                    let newFreeManager = response.data;
+                    newFreeManager.dateOfBirth = new Date(parseInt(newFreeManager.dateOfBirth));
+                    this.freeManagers.push(newFreeManager);
                 }
 			})
 			.catch(function(error){

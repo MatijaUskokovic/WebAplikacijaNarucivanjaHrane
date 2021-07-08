@@ -116,7 +116,7 @@ public class ShoppingCartFileRepository {
 	}
 	
 	/*
-	 * Metoda sluzi za upisivanje novog korisnika u fajl. Drugi parametar sluzi da kaze da li se
+	 * Metoda sluzi za upisivanje novog shopping cart-a u fajl. Drugi parametar sluzi da kaze da li se
 	 * fajl iznova pise ili se dodaje novi red
 	 */
 	private boolean writeShoppingCart(String scToWrite, boolean append) {

@@ -1,7 +1,7 @@
 Vue.component("createStaff", {
 	data: function () {
 		    return {
-			  regUser: {username: '', password: '', name: '', surname: '', gender: '', dateOfBirth: '', role: ''}
+			  regUser: {username: '', password: '', name: '', surname: '', gender: '', dateOfBirth: '', role: '', restaurant: {}}
 		    }
 	},
 	template: ` 

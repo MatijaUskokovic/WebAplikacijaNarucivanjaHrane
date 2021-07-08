@@ -90,9 +90,11 @@ Vue.component("restaurantPage", {
 							<td>{{item.name}}</td>
 							<td>{{item.price}}</td>
 							<td>{{item.type | itemTypeFormat}}</td>
-							<td v-if="item.type === 'jelo'">{{item.quantity}} (g)</td>
+							<td v-if="item.quantity === 0">/</td>
+							<td v-else-if="item.type === 'jelo'">{{item.quantity}} (g)</td>
 							<td v-else>{{item.quantity}} (ml)</td>
-							<td>{{item.description}}</td>
+							<td v-if="item.description == '#'">/</td>
+							<td v-else>{{item.description}}</td>
 							<td v-if="loggedUser.role === 'Kupac'"><input type="number" min="1"v-model="item.count" v-bind:disabled="restaurant.status != 'Radi'"></td>
 							<td v-if="loggedUser.role === 'Kupac'"><button @click="addItemInCart(item)" v-bind:disabled="restaurant.status != 'Radi'">Dodaj u korpu</button></td>
 							<td v-if="loggedUser.role === 'Menadzer' && loggedUser.restaurant.id === restaurant.id"><button @click="changeItem(item)">Izmeni proizvod</button></td>
@@ -184,7 +186,7 @@ Vue.component("restaurantPage", {
 						</td>
 					</tr>
 					<tr><td>Slika</td><td><input type="file" @change="addNewImageInChangedItem" accept="image/*"></td></tr>
-					<tr><td><input type="submit" value="Kreiraj proizvod"></td></tr>
+					<tr><td><input type="submit" value="Izmeni proizvod"></td></tr>
 				</table>
 			</form>
 		</div>

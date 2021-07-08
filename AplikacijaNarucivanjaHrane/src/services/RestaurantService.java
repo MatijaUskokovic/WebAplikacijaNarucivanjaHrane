@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import beans.Customer;
 import beans.Order;
+import beans.OrderStatus;
 import beans.Restaurant;
 import fileRepository.ImageFileRepository;
 import fileRepository.RestaurantFileRepository;
@@ -74,7 +75,7 @@ public class RestaurantService {
 		ArrayList<Order> ordersOfRestaurant = (ArrayList<Order>) orderService.getOrdersOfRestaurant(restaurantId);
 		HashMap<String, Customer> customersOfRestaurant = new HashMap<String, Customer>();
 		for (Order order : ordersOfRestaurant) {
-			if (order.getRestaurantOfOrder().getId().equals(restaurantId)) {
+			if (order.getRestaurantOfOrder().getId().equals(restaurantId) && order.getStatus() == OrderStatus.Dostavljena) {
 				Customer customer = userService.getCustomerById(order.getCustomer().getId());
 				if (!customersOfRestaurant.containsKey(customer.getId())) {
 					customersOfRestaurant.put(customer.getId(), customer);
